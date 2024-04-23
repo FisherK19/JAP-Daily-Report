@@ -1,0 +1,87 @@
+/* styles.css */
+
+/* Apply a background color to the body for a subtle design */
+body {
+    background-color: #fafaf8;
+  }
+  
+  /* Style for the company logo to ensure it fits well in the header */
+  #company-logo {
+    display: block;
+    margin: auto; /* this centers the image in the available space */
+    padding: 10px 0; /* this adds space above and below the logo */
+  }
+  #company-logo {
+    display: block;
+    margin: auto; /* this centers the image in the available space */
+    padding: 10px 0; /* this adds space above and below the logo */
+  }
+    
+ 
+  
+  /* Make the header stand out */
+  header {
+    background-color: #fff;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Style for the main heading */
+  header h1 {
+    font-size: 19px; /* Adjust the size as needed */
+    color: #333;
+    padding-left: 15px;
+    text-align: center;
+  }
+  
+  /* Navigation styles */
+  nav {
+    background: #D4AF37; /* Bootstrap primary color */
+  }
+  
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+  }
+  
+  nav ul li {
+    padding: 10px;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Main content styles */
+  main {
+    padding: 20px;
+  }
+  
+  main h2 {
+    color: #333;
+  }
+  
+  /* Footer styles */
+  footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  footer p {
+    margin: 0;
+  }
+  
