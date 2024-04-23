@@ -52,7 +52,7 @@ body {
   }
   
   nav a {
-    color: white;
+    color: rgb(28, 27, 27);
     text-decoration: none;
     font-weight: bold;
   }
@@ -72,8 +72,8 @@ body {
   
   /* Footer styles */
   footer {
-    background-color: #333;
-    color: white;
+    background-color: #D4AF37;
+    color: rgb(15, 14, 14);
     text-align: center;
     padding: 10px 0;
     position: absolute;
