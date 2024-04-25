@@ -16,7 +16,6 @@
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="login.html">Login</a></li>
                 <li><a href="register.html">Register</a></li>
-                <li><a href="timesheet.html">Timesheet</a></li>
                 <li><a href="daily-report.html">Daily-Report</a></li>
             </ul>
         </nav>
@@ -24,62 +23,80 @@
         <main>
             <h1>Daily Report Entry</h1>
             <!-- Begin of daily report form -->
-            <form id="daily-report-form" action="/submit-daily-report" method="post">
-                <!-- Company Information -->
-                <div class="form-group">
-                    <label for="date">Date:</label>
-                    <input type="date" id="date" name="date">
-                    <label for="job-number">Job Number:</label>
-                    <input type="text" id="job-number" name="job-number">
-                    <label for="T&M">T&M:</label>
-                    <input type="text" id="T&M" name="T&M">
-                    <label for="Contract">Contract:</label>
-                    <input type="text" id="Contract" name="Contract">
-                </div>
-    
-                <!-- Foreman and Customer Information -->
-                <div class="form-group">
-                    <label for="foreman">Foreman:</label>
-                    <input type="text" id="foreman" name="foreman">
-                    <label for="Cell Number">Cell Number:</label>
-                    <input type="text" id="Cell Number" name="Cell Number">
-                    <label for="customer">Customer:</label>
-                    <input type="text" id="customer" name="customer">
-                    <label for="customer PO#">Customer PO#:</label>
-                    <input type="text" id="customer PO#" name="customer PO#">
-                </div>
-    
-                <!-- Job Site Details -->
-                <div class="form-group">
-                    <label for="Job Site">Job Site:</label>
-                    <input type="text" id="Job Site" name="Job Site">
-                    <label for="Job Description">Job Description:</label>
-                    <input type="text" id="Job Description" name="Job Description">
-                    <label for="Job Completion">Job Completion:</label>
-                    <input type="text" id="Job Completion" name="Job Completion">
-                </div>
-    
-                <!-- Materials, Equipment, and Other Details -->
-                <div class="form-group">
-                    <label for="Material">Material Description:</label>
-                    <input type="text" id="Material" name="Material Description">
-                    <label for="Equipment">Equipment Description:</label>
-                    <input type="text" id="Equipment" name="Equipment Description">
-                </div>
-    
-                <!-- Emergency Purchases and Delays/Lost Time -->
-                <div class="form-group">
-                    <label for="Emergency">Emergency Purchases:</label>
-                    <input type="text" id="Emergency" name="Emergenct Purchases">
-                </div>
-    
-                <!-- Approval and Submission -->
-                <div class="form-group">
-                    <label for="Approval">Approved By:</label>
-                    <input type="text" id="Approval" name="Approved By">
-                    <button type="submit">Submit Daily Report</button>
-                </div>
-            </form>
+           <!-- Begin of daily report form -->
+<form id="daily-report-form" action="/submit-daily-report" method="post">
+    <!-- Company Information -->
+<div class="form-group">
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" class="date-input">
+    <span class="date-icon"></span>
+    <label for="job-number">Job Number:</label>
+    <input type="text" id="job-number" name="job-number">
+    <label for="T&M">T&M:</label>
+    <input type="checkbox" id="T&M" name="T&M">
+    <label for="Contract">Contract:</label>
+    <input type="checkbox" id="Contract" name="Contract">
+</div>
+
+
+    <!-- Foreman and Customer Information -->
+    <div class="form-group">
+        <label for="foreman">Foreman:</label>
+        <input type="text" id="foreman" name="foreman">
+        <label for="Cell Number">Cell Number:</label>
+        <input type="text" id="Cell Number" name="Cell Number">
+        <label for="customer">Customer:</label>
+        <input type="text" id="customer" name="customer">
+        <label for="customer PO#">Customer PO#:</label>
+        <input type="text" id="customer PO#" name="customer PO#">
+    </div>
+
+    <!-- Job Site Details -->
+    <div class="form-group">
+        <label for="Job Site">Job Site:</label>
+        <input type="text" id="Job Site" name="Job Site">
+        <label for="Job Description">Job Description:</label>
+        <input type="text" id="Job Description" name="Job Description">
+        <label for="Job Completion">Job Completion:</label>
+        <input type="text" id="Job Completion" name="Job Completion">
+    </div>
+
+    <!-- Materials, Equipment, and Other Details -->
+    <div class="form-group">
+        <label for="Material">Material Description:</label>
+        <input type="text" id="Material" name="Material Description">
+        <label for="Equipment">Equipment Description:</label>
+        <input type="text" id="Equipment" name="Equipment Description">
+    </div>
+
+    <!-- Employee Worked Hours -->
+    <div class="form-group">
+        <label for="hours-worked">Hours Worked:</label>
+        <input type="text" id="hours-worked" name="hours-worked">
+        <label for="employee">Employee:</label>
+        <input type="text" id="employee" name="employee">
+        <label for="straight-time">Straight Time:</label>
+        <input type="text" id="straight-time" name="straight-time">
+        <label for="double-time">Double Time:</label>
+        <input type="text" id="double-time" name="double-time">
+        <label for="Time & 1/2">Time & 1/2:</label>
+        <input type="text" id="Time & 1/2" name="Time & 1/2">
+    </div>
+
+    <!-- Emergency Purchases and Delays/Lost Time -->
+    <div class="form-group">
+        <label for="Emergency">Emergency Purchases:</label>
+        <input type="text" id="Emergency" name="Emergenct Purchases">
+    </div>
+
+    <!-- Approval and Submission -->
+    <div class="form-group">
+        <label for="Approval">Approved By:</label>
+        <input type="text" id="Approval" name="Approved By">
+        <button type="submit">Submit Daily Report</button>
+    </div>
+</form>
+
         </main>
 
         <footer class="container mt-4">

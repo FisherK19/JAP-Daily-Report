@@ -1,1 +1,23 @@
-{"name":"JAP","version":"0.0.1","private":true,"scripts":{"start":"node node_modules/react-native/local-cli/cli.js start"},"dependencies":{"react-native":"0.73.3"}}
+{
+    "name": "report",
+    "version": "1.0.0",
+    "description": "This is a Daily timesheet report for a General Contracting Company",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js"
+    },
+    "keywords": [],
+    "author": "Kristie Fisher",
+    "license": "MIT",
+    "dependencies": {
+      "express": "^4.17.1",
+      "dotenv": "^10.0.0",
+      "mysql2": "^2.3.0",
+      "sequelize": "^6.6.5"
+    },
+    "devDependencies": {
+      "nodemon": "^2.0.15"
+    }
+  }
+  
