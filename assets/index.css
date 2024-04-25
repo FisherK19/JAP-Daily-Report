@@ -1,87 +1,57 @@
-/* styles.css */
-
-/* Apply a background color to the body for a subtle design */
+/* Overall body and background styling */
 body {
-    background-color: #fafaf8;
+  font-family: Arial, sans-serif; /* Sets a clean, readable font */
+  background-color: #f4f4f4; /* Light grey background */
+  color: #333; /* Dark grey text */
+  line-height: 1.6; /* More readable line spacing */
+  padding: 20px; /* Adds space around the content */
+  margin: 0;
+}
+
+/* Centers the form on the page */
+.container {
+  width: 80%; /* Control the width of the container */
+  max-width: 600px; /* Maximum width */
+  margin: 20px auto; /* Center aligning */
+  background: #fff; /* White background for the form area */
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around the form */
+}
+
+/* Styles for all form elements */
+form {
+  display: block;
+  margin-top: 20px;
+}
+
+/* Styles for labels */
+label {
+  margin: 10px 0 5px;
+  display: block; /* Ensures the label is on a new line */
+  font-weight: bold;
+}
+
+/* Styles for input fields */
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="time"],
+textarea {
+  width: calc(100% - 22px); /* Full width minus padding */
+  padding: 10px; /* Makes text easier to enter */
+  margin-bottom: 20px; /* Adds space below each input */
+  border: 1px solid #ddd; /* Light gray border */
+}
+
+
+
+button:hover {
+  background-color: #004494; /* Slightly darker blue on hover */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .container {
+    width: 95%; /* Takes up almost the full screen on small devices */
   }
-  
-  /* Style for the company logo to ensure it fits well in the header */
-  #company-logo {
-    display: block;
-    margin: auto; /* this centers the image in the available space */
-    padding: 10px 0; /* this adds space above and below the logo */
-  }
-  #company-logo {
-    display: block;
-    margin: auto; /* this centers the image in the available space */
-    padding: 10px 0; /* this adds space above and below the logo */
-  }
-    
- 
-  
-  /* Make the header stand out */
-  header {
-    background-color: #fff;
-    padding: 20px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style for the main heading */
-  header h1 {
-    font-size: 19px; /* Adjust the size as needed */
-    color: #333;
-    padding-left: 15px;
-    text-align: center;
-  }
-  
-  /* Navigation styles */
-  nav {
-    background: #D4AF37; /* Bootstrap primary color */
-  }
-  
-  nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-  }
-  
-  nav ul li {
-    padding: 10px;
-  }
-  
-  nav a {
-    color: rgb(28, 27, 27);
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  nav a:hover {
-    text-decoration: underline;
-  }
-  
-  /* Main content styles */
-  main {
-    padding: 20px;
-  }
-  
-  main h2 {
-    color: #333;
-  }
-  
-  /* Footer styles */
-  footer {
-    background-color: #D4AF37;
-    color: rgb(15, 14, 14);
-    text-align: center;
-    padding: 10px 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  footer p {
-    margin: 0;
-  }
-  
+}

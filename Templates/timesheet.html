@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+    <title>Fill Timesheet</title>
+    <link rel="stylesheet" href="../assets/timesheet.css">
+    <script src="index.js"></script>
+</head>
+<body>
+    <header>
+        <!-- Include your header content here -->
+    </header>
+    
+    <main>
+        <h1>Timesheet Entry</h1>
+        <form id="timesheet-form" action="/submit-timesheet" method="post">
+            <div>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            <div>
+                <label for="start-time">Start Time:</label>
+                <input type="time" id="start-time" name="start-time" required>
+            </div>
+            <div>
+                <label for="end-time">End Time:</label>
+                <input type="time" id="end-time" name="end-time" required>
+            </div>
+            <div>
+                <label for="project">Project:</label>
+                <input type="text" id="project" name="project" required>
+            </div>
+            <div>
+                <label for="task">Task:</label>
+                <textarea id="task" name="task" required></textarea>
+            </div>
+            <div>
+                <button type="submit">Submit Timesheet</button>
+            </div>
+        </form>
+    </main>
+    
+    <footer class="container mt-4">
+        <p>&copy; 2024 John A. Pappalas Timesheet App. All rights reserved.</p>
+    </footer>
+</body>
+</html>
