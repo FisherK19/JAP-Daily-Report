@@ -1,0 +1,23 @@
+:root {
+    --primary-color: #fff;
+    --secondary-color: #fff;
+    --accent-color: #fff;
+  }
+  body {
+    background-color: var(--primary-color);
+    color: #151414;
+  }
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem; /* Slightly smaller font size on smaller screens */
+    }
+  }
+  #user-container, #reports-container {
+    display: none; /* Hides the container */
+  }
+  
+  #user-container, #reports-container {
+    border: none;
+    padding: 0;
+  }
+     
