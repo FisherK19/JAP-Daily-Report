@@ -6,8 +6,8 @@
 /* Style for the date input */
 /* Style for the date input */
 input[type="date"] {
-    width: 150px; /* Adjust the width as needed */
-    padding: 10px; /* Adjust padding as needed */
+    width: 150px; 
+    padding: 10px; 
     border: 1px solid #ccc;
     border-radius: 4px;
     transition: border-color 0.3s ease-in-out;

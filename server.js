@@ -4,6 +4,7 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql');
 require('dotenv').config();
+const path = require('path');
 
 // Create MySQL connection pool
 const pool = mysql.createPool({
@@ -21,6 +22,22 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Serve static files from the 'templates' directory
+app.use(express.static(path.join(__dirname, 'Templates')));
+
+
+// Serve static assets from the 'assets' directory
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
+  });
+  
 // MySQL session store configuration
 const sessionStore = new MySQLStore({
     expiration: 86400000, 
@@ -38,8 +55,8 @@ const sessionStore = new MySQLStore({
 
 // Express session configuration
 app.use(session({
-    key: 'session_cookie_name',
     secret: process.env.SESSION_SECRET,
+    key: 'session_cookie_name',
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -50,16 +67,21 @@ app.use(session({
     }
 }));
 
-// Routes
-const userRoutes = require('./routes/UserRoutes');
-const dailyReportRoutes = require('./routes/DailyReportRoutes');
-const adminUserRoutes = require('./routes/AdminUserRoutes');
-const adminReportRoutes = require('./routes/AdminReportRoutes');
+// Variable names to match the required modules
+const userRegisterRoutes = require('./routes/Userregister');
+const userLoginRoutes = require('./routes/Userlogin');
+const dailyReportRoutes = require('./routes/dailyReport');
+const adminUserRoutes = require('./routes/adminUser');
+const adminReportRoutes = require('./routes/adminReport');
 
-app.use('/api/users', userRoutes);
+// Correct variable names for app.use
+app.use('/api/users/register', userRegisterRoutes);
+app.use('/api/users/login', userLoginRoutes);
 app.use('/api/daily-reports', dailyReportRoutes);
-app.use('/api/admin-users', adminUserRoutes);
-app.use('/api/admin-reports', adminReportRoutes);
+app.use('/api/admin/users', adminUserRoutes);
+app.use('/api/admin/reports', adminReportRoutes);
+
+
 
 // Start the server
 const PORT = process.env.PORT || 3000;

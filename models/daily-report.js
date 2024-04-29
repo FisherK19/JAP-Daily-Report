@@ -1,24 +1,28 @@
-CREATE TABLE daily_reports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    date DATE NOT NULL,
-    job_number VARCHAR(255),
-    TAndM BOOLEAN,
-    contract BOOLEAN,
-    foreman VARCHAR(255),
-    cell_number VARCHAR(255),
-    customer VARCHAR(255),
-    customer_PO VARCHAR(255),
-    job_site VARCHAR(255),
-    job_description TEXT,
-    job_completion TEXT,
-    material_description TEXT,
-    equipment_description TEXT,
-    hours_worked VARCHAR(255),
-    employee VARCHAR(255),
-    straight_time VARCHAR(255),
-    double_time VARCHAR(255),
-    time_and_half VARCHAR(255),
-    emergency_purchases TEXT,
-    approved_by VARCHAR(255)
-  );
-  
+// daily-report.js
+
+const pool = require('../config/connection');
+
+const DailyReport = {
+    // Function to create a new daily report
+    create: function(date, jobNumber, callback) {
+        pool.query('INSERT INTO daily_reports (date, job_number) VALUES (?, ?)', [date, jobNumber], function(error, results, fields) {
+            if (error) {
+                return callback(error, null);
+            }
+            return callback(null, results.insertId);
+        });
+    },
+
+    // Function to get all daily reports
+    getAll: function(callback) {
+        pool.query('SELECT * FROM daily_reports', function(error, results, fields) {
+            if (error) {
+                return callback(error, null);
+            }
+            return callback(null, results);
+        });
+    }
+    // Add more functions as needed for CRUD operations
+};
+
+module.exports = DailyReport;

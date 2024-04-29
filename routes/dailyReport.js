@@ -1,59 +1,63 @@
-// Import necessary modules
 const express = require('express');
 const router = express.Router();
-const DailyReport = require('../models/daily-report');
+const pool = require('../config/connection');
 
 // Define routes for daily report management
 
 // Route to retrieve all daily reports
-router.get('/', async (req, res) => {
-    try {
-        const dailyReports = await DailyReport.find();
-        res.json(dailyReports);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+router.get('/', (req, res) => {
+    pool.query('SELECT * FROM daily_reports', (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.json(results);
+    });
 });
 
 // Route to submit a new daily report
-router.post('/', async (req, res) => {
-    try {
-        const newDailyReport = await DailyReport.create(req.body);
-        res.status(201).json(newDailyReport);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+router.post('/', (req, res) => {
+    const { title, content, date } = req.body;
+    pool.query('INSERT INTO daily_reports (title, content, date) VALUES (?, ?, ?)', [title, content, date], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.status(201).json({ message: 'Daily report submitted successfully' });
+    });
 });
 
 // Route to update an existing daily report
-router.put('/:id', async (req, res) => {
-    try {
-        const updatedDailyReport = await DailyReport.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedDailyReport) {
+router.put('/:id', (req, res) => {
+    const { title, content, date } = req.body;
+    const { id } = req.params;
+    pool.query('UPDATE daily_reports SET title = ?, content = ?, date = ? WHERE id = ?', [title, content, date, id], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        if (results.affectedRows === 0) {
             return res.status(404).json({ message: 'Daily report not found' });
         }
-        res.json(updatedDailyReport);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+        res.json({ message: 'Daily report updated successfully' });
+    });
 });
 
 // Route to delete a daily report
-router.delete('/:id', async (req, res) => {
-    try {
-        const deletedDailyReport = await DailyReport.findByIdAndDelete(req.params.id);
-        if (!deletedDailyReport) {
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    pool.query('DELETE FROM daily_reports WHERE id = ?', [id], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        if (results.affectedRows === 0) {
             return res.status(404).json({ message: 'Daily report not found' });
         }
         res.json({ message: 'Daily report deleted successfully' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+    });
 });
 
 // Export the router
 module.exports = router;
+

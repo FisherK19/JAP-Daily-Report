@@ -1,9 +1,9 @@
 // index.js
 
-const User = require('./user');
-const DailyReport = require('./dailyReport');
+const UserModel = require('./User');
+const DailyReportModel = require('./DailyReport');
 
 module.exports = {
-  User,
-  DailyReport,
+  UserModel,
+  DailyReportModel,
 };

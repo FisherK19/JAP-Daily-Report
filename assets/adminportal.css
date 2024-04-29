@@ -9,15 +9,16 @@
   }
   @media (max-width: 768px) {
     h1 {
-      font-size: 2rem; /* Slightly smaller font size on smaller screens */
+      font-size: 2rem; 
     }
   }
   #user-container, #reports-container {
-    display: none; /* Hides the container */
+    display: none; 
   }
   
   #user-container, #reports-container {
     border: none;
     padding: 0;
   }
-     
+  
+  
