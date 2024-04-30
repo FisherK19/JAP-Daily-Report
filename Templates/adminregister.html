@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="../assets/register.css">
+
+<form id="register-form" action="/admin/register" method="post">
+    <div class="form-group">
+        <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="adminlogin.html">Admin Login</a></li>
+        </ul>
+    </nav>
+    
+
+    <input type="hidden" name="adminRegister" value="true">
+
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+    </div>
+    <div class="form-group">
+        <label for="confirm-password">Confirm Password:</label>
+        <input type="password" id="confirm-password" name="confirmPassword" required>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn">Register</button>
+    </div>
+</form>
+
