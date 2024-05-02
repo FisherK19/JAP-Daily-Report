@@ -1,18 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/connection');
+const path = require('path');
 
-// Define routes for daily report management
-
-// Route to retrieve all daily reports
-router.get('/', (req, res) => {
-    pool.query('SELECT * FROM daily_reports', (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.json(results);
-    });
+// Serve the daily-reports.html file
+router.get('/daily-report', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Templates', 'daily-report.html'));
 });
 
 // Route to submit a new daily report
@@ -58,6 +51,4 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// Export the router
 module.exports = router;
-

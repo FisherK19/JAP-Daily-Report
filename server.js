@@ -7,11 +7,11 @@ require('dotenv').config();
 const path = require('path');
 
 const pool = mysql.createPool({
-    connectionLimit: 10,
+    connectionLimit: 80,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    database: process.env.DB_DATABASE,
 });
 
 const app = express();
@@ -59,18 +59,17 @@ app.use(session({
 }));
 
 // Import user registration router
-const userRegisterRoutes = require('./routes/UserRegister');
+const UserRegisterRoutes = require('./routes/UserRegister');
 const userLoginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminUserRoutes = require('./routes/adminUser');
 const adminReportRoutes = require('./routes/adminReport');
 
-// Use user registration router
-app.use('/api/users/register', userRegisterRoutes);
-app.use('/api/users/login', userLoginRoutes);
-app.use('/api/daily-reports', dailyReportRoutes);
-app.use('/api/admin/users', adminUserRoutes);
-app.use('/api/admin/reports', adminReportRoutes);
+app.use('/register', UserRegisterRoutes); 
+app.use('/login', userLoginRoutes); 
+app.use('/daily-report', dailyReportRoutes); 
+app.use('/admin/users', adminUserRoutes); 
+app.use('/admin/reports', adminReportRoutes); 
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
