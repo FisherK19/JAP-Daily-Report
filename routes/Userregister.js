@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const pool = require('../config/connection');
+const { pool } = require('../config/connection');
 const { body, validationResult } = require('express-validator');
 
 // Registration route with input validation
-router.post('/register', [
+router.post('/', [
     body('email').isEmail(),
     body('username').not().isEmpty(),
     body('password').isLength({ min: 5 })

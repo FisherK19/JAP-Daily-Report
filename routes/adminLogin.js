@@ -1,11 +1,11 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const pool = require('../config/connection');
+const { pool } = require('../config/connection');
 
 const router = express.Router();
 
 // Admin Login Route
-router.post('/admin/login', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { username, password } = req.body;
 

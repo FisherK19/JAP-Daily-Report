@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/connection');
+const { pool } = require('../config/connection');
 const path = require('path');
 
 // Serve the daily-reports.html file
-router.get('/daily-report', (req, res) => {
+router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../Templates', 'daily-report.html'));
 });
 

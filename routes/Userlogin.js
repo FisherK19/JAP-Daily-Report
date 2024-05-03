@@ -1,14 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const pool = require('../config/connection');
+const { pool } = require('../config/connection');
 const router = express.Router();
-const path = require('path'); // Import the path module
+const path = require('path');
 
-// POST to '/' since it's mounted at '/login'
-router.post('/login', async (req, res) => {
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../Templates/login.html'));
+});
+// POST route for login
+// POST route for login
+router.post('/', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        console.log(pool); // Log the pool object for debugging
         pool.query('SELECT * FROM users WHERE username = ?', [username], async (error, results) => {
             if (error) {
                 console.error('Database error:', error);
@@ -25,7 +30,7 @@ router.post('/login', async (req, res) => {
             }
             
             req.session.user = user; // Store user data in session
-            res.redirect('/api/daily-reports'); // Redirect to the daily reports page
+            res.redirect('/daily-report'); // Redirect to the daily reports page
         });
     } catch (error) {
         console.error('Server error:', error);
@@ -33,7 +38,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-module.exports = router;
 
+module.exports = router;
 
 

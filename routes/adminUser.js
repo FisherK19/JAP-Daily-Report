@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/connection');
+const { pool } = require('../config/connection');
 
 // Route for retrieving all users
 router.get('/', (req, res) => {

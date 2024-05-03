@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="../assets/register.css">
 
 <form id="register-form" action="/admin/register" method="post">
+
     <div class="form-group">
         <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
     </div>
@@ -14,6 +15,10 @@
 
     <input type="hidden" name="adminRegister" value="true">
 
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+    </div>
     <div class="form-group">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>

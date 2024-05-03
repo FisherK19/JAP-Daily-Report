@@ -27,8 +27,8 @@ const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 
 // Use admin routes
-app.use('/api/admin/register', adminRegisterRoutes);
-app.use('/api/admin/login', adminLoginRoutes);
+app.use('/admin/register', adminRegisterRoutes);
+app.use('/admin/login', adminLoginRoutes);
 
 // MySQL session store configuration
 const sessionStore = new MySQLStore({
@@ -60,13 +60,13 @@ app.use(session({
 
 // Import user registration router
 const UserRegisterRoutes = require('./routes/UserRegister');
-const userLoginRoutes = require('./routes/Userlogin');
+const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminUserRoutes = require('./routes/adminUser');
 const adminReportRoutes = require('./routes/adminReport');
 
 app.use('/register', UserRegisterRoutes); 
-app.use('/login', userLoginRoutes); 
+app.use('/login', UserloginRoutes); 
 app.use('/daily-report', dailyReportRoutes); 
 app.use('/admin/users', adminUserRoutes); 
 app.use('/admin/reports', adminReportRoutes); 
