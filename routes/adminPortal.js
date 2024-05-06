@@ -2,6 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 
+
+router.get('/', (req, res) => {
+    res.render('adminportal.html'); 
+});
+
 // Route for retrieving all users
 router.get('/', (req, res) => {
     pool.query('SELECT * FROM users', (error, results) => {
