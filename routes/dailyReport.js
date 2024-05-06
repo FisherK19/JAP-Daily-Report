@@ -5,7 +5,7 @@ const path = require('path');
 
 // Serve the daily-reports.html file
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Templates', 'daily-report.html'));
+    res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
 
 // Route to submit a new daily report

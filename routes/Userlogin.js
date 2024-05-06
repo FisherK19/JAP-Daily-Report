@@ -5,7 +5,7 @@ const router = express.Router();
 const path = require('path');
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../Templates/login.html'));
+    res.sendFile(path.join(__dirname, '../views/login.html'));
 });
 // POST route for login
 // POST route for login

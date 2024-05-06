@@ -19,16 +19,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'Templates')));
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'views')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Import admin routes
-const adminRegisterRoutes = require('./routes/adminRegister');
-const adminLoginRoutes = require('./routes/adminLogin');
-
-// Use admin routes
-app.use('/admin/register', adminRegisterRoutes);
-app.use('/admin/login', adminLoginRoutes);
 
 // MySQL session store configuration
 const sessionStore = new MySQLStore({
@@ -62,13 +59,17 @@ app.use(session({
 const UserRegisterRoutes = require('./routes/UserRegister');
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
-const adminUserRoutes = require('./routes/adminUser');
+const adminPortalRoutes = require('./routes/adminPortal');
 const adminReportRoutes = require('./routes/adminReport');
+const adminRegisterRoutes = require('./routes/adminRegister');
+const adminLoginRoutes = require('./routes/adminLogin');
 
+app.use('/admin/register', adminRegisterRoutes);
+app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes); 
 app.use('/login', UserloginRoutes); 
 app.use('/daily-report', dailyReportRoutes); 
-app.use('/admin/users', adminUserRoutes); 
+app.use('/admin/portal', adminPortalRoutes); 
 app.use('/admin/reports', adminReportRoutes); 
 
 const PORT = process.env.PORT || 3000;

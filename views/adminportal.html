@@ -18,7 +18,7 @@
             <li><a href="adminlogin.html">Admin Login</a></li>
             <li class="nav-item">
                 <a class="nav-link" href="#" onclick="logout()">Logout</a>
-              </li>
+            </li>
         </ul>
     </nav>
 
@@ -30,9 +30,9 @@
             <button onclick="downloadUsers()" class="btn btn-primary">Download User Data</button>
             <!-- Container for user data -->
             <div id="user-container"></div>
-          </section>
-          
-          <section id="daily-reports">
+        </section>
+        
+        <section id="daily-reports">
             <h2>Daily Reports</h2>
             <p>Access and download daily activity reports.</p>
             <!-- Container for report data -->
@@ -42,8 +42,7 @@
                 <button onclick="downloadExcelReport('userId1')" class="btn btn-primary">Download Excel Report for User 1</button>
                 <!-- Repeat the above lines for each user -->
             </div>
-          </section>
-          
+        </section>
     </main>
 
     <footer class="container text-center bg-light p-3 mt-4">
@@ -51,7 +50,7 @@
     </footer>
 
     <script>
-        // JavaScript functions to handle downloading reports
+        // JavaScript function to handle downloading reports
         function downloadPdfReport(userId) {
             window.location.href = `/admin/report/pdf/${userId}`;
         }
@@ -59,7 +58,12 @@
         function downloadExcelReport(userId) {
             window.location.href = `/admin/report/excel/${userId}`;
         }
+
+        // Define logout function if necessary
+        function logout() {
+            // Add your logout functionality here
+        }
     </script>
+    <script src="/assets/js/AdminUser.js"></script>
 </body>
 </html>
-
