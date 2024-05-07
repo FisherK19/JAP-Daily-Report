@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal</title>
-    <link rel="stylesheet" href="../assets/adminportal.css">
+    <link rel="stylesheet" href="/assets/adminportal.css">
 </head>
 <body>
     <header class="bg-dark text-white text-center p-3">
-        <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
         <h1>Admin Portal</h1>
     </header>
 
     <nav>
         <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="adminlogin.html">Admin Login</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="#" onclick="logout()">Logout</a>
             </li>
@@ -25,9 +26,9 @@
     <main class="container mt-4">
         <section id="user-management">
             <h2>User Management</h2>
-            <p>View and manage user information here.</p>
-            <!-- Add a button to download users -->
-            <button onclick="downloadUsers()" class="btn btn-primary">Download User Data</button>
+            <p>View and manage user information.</p>
+            <!-- Button to fetch user data -->
+            <button onclick="fetchUserData()" class="btn btn-primary">View Users</button>
             <!-- Container for user data -->
             <div id="user-container"></div>
         </section>
@@ -35,35 +36,21 @@
         <section id="daily-reports">
             <h2>Daily Reports</h2>
             <p>Access and download daily activity reports.</p>
+            <!-- Button to fetch daily reports -->
+            <button onclick="fetchDailyReports()" class="btn btn-primary">Download Daily Reports</button>
+            
             <!-- Container for report data -->
-            <div id="reports-container">
-                <!-- Add buttons dynamically for each user -->
-                <button onclick="downloadPdfReport('userId1')" class="btn btn-primary">Download PDF Report for User 1</button>
-                <button onclick="downloadExcelReport('userId1')" class="btn btn-primary">Download Excel Report for User 1</button>
-                <!-- Repeat the above lines for each user -->
-            </div>
+            <div id="reports-container"></div>
         </section>
+        
     </main>
 
     <footer class="container text-center bg-light p-3 mt-4">
-        <p>&copy; 2024 John A. Pappalas Timesheet App. All rights reserved.</p>
+        <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
     </footer>
 
-    <script>
-        // JavaScript function to handle downloading reports
-        function downloadPdfReport(userId) {
-            window.location.href = `/admin/report/pdf/${userId}`;
-        }
-
-        function downloadExcelReport(userId) {
-            window.location.href = `/admin/report/excel/${userId}`;
-        }
-
-        // Define logout function if necessary
-        function logout() {
-            // Add your logout functionality here
-        }
-    </script>
+    <!-- Include external JavaScript file -->
     <script src="/assets/js/AdminUser.js"></script>
 </body>
 </html>
+

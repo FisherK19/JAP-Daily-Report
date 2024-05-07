@@ -8,7 +8,6 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/login.html'));
 });
 // POST route for login
-// POST route for login
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
 

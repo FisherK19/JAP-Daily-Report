@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 
-
+// Route for rendering the admin portal
 router.get('/', (req, res) => {
     res.render('adminportal.html'); 
 });
 
 // Route for retrieving all users
-router.get('/', (req, res) => {
+router.get('/users', (req, res) => {
     pool.query('SELECT * FROM users', (error, results) => {
         if (error) {
             console.error(error);
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 });
 
 // Route for retrieving a specific user by ID
-router.get('/:id', (req, res) => {
+router.get('/users/:id', (req, res) => {
     const { id } = req.params;
     pool.query('SELECT * FROM users WHERE id = ?', [id], (error, results) => {
         if (error) {
@@ -34,7 +34,7 @@ router.get('/:id', (req, res) => {
 });
 
 // Route for updating a user's information
-router.put('/:id', (req, res) => {
+router.put('/users/:id', (req, res) => {
     const { id } = req.params;
     const { username, email, password } = req.body;
     pool.query('UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?', [username, email, password, id], (error, results) => {
@@ -47,7 +47,7 @@ router.put('/:id', (req, res) => {
 });
 
 // Route for deleting a user
-router.delete('/:id', (req, res) => {
+router.delete('/users/:id', (req, res) => {
     const { id } = req.params;
     pool.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
         if (error) {
@@ -58,6 +58,14 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+// Route for serving PDF reports
+router.get('/report/pdf/:userId', (req, res) => {
+    // Logic to generate and serve PDF report
+});
+
+// Route for serving Excel reports
+router.get('/report/excel/:userId', (req, res) => {
+    // Logic to generate and serve Excel report
+});
+
 module.exports = router;
-
-

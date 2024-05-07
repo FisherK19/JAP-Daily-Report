@@ -7,7 +7,15 @@ const path = require('path');
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
-
+router.get('/data', (req, res) => {
+    pool.query('SELECT * FROM daily_reports', (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+        res.json({ reports: results }); // Assuming 'results' contains the fetched daily reports
+    });
+});
 // Route to submit a new daily report
 router.post('/', (req, res) => {
     const { title, content, date } = req.body;

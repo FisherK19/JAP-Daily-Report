@@ -15,7 +15,6 @@ const pool = mysql.createPool({
 });
 
 const app = express();
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -26,7 +25,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'views')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+app.use('/admin', express.static(path.join(__dirname, 'admin')));
 
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
+});
 // MySQL session store configuration
 const sessionStore = new MySQLStore({
     expiration: 86400000, 
@@ -63,6 +66,7 @@ const adminPortalRoutes = require('./routes/adminPortal');
 const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
+const userRoutes = require('./routes/userRoutes');
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
@@ -71,6 +75,7 @@ app.use('/login', UserloginRoutes);
 app.use('/daily-report', dailyReportRoutes); 
 app.use('/admin/portal', adminPortalRoutes); 
 app.use('/admin/reports', adminReportRoutes); 
+app.use('/users', userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
