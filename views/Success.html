@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Successful</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+    <header>
+        <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1>Daily report submitted successfully</h1>
+        <a href="/daily-report">Return to Daily Report</a>
+        <a href="/logout">Logout</a>
+    </main>
+
+    <footer class="container mt-4">
+        <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

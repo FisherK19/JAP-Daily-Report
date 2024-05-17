@@ -1,11 +1,12 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { pool } = require('../config/connection');
+const path = require('path');
 const router = express.Router();
 
 // Admin Login Page
-router.get('/', function(req, res) {
-    res.render('adminlogin');  
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', 'adminlogin.html'));
 });
 
 // Admin Login Action

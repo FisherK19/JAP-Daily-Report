@@ -3,60 +3,26 @@ const router = express.Router();
 const { pool } = require('../config/connection');
 const path = require('path');
 
-// Serve the daily-reports.html file
+// Serve the daily-report.html file
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
-router.get('/data', (req, res) => {
-    pool.query('SELECT * FROM daily_reports', (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.json({ reports: results }); // Assuming 'results' contains the fetched daily reports
-    });
-});
+
 // Route to submit a new daily report
 router.post('/', (req, res) => {
-    const { title, content, date } = req.body;
-    pool.query('INSERT INTO daily_reports (title, content, date) VALUES (?, ?, ?)', [title, content, date], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.status(201).json({ message: 'Daily report submitted successfully' });
-    });
-});
+    const { date, jobNumber, TnM, contract, foreman, cellNumber, customer, customerPO, jobSite, jobDescription, jobCompletion, materialDescription, equipmentDescription, hoursWorked, employee, straightTime, doubleTime, timeAndAHalf, emergencyPurchases, approvedBy } = req.body;
 
-// Route to update an existing daily report
-router.put('/:id', (req, res) => {
-    const { title, content, date } = req.body;
-    const { id } = req.params;
-    pool.query('UPDATE daily_reports SET title = ?, content = ?, date = ? WHERE id = ?', [title, content, date, id], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
+    pool.query(
+        'INSERT INTO daily_reports (date, job_number, tnm, contract, foreman, cell_number, customer, customer_po, job_site, job_description, job_completion, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half, emergency_purchases, approved_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [date, jobNumber, TnM, contract, foreman, cellNumber, customer, customerPO, jobSite, jobDescription, jobCompletion, materialDescription, equipmentDescription, hoursWorked, employee, straightTime, doubleTime, timeAndAHalf, emergencyPurchases, approvedBy],
+        (error, results) => {
+            if (error) {
+                console.error(error);
+                return res.status(500).json({ message: 'Internal server error' });
+            }
+            res.status(201).json({ message: 'Daily report submitted successfully' });
         }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ message: 'Daily report not found' });
-        }
-        res.json({ message: 'Daily report updated successfully' });
-    });
-});
-
-// Route to delete a daily report
-router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-    pool.query('DELETE FROM daily_reports WHERE id = ?', [id], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ message: 'Daily report not found' });
-        }
-        res.json({ message: 'Daily report deleted successfully' });
-    });
+    );
 });
 
 module.exports = router;

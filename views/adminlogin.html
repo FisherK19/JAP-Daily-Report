@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="/assets/login.css">
-
-<form id="admin-login-form" action="/admin/login" method="post">
-    <div class="form-group">
-        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
-    </div>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="adminregister.html">Admin Register</a></li>
-        </ul>
-    </nav>
-
-    <div class="form-group">
-        <label for="admin-username">Username:</label>
-        <input type="text" id="admin-username" name="username" required>
-    </div>
-    <div class="form-group">
-        <label for="admin-password">Password:</label>
-        <input type="password" id="admin-password" name="password" required>
-    </div>
-   
-    <div class="form-group">
-        <button type="submit" class="btn">Login</button>
-    </div>
-</form>
+    <link rel="stylesheet" href="/assets/login.css">
+    <title>Admin Login</title>
+</head>
+<body>
+    <form id="admin-login-form" action="/admin/login" method="post">
+        <div class="form-group">
+            <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/admin/register">Admin Register</a></li>
+            </ul>
+        </nav>
+        <div class="form-group">
+            <label for="admin-username">Username:</label>
+            <input type="text" id="admin-username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="admin-password">Password:</label>
+            <input type="password" id="admin-password" name="password" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn">Login</button>
+        </div>
+    </form>
+</body>
+</html>
 

@@ -54,16 +54,16 @@ router.get('/pdf/:userId', async (req, res) => {
             doc.moveDown(); // Move to the next line
         });
 
-        // Save the PDF file
-        doc.pipe(fs.createWriteStream(pdfPath));
+        // Set content disposition header for attachment
+        res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
+
+        // Pipe the PDF document directly to the response
+        doc.pipe(res);
         doc.end();
 
         // Send email alert with download link to admin
         const adminEmail = 'fisherkristie19@icloud.com'; // Replace with actual admin email
         sendAlertEmail(adminEmail, userId, pdfPath);
-
-        // Send the PDF file as a response
-        res.download(pdfPath);
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -71,5 +71,3 @@ router.get('/pdf/:userId', async (req, res) => {
 });
 
 module.exports = router;
-
-

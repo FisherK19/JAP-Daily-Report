@@ -30,17 +30,35 @@
             <!-- Button to fetch user data -->
             <button onclick="fetchUserData()" class="btn btn-primary">View Users</button>
             <!-- Container for user data -->
-            <div id="user-container"></div>
+            <table id="user-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Users will be populated here -->
+                </tbody>
+            </table>
         </section>
         
         <section id="daily-reports">
             <h2>Daily Reports</h2>
             <p>Access and download daily activity reports.</p>
-            <!-- Button to fetch daily reports -->
-            <button onclick="fetchDailyReports()" class="btn btn-primary">Download Daily Reports</button>
-            
-            <!-- Container for report data -->
-            <div id="reports-container"></div>
+            <!-- Buttons to download all daily reports -->
+            <button onclick="downloadReport('pdf')" class="btn btn-secondary">Download All Reports as PDF</button>
+            <button onclick="downloadReport('excel')" class="btn btn-secondary">Download All Reports as Excel</button>
+
+            <!-- Input and buttons to download reports for a specific date -->
+            <div>
+                <label for="report-date">Select Date:</label>
+                <input type="date" id="report-date">
+                <button onclick="downloadReportByDate('pdf')" class="btn btn-secondary">Download PDF for Selected Date</button>
+                <button onclick="downloadReportByDate('excel')" class="btn btn-secondary">Download Excel for Selected Date</button>
+            </div>
         </section>
         
     </main>
@@ -51,6 +69,62 @@
 
     <!-- Include external JavaScript file -->
     <script src="/assets/js/AdminUser.js"></script>
+    <script>
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed');
+                }
+            });
+        }
+
+        function fetchUserData() {
+            fetch('/admin/users/data')
+                .then(response => response.json())
+                .then(data => {
+                    const userTable = document.getElementById('user-table').getElementsByTagName('tbody')[0];
+                    userTable.innerHTML = '';
+
+                    data.users.forEach(user => {
+                        const row = userTable.insertRow();
+                        row.insertCell(0).textContent = user.id;
+                        row.insertCell(1).textContent = user.username;
+                        row.insertCell(2).textContent = user.email;
+
+                        const actionsCell = row.insertCell(3);
+                        const pdfButton = document.createElement('button');
+                        pdfButton.textContent = 'PDF';
+                        pdfButton.className = 'btn btn-secondary';
+                        pdfButton.onclick = () => downloadUserReport(user.id, 'pdf');
+
+                        const excelButton = document.createElement('button');
+                        excelButton.textContent = 'Excel';
+                        excelButton.className = 'btn btn-secondary';
+                        excelButton.onclick = () => downloadUserReport(user.id, 'excel');
+
+                        actionsCell.appendChild(pdfButton);
+                        actionsCell.appendChild(excelButton);
+                    });
+                });
+        }
+
+        function downloadReport(format) {
+            const url = `/admin/report/${format}`;
+            window.location.href = url;
+        }
+
+        function downloadReportByDate(format) {
+            const date = document.getElementById('report-date').value;
+            if (!date) return alert('Please select a date.');
+
+            const url = `/admin/report/${format}?date=${date}`;
+            window.location.href = url;
+        }
+    </script>
 </body>
 </html>
-

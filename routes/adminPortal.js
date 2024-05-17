@@ -1,14 +1,22 @@
 const express = require('express');
-const router = express.Router();
+const path = require('path');
 const { pool } = require('../config/connection');
+const PDFDocument = require('pdfkit');
+const ExcelJS = require('exceljs');
+const router = express.Router();
 
 // Route for rendering the admin portal
 router.get('/', (req, res) => {
-    res.render('adminportal.html'); 
+    res.sendFile(path.join(__dirname, '../views', 'adminportal.html'));
 });
 
 // Route for retrieving all users
 router.get('/users', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', 'usermanagement.html'));
+});
+
+// API route for retrieving all users
+router.get('/users/data', (req, res) => {
     pool.query('SELECT * FROM users', (error, results) => {
         if (error) {
             console.error(error);
@@ -18,54 +26,77 @@ router.get('/users', (req, res) => {
     });
 });
 
-// Route for retrieving a specific user by ID
-router.get('/users/:id', (req, res) => {
-    const { id } = req.params;
-    pool.query('SELECT * FROM users WHERE id = ?', [id], (error, results) => {
+// Route for serving PDF reports for all daily reports
+router.get('/report/pdf', (req, res) => {
+    const { date } = req.query;
+    const query = date ? 'SELECT * FROM daily_reports WHERE date = ?' : 'SELECT * FROM daily_reports';
+    const queryParams = date ? [date] : [];
+
+    pool.query(query, queryParams, (error, results) => {
         if (error) {
             console.error(error);
             return res.status(500).json({ message: 'Internal server error' });
         }
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(200).json({ user: results[0] });
+
+        const doc = new PDFDocument();
+        res.setHeader('Content-disposition', 'attachment; filename=all_reports.pdf');
+        res.setHeader('Content-type', 'application/pdf');
+        doc.pipe(res);
+
+        doc.fontSize(25).text('All Daily Reports', { align: 'center' });
+        results.forEach(report => {
+            doc.fontSize(12).text(`Date: ${report.date}`);
+            doc.fontSize(12).text(`Job Number: ${report.job_number}`);
+            doc.fontSize(12).text(`Foreman: ${report.foreman}`);
+            doc.fontSize(12).text(`Customer: ${report.customer}`);
+            // Add other fields as needed
+            doc.moveDown();
+        });
+
+        doc.end();
     });
 });
 
-// Route for updating a user's information
-router.put('/users/:id', (req, res) => {
-    const { id } = req.params;
-    const { username, email, password } = req.body;
-    pool.query('UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?', [username, email, password, id], (error, results) => {
+// Route for serving Excel reports for all daily reports
+router.get('/report/excel', (req, res) => {
+    const { date } = req.query;
+    const query = date ? 'SELECT * FROM daily_reports WHERE date = ?' : 'SELECT * FROM daily_reports';
+    const queryParams = date ? [date] : [];
+
+    pool.query(query, queryParams, (error, results) => {
         if (error) {
             console.error(error);
             return res.status(500).json({ message: 'Internal server error' });
         }
-        res.status(200).json({ message: 'User updated successfully' });
+
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Daily Reports');
+
+        worksheet.columns = [
+            { header: 'Date', key: 'date', width: 15 },
+            { header: 'Job Number', key: 'job_number', width: 15 },
+            { header: 'Foreman', key: 'foreman', width: 15 },
+            { header: 'Customer', key: 'customer', width: 15 },
+            // Add other columns as needed
+        ];
+
+        results.forEach(report => {
+            worksheet.addRow({
+                date: report.date,
+                job_number: report.job_number,
+                foreman: report.foreman,
+                customer: report.customer,
+                // Add other fields as needed
+            });
+        });
+
+        res.setHeader('Content-disposition', 'attachment; filename=all_reports.xlsx');
+        res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        
+        workbook.xlsx.write(res).then(() => {
+            res.end();
+        });
     });
-});
-
-// Route for deleting a user
-router.delete('/users/:id', (req, res) => {
-    const { id } = req.params;
-    pool.query('DELETE FROM users WHERE id = ?', [id], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.status(200).json({ message: 'User deleted successfully' });
-    });
-});
-
-// Route for serving PDF reports
-router.get('/report/pdf/:userId', (req, res) => {
-    // Logic to generate and serve PDF report
-});
-
-// Route for serving Excel reports
-router.get('/report/excel/:userId', (req, res) => {
-    // Logic to generate and serve Excel report
 });
 
 module.exports = router;

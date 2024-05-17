@@ -24,7 +24,7 @@ router.post('/', [
                 return res.status(500).json({ message: 'Internal server error' });
             }
             // Redirect to the login page after successful registration
-            res.redirect('/admin/login'); 
+            res.redirect('/login'); 
         });
     } catch (error) {
         console.error(error);

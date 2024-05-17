@@ -33,9 +33,9 @@ function renderDailyReports(data) {
 }
 
 // Function to download PDF report
-function downloadPdfReport(reportId) {
+function downloadPdfReport(userId) {
     // Make a fetch request to download PDF report
-    fetch(`/admin/report/pdf/${reportId}`)
+    fetch(`/pdf/${userId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -43,20 +43,24 @@ function downloadPdfReport(reportId) {
             return response.blob();
         })
         .then(blob => {
+            // Create a URL for the blob
             const url = window.URL.createObjectURL(new Blob([blob]));
+            // Create a link element and initiate download
             const a = document.createElement('a');
             a.href = url;
-            a.download = `report_${reportId}.pdf`;
+            a.download = `report_${userId}.pdf`;
             document.body.appendChild(a);
             a.click();
+            // Cleanup
             window.URL.revokeObjectURL(url);
         })
         .catch(error => console.error('Error downloading PDF report:', error));
 }
 
+
 // Function to download Excel report
-function downloadExcelReport(reportId) {
-    fetch(`/admin/report/excel/${reportId}`)
+function downloadExcelReport(userId) {
+    fetch(`/excel/${userId}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -64,19 +68,24 @@ function downloadExcelReport(reportId) {
             return response.blob();
         })
         .then(blob => {
+            // Create a URL for the blob
             const url = window.URL.createObjectURL(new Blob([blob]));
+            // Create a link element and initiate download
             const a = document.createElement('a');
             a.href = url;
-            a.download = `report_${reportId}.xlsx`;
+            a.download = `report_${userId}.xlsx`;
             document.body.appendChild(a);
             a.click();
+            // Cleanup
             window.URL.revokeObjectURL(url);
         })
         .catch(error => console.error('Error downloading Excel report:', error));
 }
+
+
 // Function to fetch user data from the server
 function fetchUserData() {
-    fetch('/user/data')
+    fetch('/')
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok.');

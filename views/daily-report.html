@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fill Daily-Report</title>
-    <form id="daily-report-form" action="/daily-report" method="post">
+    <title>Fill Daily Report</title>
     <link rel="stylesheet" href="../assets/daily-report.css">
 </head>
 <body>
@@ -12,97 +11,124 @@
         <img src="../assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
     </header>
 
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
-                  </li>
-            </ul>
-        </nav>
-    
-        <main>
-            <h1>Daily Report Entry</h1>
-           <!-- Begin of daily report form -->
-<form id="daily-report-form" action="/submit-daily-report" method="post">
-    <!-- Company Information -->
-<div class="form-group">
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" class="date-input">
-    <span class="date-icon"></span>
-    <label for="job-number">Job Number:</label>
-    <input type="text" id="job-number" name="job-number">
-    <label for="T&M">T&M:</label>
-    <input type="checkbox" id="T&M" name="T&M">
-    <label for="Contract">Contract:</label>
-    <input type="checkbox" id="Contract" name="Contract">
-</div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" onclick="logout()">Logout</a>
+            </li>
+        </ul>
+    </nav>
 
+    <main>
+        <h1>Daily Report Entry</h1>
+        <!-- Begin of daily report form -->
+        <form id="daily-report-form">
+            <!-- Company Information -->
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date" class="date-input" required>
+                <span class="date-icon"></span>
+                <label for="job-number">Job Number:</label>
+                <input type="text" id="job-number" name="job-number" required>
+                <label for="T&M">T&M:</label>
+                <input type="checkbox" id="T&M" name="T&M">
+                <label for="Contract">Contract:</label>
+                <input type="checkbox" id="Contract" name="Contract">
+            </div>
 
-    <!-- Foreman and Customer Information -->
-    <div class="form-group">
-        <label for="foreman">Foreman:</label>
-        <input type="text" id="foreman" name="foreman">
-        <label for="cell Number">Cell Number:</label>
-        <input type="text" id="cell-Number" name="cell-Number">
-        <label for="customer">Customer:</label>
-        <input type="text" id="customer" name="customer">
-        <label for="customer PO#">Customer PO#:</label>
-        <input type="text" id="customer-PO#" name="customer-PO#">
-    </div>
+            <!-- Foreman and Customer Information -->
+            <div class="form-group">
+                <label for="foreman">Foreman:</label>
+                <input type="text" id="foreman" name="foreman" required>
+                <label for="cell-Number">Cell Number:</label>
+                <input type="text" id="cell-Number" name="cell-Number" required>
+                <label for="customer">Customer:</label>
+                <input type="text" id="customer" name="customer" required>
+                <label for="customer-PO#">Customer PO#:</label>
+                <input type="text" id="customer-PO#" name="customer-PO#" required>
+            </div>
 
-    <!-- Job Site Details -->
-    <div class="form-group">
-        <label for="Job Site">Job Site:</label>
-        <input type="text" id="Job-Site" name="Job-Site">
-        <label for="Job Description">Job Description:</label>
-        <input type="text" id="Job-Description" name="Job-Description">
-        <label for="Job Completion">Job Completion:</label>
-        <input type="text" id="Job-Completion" name="Job-Completion">
-    </div>
+            <!-- Job Site Details -->
+            <div class="form-group">
+                <label for="Job-Site">Job Site:</label>
+                <input type="text" id="Job-Site" name="Job-Site" required>
+                <label for="Job-Description">Job Description:</label>
+                <input type="text" id="Job-Description" name="Job-Description" required>
+                <label for="Job-Completion">Job Completion:</label>
+                <input type="text" id="Job-Completion" name="Job-Completion" required>
+            </div>
 
-    <!-- Materials, Equipment, and Other Details -->
-    <div class="form-group">
-        <label for="Material">Material Description:</label>
-        <input type="text" id="Material" name="Material-Description">
-        <label for="Equipment">Equipment Description:</label>
-        <input type="text" id="Equipment" name="Equipment-Description">
-    </div>
+            <!-- Materials, Equipment, and Other Details -->
+            <div class="form-group">
+                <label for="Material">Material Description:</label>
+                <input type="text" id="Material" name="Material-Description" required>
+                <label for="Equipment">Equipment Description:</label>
+                <input type="text" id="Equipment" name="Equipment-Description" required>
+            </div>
 
-    <!-- Employee Worked Hours -->
-    <div class="form-group">
-        <label for="hours-worked">Hours Worked:</label>
-        <input type="text" id="hours-worked" name="hours-worked">
-        <label for="employee">Employee:</label>
-        <input type="text" id="employee" name="employee">
-        <label for="straight-time">Straight Time:</label>
-        <input type="text" id="straight-time" name="straight-time">
-        <label for="double-time">Double Time:</label>
-        <input type="text" id="double-time" name="double-time">
-        <label for="Time & 1/2">Time & 1/2:</label>
-        <input type="text" id="Time-1/2" name="Time-1/2">
-    </div>
+            <!-- Employee Worked Hours -->
+            <div class="form-group">
+                <label for="hours-worked">Hours Worked:</label>
+                <input type="text" id="hours-worked" name="hours-worked" required>
+                <label for="employee">Employee:</label>
+                <input type="text" id="employee" name="employee" required>
+                <label for="straight-time">Straight Time:</label>
+                <input type="text" id="straight-time" name="straight-time" required>
+                <label for="double-time">Double Time:</label>
+                <input type="text" id="double-time" name="double-time" required>
+                <label for="Time-1/2">Time & 1/2:</label>
+                <input type="text" id="Time-1/2" name="Time-1/2" required>
+            </div>
 
-    <!-- Emergency Purchases and Delays/Lost Time -->
-    <div class="form-group">
-        <label for="Emergency">Emergency Purchases:</label>
-        <input type="text" id="Emergency" name="Emergenct-Purchases">
-    </div>
+            <!-- Emergency Purchases and Delays/Lost Time -->
+            <div class="form-group">
+                <label for="Emergency">Emergency Purchases:</label>
+                <input type="text" id="Emergency" name="Emergency-Purchases" required>
+            </div>
 
-    <!-- Approval and Submission -->
-    <div class="form-group">
-        <label for="Approval">Approved By:</label>
-        <input type="text" id="Approved" name="Approved-By">
-        <button type="submit">Submit Daily Report</button>
-    </div>
-</form>
+            <!-- Approval and Submission -->
+            <div class="form-group">
+                <label for="Approved">Approved By:</label>
+                <input type="text" id="Approved" name="Approved-By" required>
+                <button type="submit">Submit Daily Report</button>
+            </div>
+        </form>
+    </main>
 
-        </main>
+    <footer class="container mt-4">
+        <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
+    </footer>
 
-        <footer class="container mt-4">
-            <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
-        </footer>
-        
-    </body>
-    </html>
+    <script>
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed');
+                }
+            });
+        }
+
+        document.getElementById('daily-report-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/daily-report', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: { 'Content-Type': 'application/json' }
+            }).then(response => response.json()).then(data => {
+                alert(data.message);
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
+
     

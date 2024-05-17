@@ -1,15 +1,20 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { pool } = require('../config/connection');
-
+const path = require('path');
 const router = express.Router();
 
-// Admin Register Route
+// Serve the admin registration page
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', 'adminregister.html'));
+});
+
+// Handle admin registration form submission
 router.post('/', async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        // Hash password
+        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Insert new admin user into the database
@@ -18,8 +23,8 @@ router.post('/', async (req, res) => {
                 console.error(error);
                 return res.status(500).json({ message: 'Internal server error' });
             }
-            
-            // Respond with success message
+
+            // Redirect to admin login page upon successful registration
             res.redirect('/admin/login');
         });
     } catch (error) {
