@@ -55,6 +55,7 @@ const UserRegisterRoutes = require('./routes/UserRegister');
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
+const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
@@ -65,6 +66,7 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes); 
 app.use('/daily-report', dailyReportRoutes); 
 app.use('/admin/portal', adminPortalRoutes); 
+app.use('/admin/report', adminReportRoutes);  // Ensure this line is included
 app.use('/users', userRoutes);
 
 // Serve index.html for root route

@@ -10,19 +10,15 @@ router.get('/', (req, res) => {
 
 // Route to submit a new daily report
 router.post('/', (req, res) => {
-    const { date, jobNumber, TnM, contract, foreman, cellNumber, customer, customerPO, jobSite, jobDescription, jobCompletion, materialDescription, equipmentDescription, hoursWorked, employee, straightTime, doubleTime, timeAndAHalf, emergencyPurchases, approvedBy } = req.body;
+    const { date, job_number, foreman, cell_Number, customer, customer_PO, job_site, job_description, job_completion, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_half, emergency_purchases, approved_by } = req.body;
 
-    pool.query(
-        'INSERT INTO daily_reports (date, job_number, tnm, contract, foreman, cell_number, customer, customer_po, job_site, job_description, job_completion, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half, emergency_purchases, approved_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [date, jobNumber, TnM, contract, foreman, cellNumber, customer, customerPO, jobSite, jobDescription, jobCompletion, materialDescription, equipmentDescription, hoursWorked, employee, straightTime, doubleTime, timeAndAHalf, emergencyPurchases, approvedBy],
-        (error, results) => {
-            if (error) {
-                console.error(error);
-                return res.status(500).json({ message: 'Internal server error' });
-            }
-            res.status(201).json({ message: 'Daily report submitted successfully' });
+    pool.query('INSERT INTO daily_reports (date, job_number, foreman, cell_Number, customer, customer_PO, job_site, job_description, job_completion, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_half, emergency_purchases, approved_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, job_number, foreman, cell_Number, customer, customer_PO, job_site, job_description, job_completion, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_half, emergency_purchases, approved_by], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Internal server error' });
         }
-    );
+        res.status(201).json({ message: 'Daily report submitted successfully' });
+    });
 });
 
 module.exports = router;

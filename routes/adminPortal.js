@@ -10,22 +10,6 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'adminportal.html'));
 });
 
-// Route for retrieving all users
-router.get('/users', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', 'usermanagement.html'));
-});
-
-// API route for retrieving all users
-router.get('/users/data', (req, res) => {
-    pool.query('SELECT * FROM users', (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        res.status(200).json({ users: results });
-    });
-});
-
 // Route for serving PDF reports for all daily reports
 router.get('/report/pdf', (req, res) => {
     const { date } = req.query;
@@ -43,7 +27,7 @@ router.get('/report/pdf', (req, res) => {
         res.setHeader('Content-type', 'application/pdf');
         doc.pipe(res);
 
-        doc.fontSize(25).text('All Daily Reports', { align: 'center' });
+        doc.fontSize(25).text('Daily Reports', { align: 'center' });
         results.forEach(report => {
             doc.fontSize(12).text(`Date: ${report.date}`);
             doc.fontSize(12).text(`Job Number: ${report.job_number}`);
