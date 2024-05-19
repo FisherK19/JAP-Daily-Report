@@ -18,7 +18,10 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Serve static files from the views directory
+app.set('view engine', 'html');
+app.engine('html', require('ejs').renderFile);
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(express.static(path.join(__dirname, 'views')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
@@ -66,18 +69,8 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes); 
 app.use('/daily-report', dailyReportRoutes); 
 app.use('/admin/portal', adminPortalRoutes); 
-app.use('/admin/report', adminReportRoutes);  // Ensure this line is included
+app.use('/admin/reports', adminReportRoutes); 
 app.use('/users', userRoutes);
-
-// Serve index.html for root route
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'index.html'));
-});
-
-// Serve adminportal.html for /admin/portal route
-app.get('/admin/portal', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'adminportal.html'));
-});
 
 // Logout route
 app.post('/logout', (req, res) => {

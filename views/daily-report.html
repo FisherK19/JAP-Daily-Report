@@ -22,75 +22,66 @@
 
     <main>
         <h1>Daily Report Entry</h1>
-        <!-- Begin of daily report form -->
         <form id="daily-report-form">
-            <!-- Company Information -->
             <div class="form-group">
                 <label for="date">Date:</label>
                 <input type="date" id="date" name="date" class="date-input" required>
-                <span class="date-icon"></span>
                 <label for="job-number">Job Number:</label>
-                <input type="text" id="job-number" name="job-number" required>
+                <input type="text" id="job-number" name="job_number" required>
                 <label for="T&M">T&M:</label>
-                <input type="checkbox" id="T&M" name="T&M">
+                <input type="checkbox" id="T&M" name="t_and_m">
                 <label for="Contract">Contract:</label>
-                <input type="checkbox" id="Contract" name="Contract">
+                <input type="checkbox" id="Contract" name="contract">
             </div>
 
-            <!-- Foreman and Customer Information -->
             <div class="form-group">
                 <label for="foreman">Foreman:</label>
                 <input type="text" id="foreman" name="foreman" required>
-                <label for="cell-Number">Cell Number:</label>
-                <input type="text" id="cell-Number" name="cell-Number" required>
+                <label for="cell-number">Cell Number:</label>
+                <input type="text" id="cell-number" name="cell_number" required>
                 <label for="customer">Customer:</label>
                 <input type="text" id="customer" name="customer" required>
-                <label for="customer-PO#">Customer PO#:</label>
-                <input type="text" id="customer-PO#" name="customer-PO#" required>
+                <label for="customer-po">Customer PO#:</label>
+                <input type="text" id="customer-po" name="customer_po" required>
             </div>
 
-            <!-- Job Site Details -->
             <div class="form-group">
-                <label for="Job-Site">Job Site:</label>
-                <input type="text" id="Job-Site" name="Job-Site" required>
-                <label for="Job-Description">Job Description:</label>
-                <input type="text" id="Job-Description" name="Job-Description" required>
-                <label for="Job-Completion">Job Completion:</label>
-                <input type="text" id="Job-Completion" name="Job-Completion" required>
+                <label for="job-site">Job Site:</label>
+                <input type="text" id="job-site" name="job_site" required>
+                <label for="job-description">Job Description:</label>
+                <input type="text" id="job-description" name="job_description" required>
+                <label for="job-completion">Job Completion:</label>
+                <input type="text" id="job-completion" name="job_completion" required>
             </div>
 
-            <!-- Materials, Equipment, and Other Details -->
             <div class="form-group">
-                <label for="Material">Material Description:</label>
-                <input type="text" id="Material" name="Material-Description" required>
-                <label for="Equipment">Equipment Description:</label>
-                <input type="text" id="Equipment" name="Equipment-Description" required>
+                <label for="material-description">Material Description:</label>
+                <input type="text" id="material-description" name="material_description" required>
+                <label for="equipment-description">Equipment Description:</label>
+                <input type="text" id="equipment-description" name="equipment_description" required>
             </div>
 
-            <!-- Employee Worked Hours -->
             <div class="form-group">
                 <label for="hours-worked">Hours Worked:</label>
-                <input type="text" id="hours-worked" name="hours-worked" required>
+                <input type="text" id="hours-worked" name="hours_worked" required>
                 <label for="employee">Employee:</label>
                 <input type="text" id="employee" name="employee" required>
                 <label for="straight-time">Straight Time:</label>
-                <input type="text" id="straight-time" name="straight-time" required>
+                <input type="text" id="straight-time" name="straight_time" required>
                 <label for="double-time">Double Time:</label>
-                <input type="text" id="double-time" name="double-time" required>
-                <label for="Time-1/2">Time & 1/2:</label>
-                <input type="text" id="Time-1/2" name="Time-1/2" required>
+                <input type="text" id="double-time" name="double_time" required>
+                <label for="time-and-a-half">Time & 1/2:</label>
+                <input type="text" id="time-and-a-half" name="time_and_a_half" required>
             </div>
 
-            <!-- Emergency Purchases and Delays/Lost Time -->
             <div class="form-group">
-                <label for="Emergency">Emergency Purchases:</label>
-                <input type="text" id="Emergency" name="Emergency-Purchases" required>
+                <label for="emergency-purchases">Emergency Purchases:</label>
+                <input type="text" id="emergency-purchases" name="emergency_purchases" required>
             </div>
 
-            <!-- Approval and Submission -->
             <div class="form-group">
-                <label for="Approved">Approved By:</label>
-                <input type="text" id="Approved" name="Approved-By" required>
+                <label for="approved-by">Approved By:</label>
+                <input type="text" id="approved-by" name="approved_by" required>
                 <button type="submit">Submit Daily Report</button>
             </div>
         </form>
@@ -117,9 +108,11 @@
         document.getElementById('daily-report-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            console.log('Form data:', data); // Log form data
             fetch('/daily-report', {
                 method: 'POST',
-                body: JSON.stringify(Object.fromEntries(formData)),
+                body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
             }).then(response => response.json()).then(data => {
                 alert(data.message);
@@ -130,5 +123,3 @@
     </script>
 </body>
 </html>
-
-    

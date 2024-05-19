@@ -27,9 +27,7 @@
         <section id="user-management">
             <h2>User Management</h2>
             <p>View and manage user information.</p>
-            <!-- Button to fetch user data -->
             <button onclick="fetchUserData()" class="btn btn-primary">View Users</button>
-            <!-- Container for user data -->
             <table id="user-table" class="table table-striped">
                 <thead>
                     <tr>
@@ -48,11 +46,9 @@
         <section id="daily-reports">
             <h2>Daily Reports</h2>
             <p>Access and download daily activity reports.</p>
-            <!-- Buttons to download all daily reports -->
             <button onclick="downloadReport('pdf')" class="btn btn-secondary">Download All Reports as PDF</button>
             <button onclick="downloadReport('excel')" class="btn btn-secondary">Download All Reports as Excel</button>
 
-            <!-- Input and buttons to download reports for a specific date -->
             <div>
                 <label for="report-date">Select Date:</label>
                 <input type="date" id="report-date">
@@ -60,14 +56,12 @@
                 <button onclick="downloadReportByDate('excel')" class="btn btn-secondary">Download Excel for Selected Date</button>
             </div>
         </section>
-        
     </main>
 
     <footer class="container text-center bg-light p-3 mt-4">
         <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
     </footer>
 
-    <!-- Include external JavaScript file -->
     <script src="/assets/js/AdminUser.js"></script>
     <script>
         function logout() {
@@ -114,7 +108,7 @@
         }
 
         function downloadReport(format) {
-            const url = `/admin/report/${format}`;
+            const url = `/admin/portal/report/${format}`;
             window.location.href = url;
         }
 
@@ -122,7 +116,7 @@
             const date = document.getElementById('report-date').value;
             if (!date) return alert('Please select a date.');
 
-            const url = `/admin/report/${format}?date=${date}`;
+            const url = `/admin/portal/report/${format}/${date}`;
             window.location.href = url;
         }
     </script>
