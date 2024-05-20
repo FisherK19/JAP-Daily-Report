@@ -1,3 +1,12 @@
+-- Create a table for storing admin user data
+CREATE TABLE IF NOT EXISTS admin_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create a table for storing user data with roles
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -10,8 +19,9 @@ CREATE TABLE IF NOT EXISTS users (
     reset_password_token VARCHAR(255),
     reset_password_expires BIGINT
 );
+
 -- Create a table for storing daily reports with more detailed fields
-CREATE TABLE daily_reports (
+CREATE TABLE IF NOT EXISTS daily_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
     job_number VARCHAR(50),
