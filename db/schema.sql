@@ -1,13 +1,15 @@
 -- Create a table for storing user data with roles
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('admin', 'user') DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_admin TINYINT(1) DEFAULT 0,
+    reset_password_token VARCHAR(255),
+    reset_password_expires BIGINT
 );
-
 -- Create a table for storing daily reports with more detailed fields
 CREATE TABLE daily_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
