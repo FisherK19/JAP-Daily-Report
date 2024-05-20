@@ -5,7 +5,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const initDb = require('./initializeDb'); // Import the database initialization script
+const initDb = require('./config/intializeDB'); // Correct the import to match the file name
 
 // Create MySQL connection pool
 const url = require('url');

@@ -3,7 +3,7 @@ const path = require('path');
 const { pool } = require('./connection');
 
 const initDb = async () => {
-    const sql = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
+    const sql = fs.readFileSync(path.join(__dirname, '../db/schema.sql'), 'utf-8');
     try {
         await pool.query(sql);
         console.log('Database schema initialized successfully');
