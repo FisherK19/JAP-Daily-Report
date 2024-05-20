@@ -11,7 +11,7 @@ const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    database: process.env.DB_NAME,
 });
 
 const app = express();
@@ -64,7 +64,6 @@ const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
 const forgotPasswordRoutes = require('./routes/forgotPassword'); // Verify case
 
-
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes); 
@@ -85,7 +84,7 @@ app.post('/logout', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
