@@ -1,13 +1,28 @@
 require('dotenv').config();
 
-const dbConfig = {
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE
-};
+let dbConfig, emailConfig;
 
-const emailConfig = {
+if (process.env.JAWSDB_URL) {
+    const url = require('url');
+    const dbUrl = new URL(process.env.JAWSDB_URL);
+
+    dbConfig = {
+        host: dbUrl.hostname,
+        user: dbUrl.username,
+        password: dbUrl.password,
+        database: dbUrl.pathname.substr(1),
+    };
+} else {
+    // Fallback to using environment variables for local development or other environments
+    dbConfig = {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE
+    };
+}
+
+emailConfig = {
     host: 'smtp.office365.com',
     port: 587,
     secure: false,
