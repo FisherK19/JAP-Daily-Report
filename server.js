@@ -2,16 +2,26 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const mysql = require('mysql');
+const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
 
+// Create MySQL connection pool
 const pool = mysql.createPool({
     connectionLimit: 80,
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    database: process.env.DB_DATABASE,
+});
+
+// Test the database connection
+pool.getConnection().then(connection => {
+    console.log('Database connection successful');
+    connection.release();
+}).catch(err => {
+    console.error('Database connection failed:', err);
 });
 
 const app = express();
@@ -54,7 +64,7 @@ app.use(session({
 }));
 
 // Import routers
-const UserRegisterRoutes = require('./routes/Userregister'); // Correct case
+const UserRegisterRoutes = require('./routes/Userregister'); // Ensure case sensitivity
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
@@ -62,7 +72,7 @@ const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPassword'); // Verify case
+const forgotPasswordRoutes = require('./routes/forgotPassword'); // Ensure case sensitivity
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
