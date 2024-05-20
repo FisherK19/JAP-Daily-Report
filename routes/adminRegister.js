@@ -39,11 +39,10 @@ router.post(
       // Redirect to admin login page upon successful registration
       res.redirect('/admin/login');
     } catch (error) {
+      console.error('Database error:', error);
       if (error.code === 'ER_DUP_ENTRY') {
         return res.status(400).json({ message: 'Username or email already exists' });
       }
-
-      console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
   }

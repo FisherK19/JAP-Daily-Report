@@ -5,26 +5,29 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
+const initDb = require('./initializeDb'); // Import the database initialization script
 
 // Create MySQL connection pool
 const url = require('url');
-const dbUrl = url.parse(process.env.JAWSDB_URL);
+const dbUrl = new URL(process.env.JAWSDB_URL);
 const pool = mysql.createPool({
     connectionLimit: 80,
     host: dbUrl.hostname,
     port: dbUrl.port,
-    user: dbUrl.auth.split(':')[0],
-    password: dbUrl.auth.split(':')[1],
-    database: dbUrl.pathname.substr(1),
+    user: dbUrl.username,
+    password: dbUrl.password,
+    database: dbUrl.pathname.substring(1),
 });
 
 // Test the database connection
-pool.getConnection().then(connection => {
-    console.log('Database connection successful');
-    connection.release();
-}).catch(err => {
-    console.error('Database connection failed:', err);
-});
+pool.getConnection()
+    .then(connection => {
+        console.log('Database connection successful');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('Database connection failed:', err);
+    });
 
 const app = express();
 app.use(bodyParser.json());
@@ -66,7 +69,7 @@ app.use(session({
 }));
 
 // Import routers
-const UserRegisterRoutes = require('./routes/Userregister'); // Ensure case sensitivity
+const UserRegisterRoutes = require('./routes/Userregister');
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
@@ -74,7 +77,7 @@ const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPassword'); // Ensure case sensitivity
+const forgotPasswordRoutes = require('./routes/forgotPassword');
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
@@ -84,7 +87,10 @@ app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes); 
 app.use('/admin/reports', adminReportRoutes); 
 app.use('/users', userRoutes);
-app.use('/forgot-password', forgotPasswordRoutes); // Use the forgotPassword routes
+app.use('/forgot-password', forgotPasswordRoutes);
+
+// Run database initialization script
+initDb();
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -100,4 +106,3 @@ const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-
