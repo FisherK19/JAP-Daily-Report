@@ -1,9 +1,9 @@
 require('dotenv').config();
 const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
+const url = require('url');
 
 // Parse JAWSDB_URL to get connection details
-const url = require('url');
 const dbUrl = url.parse(process.env.JAWSDB_URL);
 
 // Create a MySQL connection pool
@@ -21,9 +21,9 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // Upgrade later with STARTTLS
   auth: {
-    user: process.env.EMAIL_ADDRESS, 
-    pass: process.env.EMAIL_PASSWORD 
-  }
+    user: process.env.EMAIL_ADDRESS,
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
 // Export the connection pool and the transporter
