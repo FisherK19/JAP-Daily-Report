@@ -7,13 +7,15 @@ require('dotenv').config();
 const path = require('path');
 
 // Create MySQL connection pool
+const url = require('url');
+const dbUrl = url.parse(process.env.JAWSDB_URL);
 const pool = mysql.createPool({
     connectionLimit: 80,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: dbUrl.hostname,
+    port: dbUrl.port,
+    user: dbUrl.auth.split(':')[0],
+    password: dbUrl.auth.split(':')[1],
+    database: dbUrl.pathname.substr(1),
 });
 
 // Test the database connection
