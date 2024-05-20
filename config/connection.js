@@ -1,5 +1,5 @@
 require('dotenv').config();
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const nodemailer = require('nodemailer');
 
 // Create a MySQL connection pool
@@ -8,20 +8,19 @@ const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE
-});
+  database: process.env.DB_NAME // Make sure this matches your environment variable
+}).promise(); // Enable promise-based API
 
 // Create a Nodemailer transporter
 const transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    port: 587,
-    secure: false, // Upgrade later with STARTTLS
-    auth: {
-        user: process.env.EMAIL_ADDRESS, 
-        pass: process.env.EMAIL_PASSWORD 
-    }
+  host: 'smtp.office365.com',
+  port: 587,
+  secure: false, // Upgrade later with STARTTLS
+  auth: {
+    user: process.env.EMAIL_ADDRESS, 
+    pass: process.env.EMAIL_PASSWORD 
+  }
 });
 
 // Export the connection pool and the transporter
 module.exports = { pool, transporter };
-
