@@ -54,7 +54,7 @@ app.use(session({
 }));
 
 // Import routers
-const UserRegisterRoutes = require('./routes/UserRegister');
+const UserRegisterRoutes = require('./routes/Userregister'); // Correct case
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
@@ -62,7 +62,8 @@ const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
-const forgotPasswordRoutes = require('./routes/forgotPassword'); // Import the forgotPassword routes
+const forgotPasswordRoutes = require('./routes/forgotPassword'); // Verify case
+
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
