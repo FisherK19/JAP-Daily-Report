@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="/assets/adminportal.css">
 </head>
 <body>
-    <header class="bg-dark text-white text-center p-3">
-        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
+    <header>
+        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo">
         <h1>Admin Portal</h1>
     </header>
 
@@ -24,25 +24,6 @@
     </nav>
 
     <main class="container mt-4">
-        <section id="user-management">
-            <h2>User Management</h2>
-            <p>View and manage user information.</p>
-            <button onclick="fetchUserData()" class="btn btn-primary">View Users</button>
-            <table id="user-table" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>User ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Users will be populated here -->
-                </tbody>
-            </table>
-        </section>
-        
         <section id="daily-reports">
             <h2>Daily Reports</h2>
             <p>Access and download daily activity reports.</p>
@@ -51,60 +32,57 @@
 
             <div>
                 <label for="report-date">Select Date:</label>
-                <input type="date" id="report-date">
-                <button onclick="downloadReportByDate('pdf')" class="btn btn-secondary">Download PDF for Selected Date</button>
-                <button onclick="downloadReportByDate('excel')" class="btn btn-secondary">Download Excel for Selected Date</button>
+                <input type="date" id="report-date" onchange="fetchUsersByDate()">
+                <label for="user-select">Select User:</label>
+                <select id="user-select">
+                    <option value="">Select User</option>
+                </select>
+                <button onclick="downloadUserReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
+                <button onclick="downloadUserReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
             </div>
         </section>
     </main>
 
-    <footer class="container text-center bg-light p-3 mt-4">
+    <footer>
         <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
     </footer>
 
-    <script src="/assets/js/AdminUser.js"></script>
     <script>
-        function logout() {
-            fetch('/logout', {
-                method: 'POST',
-                credentials: 'same-origin'
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Logout failed');
-                }
-            });
+        function fetchUsersByDate() {
+            const date = document.getElementById('report-date').value;
+            if (!date) return;
+
+            console.log(`Fetching users for date: ${date}`); // Debug log
+
+            fetch(`/admin/portal/users/${date}`)
+                .then(response => response.json())
+                .then(users => {
+                    console.log('Users received:', users); // Debug log
+
+                    const userSelect = document.getElementById('user-select');
+                    userSelect.innerHTML = '<option value="">Select User</option>';
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.employee;
+                        option.textContent = user.employee;
+                        userSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
         }
 
-        function fetchUserData() {
-            fetch('/admin/users/data')
-                .then(response => response.json())
-                .then(data => {
-                    const userTable = document.getElementById('user-table').getElementsByTagName('tbody')[0];
-                    userTable.innerHTML = '';
+        function downloadUserReport(format) {
+            const date = document.getElementById('report-date').value;
+            const user = document.getElementById('user-select').value;
+            if (!date || !user) {
+                alert('Please select a date and a user.');
+                return;
+            }
 
-                    data.users.forEach(user => {
-                        const row = userTable.insertRow();
-                        row.insertCell(0).textContent = user.id;
-                        row.insertCell(1).textContent = user.username;
-                        row.insertCell(2).textContent = user.email;
-
-                        const actionsCell = row.insertCell(3);
-                        const pdfButton = document.createElement('button');
-                        pdfButton.textContent = 'PDF';
-                        pdfButton.className = 'btn btn-secondary';
-                        pdfButton.onclick = () => downloadUserReport(user.id, 'pdf');
-
-                        const excelButton = document.createElement('button');
-                        excelButton.textContent = 'Excel';
-                        excelButton.className = 'btn btn-secondary';
-                        excelButton.onclick = () => downloadUserReport(user.id, 'excel');
-
-                        actionsCell.appendChild(pdfButton);
-                        actionsCell.appendChild(excelButton);
-                    });
-                });
+            const url = `/admin/portal/report/${format}/${date}/${user}`;
+            window.location.href = url;
         }
 
         function downloadReport(format) {
@@ -112,13 +90,21 @@
             window.location.href = url;
         }
 
-        function downloadReportByDate(format) {
-            const date = document.getElementById('report-date').value;
-            if (!date) return alert('Please select a date.');
-
-            const url = `/admin/portal/report/${format}/${date}`;
-            window.location.href = url;
+        function logout() {
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/adminlogin.html';
+                } else {
+                    alert('Logout failed');
+                }
+            });
         }
     </script>
 </body>
 </html>
+
+
+

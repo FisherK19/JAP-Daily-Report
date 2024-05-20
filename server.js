@@ -62,6 +62,7 @@ const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
+const forgotPasswordRoutes = require('./routes/forgotPassword'); // Import the forgotPassword routes
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
@@ -71,6 +72,7 @@ app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes); 
 app.use('/admin/reports', adminReportRoutes); 
 app.use('/users', userRoutes);
+app.use('/forgot-password', forgotPasswordRoutes); // Use the forgotPassword routes
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -86,3 +88,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
