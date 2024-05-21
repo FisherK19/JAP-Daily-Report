@@ -5,6 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fill Daily Report</title>
     <link rel="stylesheet" href="/assets/daily-report.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5em;
+            margin-top: 0.5em;
+        }
+        .form-group textarea {
+            height: 100px;
+        }
+        .sheeting, .equipment {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .sheeting div, .equipment div {
+            flex: 1;
+            margin: 0.5em;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -25,15 +58,15 @@
         <form id="daily-report-form">
             <div class="form-group">
                 <label for="date">Date:</label>
-                <input type="date" id="date" name="date" class="date-input" required>
+                <input type="date" id="date" name="date" required>
             </div>
             <div class="form-group">
                 <label for="job-number">Job Number:</label>
                 <input type="text" id="job-number" name="job_number" required>
             </div>
             <div class="form-group">
-                <label for="Contract">Contract:</label>
-                <input type="checkbox" id="Contract" name="contract">
+                <label for="contract">Contract:</label>
+                <input type="checkbox" id="contract" name="contract">
             </div>
             <div class="form-group">
                 <label for="foreman">Foreman:</label>
@@ -57,40 +90,91 @@
             </div>
             <div class="form-group">
                 <label for="job-description">Job Description:</label>
-                <input type="text" id="job-description" name="job_description" required>
+                <textarea id="job-description" name="job_description" required></textarea>
             </div>
             <div class="form-group">
                 <label for="job-completion">Job Completion:</label>
                 <input type="text" id="job-completion" name="job_completion" required>
             </div>
+
+            <h2>Employee Hours</h2>
             <div class="form-group">
-                <label for="material-description">Material Description:</label>
-                <input type="text" id="material-description" name="material_description" required>
-            </div>
-            <div class="form-group">
-                <label for="equipment-description">Equipment Description:</label>
-                <input type="text" id="equipment-description" name="equipment_description" required>
+                <label for="employee">Employee:</label>
+                <input type="text" id="employee" name="employee" required>
             </div>
             <div class="form-group">
                 <label for="hours-worked">Hours Worked:</label>
                 <input type="text" id="hours-worked" name="hours_worked" required>
             </div>
             <div class="form-group">
-                <label for="employee">Employee:</label>
-                <input type="text" id="employee" name="employee" required>
-            </div>
-            <div class="form-group">
                 <label for="straight-time">Straight Time:</label>
                 <input type="text" id="straight-time" name="straight_time" required>
-            </div>
-            <div class="form-group">
-                <label for="double-time">Double Time:</label>
-                <input type="text" id="double-time" name="double_time" required>
             </div>
             <div class="form-group">
                 <label for="time-and-a-half">Time & 1/2:</label>
                 <input type="text" id="time-and-a-half" name="time_and_a_half" required>
             </div>
+            <div class="form-group">
+                <label for="double-time">Double Time:</label>
+                <input type="text" id="double-time" name="double_time" required>
+            </div>
+
+            <h2>Materials Used</h2>
+            <div class="sheeting">
+                <div class="form-group">
+                    <label for="siding">Siding:</label>
+                    <input type="text" id="siding" name="siding">
+                </div>
+                <div class="form-group">
+                    <label for="roofing">Roofing:</label>
+                    <input type="text" id="roofing" name="roofing">
+                </div>
+                <div class="form-group">
+                    <label for="flashing">Flashing:</label>
+                    <input type="text" id="flashing" name="flashing">
+                </div>
+                <div class="form-group">
+                    <label for="miscellaneous">Miscellaneous:</label>
+                    <input type="text" id="miscellaneous" name="miscellaneous">
+                </div>
+            </div>
+
+            <h2>Equipment Used</h2>
+            <div class="equipment">
+                <div class="form-group">
+                    <label for="trucks">Trucks:</label>
+                    <input type="text" id="trucks" name="trucks">
+                </div>
+                <div class="form-group">
+                    <label for="welders">Welders:</label>
+                    <input type="text" id="welders" name="welders">
+                </div>
+                <div class="form-group">
+                    <label for="generators">Generators:</label>
+                    <input type="text" id="generators" name="generators">
+                </div>
+                <div class="form-group">
+                    <label for="compressors">Compressors:</label>
+                    <input type="text" id="compressors" name="compressors">
+                </div>
+                <div class="form-group">
+                    <label for="fuel">Fuel:</label>
+                    <input type="text" id="fuel" name="fuel">
+                </div>
+                <div class="form-group">
+                    <label for="scaffolding">Scaffolding:</label>
+                    <input type="text" id="scaffolding" name="scaffolding">
+                </div>
+                <div class="form-group">
+                    <label for="safety-equipment">Safety Equipment:</label>
+                    <input type="text" id="safety-equipment" name="safety_equipment">
+                </div>
+                <div class="form-group">
+                    <label for="miscellaneous-equipment">Miscellaneous:</label>
+                    <input type="text" id="miscellaneous-equipment" name="miscellaneous_equipment">
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="emergency-purchases">Emergency Purchases:</label>
                 <input type="text" id="emergency-purchases" name="emergency_purchases" required>
