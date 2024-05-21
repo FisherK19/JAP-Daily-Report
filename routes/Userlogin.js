@@ -12,26 +12,27 @@ router.get('/', (req, res) => {
 // POST route for login
 router.post('/', async (req, res) => {
     const { username, password } = req.body;
+    console.log('Login attempt:', { username });
 
     try {
-        pool.query('SELECT * FROM users WHERE username = ?', [username], async (error, results) => {
-            if (error) {
-                console.error('Database error:', error);
-                return res.status(500).json({ message: 'Internal server error' });
-            }
-            if (results.length === 0) {
-                return res.status(404).json({ message: 'User not found' });
-            }
+        const [results] = await pool.query('SELECT * FROM users WHERE username = ?', [username]);
 
-            const user = results[0];
-            const passwordMatch = await bcrypt.compare(password, user.password);
-            if (!passwordMatch) {
-                return res.status(401).json({ message: 'Incorrect password' });
-            }
+        if (results.length === 0) {
+            console.log('User not found:', username);
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-            req.session.user = user; // Store user data in session
-            res.redirect('/daily-report'); // Redirect to the daily reports page
-        });
+        const user = results[0];
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            console.log('Incorrect password for user:', username);
+            return res.status(401).json({ message: 'Incorrect password' });
+        }
+
+        req.session.user = user; // Store user data in session
+        console.log('User logged in:', user.id);
+        res.redirect('/daily-report'); // Redirect to the daily reports page
     } catch (error) {
         console.error('Server error:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -39,6 +40,5 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
 
 
