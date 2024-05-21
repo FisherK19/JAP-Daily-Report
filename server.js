@@ -10,25 +10,33 @@ const initDb = require('./config/initializeDB'); // Ensure this matches the file
 // Create MySQL connection pool
 const url = require('url');
 const dbUrl = new URL(process.env.JAWSDB_URL);
-const pool = mysql.createPool({
+
+let pool;
+
+try {
+  pool = mysql.createPool({
     connectionLimit: 80,
     host: dbUrl.hostname,
     port: dbUrl.port || 3306,
     user: dbUrl.username,
     password: dbUrl.password,
     database: dbUrl.pathname.substring(1),
-});
+  });
+} catch (err) {
+  console.error('Error creating MySQL connection pool:', err);
+  process.exit(1);
+}
 
 // Test the database connection
 pool.getConnection()
-    .then(connection => {
-        console.log('Database connection successful');
-        connection.release();
-    })
-    .catch(err => {
-        console.error('Database connection failed:', err);
-        process.exit(1); // Exit the process with an error code
-    });
+  .then(connection => {
+    console.log('Database connection successful');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('Database connection failed:', err);
+    process.exit(1); // Exit the process with an error code
+  });
 
 const app = express();
 app.use(bodyParser.json());
@@ -42,31 +50,37 @@ app.use(express.static(path.join(__dirname, 'views')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // MySQL session store configuration
-const sessionStore = new MySQLStore({
+let sessionStore;
+try {
+  sessionStore = new MySQLStore({
     expiration: 86400000,
     endConnectionOnClose: false,
     createDatabaseTable: true,
     schema: {
-        tableName: 'sessions',
-        columnNames: {
-            session_id: 'session_id',
-            expires: 'expires',
-            data: 'data'
-        }
-    }
-}, pool);
+      tableName: 'sessions',
+      columnNames: {
+        session_id: 'session_id',
+        expires: 'expires',
+        data: 'data',
+      },
+    },
+  }, pool);
+} catch (err) {
+  console.error('Error creating MySQL session store:', err);
+  process.exit(1);
+}
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
-    key: 'session_cookie_name',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
-        secure: false // Change to true if using HTTPS in production
-    }
+  secret: process.env.SESSION_SECRET,
+  key: 'session_cookie_name',
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    httpOnly: true,
+    secure: false, // Change to true if using HTTPS in production
+  },
 }));
 
 // Import routers
@@ -92,25 +106,26 @@ app.use('/forgot-password', forgotPasswordRoutes);
 
 // Run database initialization script
 initDb().catch(err => {
-    console.error('Database initialization failed:', err);
-    process.exit(1); // Exit the process with an error code
+  console.error('Database initialization failed:', err);
+  process.exit(1); // Exit the process with an error code
 });
 
 // Logout route
 app.post('/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            return res.status(500).json({ message: 'Could not log out. Please try again.' });
-        }
-        res.redirect('/login');
-    });
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: 'Could not log out. Please try again.' });
+    }
+    res.redirect('/login');
+  });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 }).on('error', err => {
-    console.error('Server failed to start:', err);
-    process.exit(1); // Exit the process with an error code
+  console.error('Server failed to start:', err);
+  process.exit(1); // Exit the process with an error code
 });
+
 
