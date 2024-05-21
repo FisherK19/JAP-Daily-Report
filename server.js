@@ -5,7 +5,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const initDb = require('./config/intializeDB'); // Ensure this matches the file name
+const initDb = require('./config/initializeDB'); // Ensure this matches the file name
 
 // Create MySQL connection pool
 const url = require('url');
@@ -13,7 +13,7 @@ const dbUrl = new URL(process.env.JAWSDB_URL);
 const pool = mysql.createPool({
     connectionLimit: 80,
     host: dbUrl.hostname,
-    port: dbUrl.port,
+    port: dbUrl.port || 3306,
     user: dbUrl.username,
     password: dbUrl.password,
     database: dbUrl.pathname.substring(1),
@@ -64,7 +64,7 @@ app.use(session({
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
-        secure: false 
+        secure: false // Change to true if using HTTPS in production
     }
 }));
 
@@ -81,11 +81,11 @@ const forgotPasswordRoutes = require('./routes/forgotPassword');
 
 app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
-app.use('/register', UserRegisterRoutes); 
-app.use('/login', UserloginRoutes); 
-app.use('/daily-report', dailyReportRoutes); 
-app.use('/admin/portal', adminPortalRoutes); 
-app.use('/admin/reports', adminReportRoutes); 
+app.use('/register', UserRegisterRoutes);
+app.use('/login', UserloginRoutes);
+app.use('/daily-report', dailyReportRoutes);
+app.use('/admin/portal', adminPortalRoutes);
+app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
@@ -102,7 +102,7 @@ app.post('/logout', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
