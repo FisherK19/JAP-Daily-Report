@@ -1,3 +1,8 @@
+-- Drop tables if they exist
+DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS daily_reports;
+
 -- Create a table for storing admin user data
 CREATE TABLE IF NOT EXISTS admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,5 +48,9 @@ CREATE TABLE IF NOT EXISTS daily_reports (
     time_and_a_half DECIMAL(5,2),
     emergency_purchases TEXT,
     approved_by VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(255),
+    content TEXT,
+    admin_id INT,
+    username VARCHAR(255)
 );
