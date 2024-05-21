@@ -103,6 +103,20 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+/* Employee hours styles */
+.employee-hours {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.employee-entry {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+}
+
 /* Footer styles */
 footer {
     text-align: center;
