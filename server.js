@@ -27,6 +27,7 @@ pool.getConnection()
     })
     .catch(err => {
         console.error('Database connection failed:', err);
+        process.exit(1); // Exit the process with an error code
     });
 
 const app = express();
@@ -90,7 +91,10 @@ app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
 // Run database initialization script
-initDb();
+initDb().catch(err => {
+    console.error('Database initialization failed:', err);
+    process.exit(1); // Exit the process with an error code
+});
 
 // Logout route
 app.post('/logout', (req, res) => {
@@ -105,4 +109,8 @@ app.post('/logout', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+}).on('error', err => {
+    console.error('Server failed to start:', err);
+    process.exit(1); // Exit the process with an error code
 });
+
