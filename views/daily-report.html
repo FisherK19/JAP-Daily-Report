@@ -3,72 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fill Daily Report</title>
+    <title>Daily Report</title>
     <link rel="stylesheet" href="/assets/daily-report.css">
     <style>
-        /* Custom CSS */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
         }
         .container {
-            max-width: 960px;
+            max-width: 1200px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        header {
-            text-align: center;
-            padding: 20px 0;
-            background-color: #343a40;
-            color: #fff;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        header img {
-            max-width: 300px;
+        table, th, td {
+            border: 1px solid #000;
         }
-        nav ul {
-            list-style: none;
-            padding: 0;
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .header-section {
             text-align: center;
             margin-bottom: 20px;
         }
-        nav ul li {
-            display: inline;
-            margin-right: 20px;
+        .header-section img {
+            max-width: 200px;
+            margin-bottom: 10px;
         }
-        nav ul li a {
-            text-decoration: none;
-            color: #007bff;
-        }
-        nav ul li a:hover {
-            text-decoration: underline;
+        .header-section h1 {
+            font-size: 24px;
+            margin: 0;
         }
         .form-group {
-            margin-bottom: 1em;
+            margin-bottom: 10px;
         }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"],
-        input[type="date"],
-        input[type="checkbox"] {
+        input[type="text"], input[type="date"], input[type="checkbox"] {
             width: 100%;
-            padding: 0.5em;
+            padding: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            transition: border-color 0.3s ease-in-out;
-        }
-        input[type="text"]:focus,
-        input[type="date"]:focus,
-        input[type="checkbox"]:focus {
-            border-color: #007bff;
-            outline: none;
         }
         input[type="checkbox"] {
             width: auto;
@@ -80,606 +67,128 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s ease-in-out;
         }
         button[type="submit"]:hover {
             background-color: #0056b3;
         }
-        .employee-hours {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            overflow-x: auto;
-        }
-        .employee-entry {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-        }
-        .employee-entry .form-group {
-            margin-bottom: 0.5em;
-        }
-        .employee-entry label {
-            font-size: 0.9em;
-        }
-        .employee-entry input {
-            font-size: 0.9em;
-            padding: 5px;
-        }
-        .employee-hours-container {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        footer p {
-            font-size: 14px;
-            color: #777;
-        }
     </style>
 </head>
 <body>
-    <header>
-        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo" class="img-fluid">
-    </header>
-
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="logout()">Logout</a>
-            </li>
-        </ul>
-    </nav>
-
-    <main class="container">
-        <h1>Daily Report Entry</h1>
+    <div class="container">
+        <div class="header-section">
+            <img src="/assets/images/company-logo.png" alt="Company Logo">
+            <h1>Daily Report</h1>
+        </div>
         <form id="daily-report-form">
-            <!-- Other form fields -->
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date" required>
-            </div>
-            <div class="form-group">
-                <label for="job-number">Job Number:</label>
-                <input type="text" id="job-number" name="job_number" required>
-            </div>
-            <div class="form-group">
-                <label for="contract">Contract:</label>
-                <input type="checkbox" id="contract" name="contract">
-            </div>
-            <div class="form-group">
-                <label for="foreman">Foreman:</label>
-                <input type="text" id="foreman" name="foreman" required>
-            </div>
-            <div class="form-group">
-                <label for="cell-number">Cell Number:</label>
-                <input type="text" id="cell-number" name="cell_number" required>
-            </div>
-            <div class="form-group">
-                <label for="customer">Customer:</label>
-                <input type="text" id="customer" name="customer" required>
-            </div>
-            <div class="form-group">
-                <label for="customer-po">Customer PO#:</label>
-                <input type="text" id="customer-po" name="customer_po" required>
-            </div>
-            <div class="form-group">
-                <label for="job-site">Job Site:</label>
-                <input type="text" id="job-site" name="job_site" required>
-            </div>
-            <div class="form-group">
-                <label for="job-description">Job Description:</label>
-                <textarea id="job-description" name="job_description" required></textarea>
-            </div>
-            <div class="form-group">
-                <label for="job-completion">Job Completion:</label>
-                <input type="text" id="job-completion" name="job_completion" required>
-            </div>
-
-            <h2>Employee Hours</h2>
-            <div class="employee-hours">
-                <!-- Repeat the following block for each employee up to Employee 20 -->
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee1">Employee 1:</label>
-                        <input type="text" id="employee1" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked1">Hours Worked:</label>
-                        <input type="text" id="hours-worked1" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time1">Straight Time:</label>
-                        <input type="text" id="straight-time1" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half1">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half1" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time1">Double Time:</label>
-                        <input type="text" id="double-time1" name="double_time[]" required>
-                    </div>
-                </div>
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee2">Employee 2:</label>
-                        <input type="text" id="employee2" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked2">Hours Worked:</label>
-                        <input type="text" id="hours-worked2" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time2">Straight Time:</label>
-                        <input type="text" id="straight-time2" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half2">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half2" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time2">Double Time:</label>
-                        <input type="text" id="double-time2" name="double_time[]" required>
-                    </div>
-                </div>
-                <!-- Repeat similar blocks  -->
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee3">Employee 3:</label>
-                        <input type="text" id="employee3" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked3">Hours Worked:</label>
-                        <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time3">Straight Time:</label>
-                        <input type="text" id="straight-time3" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half3">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time3">Double Time:</label>
-                        <input type="text" id="double-time3" name="double_time[]" required>
-                    </div>
-                </div>
-                         
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee3">Employee 4:</label>
-                        <input type="text" id="employee3" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked3">Hours Worked:</label>
-                        <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time3">Straight Time:</label>
-                        <input type="text" id="straight-time3" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half3">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time3">Double Time:</label>
-                        <input type="text" id="double-time3" name="double_time[]" required>
-                    </div>
-                </div>
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee3">Employee 5:</label>
-                        <input type="text" id="employee3" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked3">Hours Worked:</label>
-                        <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time3">Straight Time:</label>
-                        <input type="text" id="straight-time3" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half3">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time3">Double Time:</label>
-                        <input type="text" id="double-time3" name="double_time[]" required>
-                    </div>
-                </div>
-                <div class="employee-entry">
-                    <div class="form-group">
-                        <label for="employee3">Employee 6:</label>
-                        <input type="text" id="employee3" name="employee[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hours-worked3">Hours Worked:</label>
-                        <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="straight-time3">Straight Time:</label>
-                        <input type="text" id="straight-time3" name="straight_time[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="time-and-a-half3">Time & 1/2:</label>
-                        <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="double-time3">Double Time:</label>
-                        <input type="text" id="double-time3" name="double_time[]" required>
-                    </div>
-                </div>
-                <div class="employee-hours">
-                    <!-- Repeat the following block for each employee up to Employee 20 -->
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee1">Employee 7:</label>
-                            <input type="text" id="employee1" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked1">Hours Worked:</label>
-                            <input type="text" id="hours-worked1" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time1">Straight Time:</label>
-                            <input type="text" id="straight-time1" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half1">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half1" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time1">Double Time:</label>
-                            <input type="text" id="double-time1" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee2">Employee 8:</label>
-                            <input type="text" id="employee2" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked2">Hours Worked:</label>
-                            <input type="text" id="hours-worked2" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time2">Straight Time:</label>
-                            <input type="text" id="straight-time2" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half2">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half2" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time2">Double Time:</label>
-                            <input type="text" id="double-time2" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <!-- Repeat similar blocks  -->
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee3">Employee 9:</label>
-                            <input type="text" id="employee3" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked3">Hours Worked:</label>
-                            <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time3">Straight Time:</label>
-                            <input type="text" id="straight-time3" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half3">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time3">Double Time:</label>
-                            <input type="text" id="double-time3" name="double_time[]" required>
-                        </div>
-                    </div>
-                             
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee3">Employee 10:</label>
-                            <input type="text" id="employee3" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked3">Hours Worked:</label>
-                            <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time3">Straight Time:</label>
-                            <input type="text" id="straight-time3" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half3">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time3">Double Time:</label>
-                            <input type="text" id="double-time3" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee3">Employee 11:</label>
-                            <input type="text" id="employee3" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked3">Hours Worked:</label>
-                            <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time3">Straight Time:</label>
-                            <input type="text" id="straight-time3" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half3">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time3">Double Time:</label>
-                            <input type="text" id="double-time3" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee3">Employee 12:</label>
-                            <input type="text" id="employee3" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked3">Hours Worked:</label>
-                            <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time3">Straight Time:</label>
-                            <input type="text" id="straight-time3" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half3">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time3">Double Time:</label>
-                            <input type="text" id="double-time3" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <div class="employee-entry">
-                        <div class="form-group">
-                            <label for="employee3">Employee 13:</label>
-                            <input type="text" id="employee3" name="employee[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="hours-worked3">Hours Worked:</label>
-                            <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="straight-time3">Straight Time:</label>
-                            <input type="text" id="straight-time3" name="straight_time[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="time-and-a-half3">Time & 1/2:</label>
-                            <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="double-time3">Double Time:</label>
-                            <input type="text" id="double-time3" name="double_time[]" required>
-                        </div>
-                    </div>
-                    <div class="employee-hours">
-                        <!-- Repeat the following block for each employee up to Employee 20 -->
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee1">Employee 14:</label>
-                                <input type="text" id="employee1" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked1">Hours Worked:</label>
-                                <input type="text" id="hours-worked1" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time1">Straight Time:</label>
-                                <input type="text" id="straight-time1" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half1">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half1" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time1">Double Time:</label>
-                                <input type="text" id="double-time1" name="double_time[]" required>
-                            </div>
-                        </div>
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee2">Employee 15:</label>
-                                <input type="text" id="employee2" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked2">Hours Worked:</label>
-                                <input type="text" id="hours-worked2" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time2">Straight Time:</label>
-                                <input type="text" id="straight-time2" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half2">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half2" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time2">Double Time:</label>
-                                <input type="text" id="double-time2" name="double_time[]" required>
-                            </div>
-                        </div>
-                        <!-- Repeat similar blocks  -->
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee3">Employee 16:</label>
-                                <input type="text" id="employee3" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked3">Hours Worked:</label>
-                                <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time3">Straight Time:</label>
-                                <input type="text" id="straight-time3" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half3">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time3">Double Time:</label>
-                                <input type="text" id="double-time3" name="double_time[]" required>
-                            </div>
-                        </div>
-                                 
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee3">Employee 17:</label>
-                                <input type="text" id="employee3" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked3">Hours Worked:</label>
-                                <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time3">Straight Time:</label>
-                                <input type="text" id="straight-time3" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half3">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time3">Double Time:</label>
-                                <input type="text" id="double-time3" name="double_time[]" required>
-                            </div>
-                        </div>
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee3">Employee 18:</label>
-                                <input type="text" id="employee3" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked3">Hours Worked:</label>
-                                <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time3">Straight Time:</label>
-                                <input type="text" id="straight-time3" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half3">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time3">Double Time:</label>
-                                <input type="text" id="double-time3" name="double_time[]" required>
-                            </div>
-                        </div>
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee3">Employee 19:</label>
-                                <input type="text" id="employee3" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked3">Hours Worked:</label>
-                                <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time3">Straight Time:</label>
-                                <input type="text" id="straight-time3" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half3">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time3">Double Time:</label>
-                                <input type="text" id="double-time3" name="double_time[]" required>
-                            </div>
-                        </div>   
-                        <div class="employee-entry">
-                            <div class="form-group">
-                                <label for="employee3">Employee 20:</label>
-                                <input type="text" id="employee3" name="employee[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours-worked3">Hours Worked:</label>
-                                <input type="text" id="hours-worked3" name="hours_worked[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="straight-time3">Straight Time:</label>
-                                <input type="text" id="straight-time3" name="straight_time[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="time-and-a-half3">Time & 1/2:</label>
-                                <input type="text" id="time-and-a-half3" name="time_and_a_half[]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="double-time3">Double Time:</label>
-                                <input type="text" id="double-time3" name="double_time[]" required>
-                            </div>
-                        </div>                                                                                                 
-      
-            </div>
-
-            <div class="form-group">
-                <label for="approved-by">Approved By:</label>
-                <input type="text" id="approved-by" name="approved_by" required>
-            </div>
+            <table>
+                <tr>
+                    <th colspan="4">JOHN A. PAPALAS & COMPANY</th>
+                    <th colspan="2">DATE</th>
+                    <td colspan="2"><input type="date" name="date" required></td>
+                </tr>
+                <tr>
+                    <th colspan="4">Tel - 313-388-3000 &nbsp; Fax - 313-388-9864</th>
+                    <th colspan="2">JOB #</th>
+                    <td colspan="2"><input type="text" name="job_number" required></td>
+                </tr>
+                <tr>
+                    <th>FOREMAN:</th>
+                    <td colspan="3"><input type="text" name="foreman" required></td>
+                    <th>T&M</th>
+                    <td><input type="checkbox" name="t_and_m"></td>
+                    <th>CONTRACT</th>
+                    <td><input type="checkbox" name="contract"></td>
+                </tr>
+                <tr>
+                    <th>Cellular #</th>
+                    <td colspan="3"><input type="text" name="cell_number" required></td>
+                    <th colspan="2">Job Completion %</th>
+                    <td colspan="2"><input type="text" name="job_completion" required></td>
+                </tr>
+                <tr>
+                    <th>CUSTOMER</th>
+                    <td colspan="3"><input type="text" name="customer" required></td>
+                    <th colspan="2">Shift /Start Time:</th>
+                    <td colspan="2"><input type="text" name="shift_start_time" required></td>
+                </tr>
+                <tr>
+                    <th>Customer PO#:</th>
+                    <td colspan="7"><input type="text" name="customer_po" required></td>
+                </tr>
+                <tr>
+                    <th>JOB SITE:</th>
+                    <td colspan="7"><input type="text" name="job_site" required></td>
+                </tr>
+                <tr>
+                    <th>Job Description:</th>
+                    <td colspan="7"><input type="text" name="job_description" required></td>
+                </tr>
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2" colspan="3">SHEETINGS</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td colspan="3"></td>
+                </tr>
+                <!-- End of repeated block -->
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th colspan="4">Approved By:</th>
+                    <td colspan="4"><input type="text" name="approved_by" required></td>
+                </tr>
+            </table>
             <button type="submit">Submit Daily Report</button>
         </form>
-    </main>
+    </div>
+<footer>
+    <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
+</footer>
 
-    <footer>
-        <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
-    </footer>
-
-    <script>
-        function logout() {
-            fetch('/logout', {
-                method: 'POST',
-                credentials: 'same-origin'
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Logout failed');
-                }
-            });
-        }
-
-        document.getElementById('daily-report-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            console.log('Form data:', data); // Log form data
-            fetch('/daily-report', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            }).then(response => response.json()).then(data => {
-                alert(data.message);
-            }).catch(error => {
-                console.error('Error:', error);
-            });
+<script>
+    function logout() {
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin'
+        }).then(response => {
+            if (response.ok) {
+                window.location.href = '/login';
+            } else {
+                alert('Logout failed');
+            }
         });
-    </script>
+    }
+
+    document.getElementById('daily-report-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData.entries());
+        console.log('Form data:', data); // Log form data
+        fetch('/daily-report', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(response => response.json()).then(data => {
+            alert(data.message);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+
 </body>
 </html>
+
