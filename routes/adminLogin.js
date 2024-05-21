@@ -13,31 +13,31 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const { username, password } = req.body;
-        pool.query('SELECT * FROM admin_users WHERE username = ?', [username], async (error, results) => {
-            if (error) {
-                console.error(error);
-                return res.status(500).json({ message: 'Internal server error' });
-            }
-            if (results.length === 0) {
-                console.log('Invalid username or password');
-                return res.status(401).json({ message: 'Invalid username or password' });
-            }
-            const match = await bcrypt.compare(password, results[0].password);
-            if (!match) {
-                console.log('Invalid username or password');
-                return res.status(401).json({ message: 'Invalid username or password' });
-            }
-            // Authentication successful
-            req.session.user = results[0];  // Store user info in session
-            console.log('Redirecting to /admin/portal');
-            res.redirect('/admin/portal');  // Redirect to the admin portal
-        });
+        console.log('Admin login attempt:', { username });
+
+        // Use async/await for pool.query
+        const [results] = await pool.query('SELECT * FROM admin_users WHERE username = ?', [username]);
+
+        if (results.length === 0) {
+            console.log('Invalid username or password');
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
+
+        const match = await bcrypt.compare(password, results[0].password);
+        if (!match) {
+            console.log('Invalid username or password');
+            return res.status(401).json({ message: 'Invalid username or password' });
+        }
+
+        // Authentication successful
+        req.session.user = results[0];  // Store user info in session
+        console.log('Redirecting to /admin/portal');
+        res.redirect('/admin/portal');  // Redirect to the admin portal
     } catch (error) {
-        console.error(error);
+        console.error('Error during admin login:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
 
 module.exports = router;
-
 

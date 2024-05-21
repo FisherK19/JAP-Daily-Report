@@ -131,4 +131,3 @@ app.listen(PORT, () => {
   console.error('Server failed to start:', err);
   process.exit(1); // Exit the process with an error code
 });
-
