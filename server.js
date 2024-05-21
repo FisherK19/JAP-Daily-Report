@@ -22,6 +22,7 @@ try {
     password: dbUrl.password,
     database: dbUrl.pathname.substring(1),
   });
+  console.log('MySQL connection pool created');
 } catch (err) {
   console.error('Error creating MySQL connection pool:', err);
   process.exit(1);
@@ -65,6 +66,7 @@ try {
       },
     },
   }, pool);
+  console.log('MySQL session store created');
 } catch (err) {
   console.error('Error creating MySQL session store:', err);
   process.exit(1);
@@ -105,7 +107,9 @@ app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
 // Run database initialization script
-initDb().catch(err => {
+initDb().then(() => {
+  console.log('Database initialized');
+}).catch(err => {
   console.error('Database initialization failed:', err);
   process.exit(1); // Exit the process with an error code
 });
