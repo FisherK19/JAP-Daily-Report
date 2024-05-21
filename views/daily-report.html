@@ -51,7 +51,7 @@
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"], input[type="date"], input[type="checkbox"] {
+        input[type="text"], input[type="date"], input[type="checkbox"], textarea {
             width: 100%;
             padding: 5px;
             border: 1px solid #ccc;
@@ -121,13 +121,13 @@
                 </tr>
                 <tr>
                     <th>Job Description:</th>
-                    <td colspan="7"><input type="text" name="job_description" required></td>
+                    <td colspan="7"><textarea name="job_description" required></textarea></td>
                 </tr>
                 <tr>
                     <th rowspan="2">Hours Worked</th>
                     <th rowspan="2">EMPLOYEE</th>
                     <th colspan="3">Hours</th>
-                    <th rowspan="2" colspan="3">SHEETINGS</th>
+                    <th rowspan="2">SHEETING</th>
                 </tr>
                 <tr>
                     <th>Straight</th>
@@ -141,54 +141,87 @@
                     <td><input type="text" name="straight_time[]"></td>
                     <td><input type="text" name="time_and_a_half[]"></td>
                     <td><input type="text" name="double_time[]"></td>
-                    <td colspan="3"></td>
+                    <td><input type="text" name="sheeting[]"></td>
                 </tr>
-                <!-- End of repeated block -->
                 <!-- Repeat up to 20 times -->
+                <!-- Adding blocks for materials, equipment, etc. -->
                 <tr>
-                    <th colspan="4">Approved By:</th>
-                    <td colspan="4"><input type="text" name="approved_by" required></td>
+                    <th colspan="2">MATERIALS:</th>
+                    <th colspan="6"></th>
+                </tr>
+                <tr>
+                    <th>Siding:</th>
+                    <td colspan="7"><input type="text" name="siding"></td>
+                </tr>
+                <tr>
+                    <th>Roofing:</th>
+                    <td colspan="7"><input type="text" name="roofing"></td>
+                </tr>
+                <tr>
+                    <th>Flashing:</th>
+                    <td colspan="7"><input type="text" name="flashing"></td>
+                </tr>
+                <tr>
+                    <th>Miscellaneous:</th>
+                    <td colspan="7"><input type="text" name="miscellaneous"></td>
+                </tr>
+                <tr>
+                    <th colspan="2">EQUIPMENT:</th>
+                    <th colspan="6"></th>
+                </tr>
+                <tr>
+                    <th>Trucks:</th>
+                    <td colspan="7"><input type="text" name="trucks"></td>
+                </tr>
+                <tr>
+                    <th>Welders:</th>
+                    <td colspan="7"><input type="text" name="welders"></td>
+                </tr>
+                <tr>
+                    <th>Generators:</th>
+                    <td colspan="7"><input type="text" name="generators"></td>
+                </tr>
+                <tr>
+                    <th>Compressors:</th>
+                    <td colspan="7"><input type="text" name="compressors"></td>
+                </tr>
+                <tr>
+                    <th>Fuel:</th>
+                    <td colspan="7"><input type="text" name="fuel"></td>
+                </tr>
+                <tr>
+                    <th>Scaffolding:</th>
+                    <td colspan="7"><input type="text" name="scaffolding"></td>
+                </tr>
+                <tr>
+                    <th>Safety Equipment:</th>
+                    <td colspan="7"><input type="text" name="safety_equipment"></td>
+                </tr>
+                <tr>
+                    <th>Miscellaneous Equipment:</th>
+                    <td colspan="7"><input type="text" name="miscellaneous_equipment"></td>
+                </tr>
+                <tr>
+                    <th colspan="2">EMERGENCY PURCHASES:</th>
+                    <td colspan="6"><textarea name="emergency_purchases" required></textarea></td>
+                </tr>
+                <tr>
+                    <th colspan="2">DELAY / LOST TIME:</th>
+                    <td colspan="6"><textarea name="delay_lost_time"></textarea></td>
+                </tr>
+                <tr>
+                    <th colspan="2">Employees Off:</th>
+                    <td colspan="6"><textarea name="employees_off"></textarea></td>
+                </tr>
+                <tr>
+                    <th colspan="2">Approved By:</th>
+                    <td colspan="6"><input type="text" name="approved_by" required></td>
                 </tr>
             </table>
             <button type="submit">Submit Daily Report</button>
         </form>
     </div>
-<footer>
-    <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
-</footer>
-
-<script>
-    function logout() {
-        fetch('/logout', {
-            method: 'POST',
-            credentials: 'same-origin'
-        }).then(response => {
-            if (response.ok) {
-                window.location.href = '/login';
-            } else {
-                alert('Logout failed');
-            }
-        });
-    }
-
-    document.getElementById('daily-report-form').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData.entries());
-        console.log('Form data:', data); // Log form data
-        fetch('/daily-report', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
-        }).then(response => response.json()).then(data => {
-            alert(data.message);
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    });
-</script>
-
-
 </body>
 </html>
+
 
