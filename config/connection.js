@@ -4,14 +4,14 @@ const nodemailer = require('nodemailer');
 const url = require('url');
 
 // Parse JAWSDB_URL to get connection details
-const dbUrl = url.parse(process.env.JAWSDB_URL);
+const dbUrl = new URL(process.env.JAWSDB_URL);
 
 // Create a MySQL connection pool
 const pool = mysql.createPool({
   connectionLimit: 80,
   host: dbUrl.hostname,
-  user: dbUrl.auth.split(':')[0],
-  password: dbUrl.auth.split(':')[1],
+  user: dbUrl.username,
+  password: dbUrl.password,
   database: dbUrl.pathname.substring(1),
 }).promise();
 
@@ -28,3 +28,4 @@ const transporter = nodemailer.createTransport({
 
 // Export the connection pool and the transporter
 module.exports = { pool, transporter };
+

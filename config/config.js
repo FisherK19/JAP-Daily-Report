@@ -3,7 +3,6 @@ require('dotenv').config();
 let dbConfig, emailConfig;
 
 if (process.env.JAWSDB_URL) {
-    const url = require('url');
     const dbUrl = new URL(process.env.JAWSDB_URL);
 
     dbConfig = {
