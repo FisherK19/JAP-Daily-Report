@@ -5,19 +5,23 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const url = require('url');
 
-// Parse JAWSDB_URL
-const JAWSDB_URL = process.env.JAWSDB_URL;
-if (!JAWSDB_URL) {
+// Verify environment variables are loaded
+if (!process.env.JAWSDB_URL) {
   console.error('Missing JAWSDB_URL environment variable.');
   process.exit(1);
 }
-const parsedUrl = new URL(JAWSDB_URL);
-const [username, password] = parsedUrl.username.split(':');
+
+// Parse JAWSDB_URL
+const parsedUrl = new URL(process.env.JAWSDB_URL);
+const username = parsedUrl.username;
+const password = parsedUrl.password;
 const database = parsedUrl.pathname.substring(1);
 const host = parsedUrl.hostname;
 const port = parsedUrl.port || 3306;
+
+// Debug logs
+console.log(`Parsed DB Details: Host: ${host}, Port: ${port}, User: ${username}, Database: ${database}`);
 
 // Create MySQL connection pool
 let pool;
@@ -128,3 +132,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
