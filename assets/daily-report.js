@@ -54,49 +54,42 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
+
+            // Convert arrays to individual fields
+            data.hours_worked = formData.getAll('hours_worked[]');
+            data.employee = formData.getAll('employee[]');
+            data.straight_time = formData.getAll('straight_time[]');
+            data.time_and_a_half = formData.getAll('time_and_a_half[]');
+            data.double_time = formData.getAll('double_time[]');
+
             console.log('Form data:', data); // Log form data
             fetch('/daily-report', {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            }).then(data => {
+            }).then(response => response.json()).then(data => {
                 alert(data.message);
-                // Show success message
-                const successMessage = document.createElement('div');
-                successMessage.textContent = 'Daily report submitted successfully';
-                successMessage.classList.add('success-message');
-                dailyReportForm.appendChild(successMessage);
-                // Remove success message after 5 seconds
-                setTimeout(() => {
-                    successMessage.remove();
-                }, 5000);
             }).catch(error => {
                 console.error('Error:', error);
-                alert('Failed to submit the daily report');
+                alert('An error occurred while submitting the report. Please try again.');
             });
         });
     }
+});
 
-    // Logout function
-    const logoutLink = document.getElementById('logout-link');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', function(event) {
-            event.preventDefault();
-            fetch('/logout', {
-                method: 'POST',
-                credentials: 'same-origin'
-            }).then(response => {
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    alert('Logout failed');
-                }
-            });
-        });
-    }
+// Logout function
+document.getElementById('logout-link').addEventListener('click', function(event) {
+    event.preventDefault();
+    fetch('/logout', {
+        method: 'POST',
+        credentials: 'same-origin'
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = '/login';
+        } else {
+            alert('Logout failed');
+        }
+    }).catch(error => {
+        console.error('Logout error:', error);
+    });
 });

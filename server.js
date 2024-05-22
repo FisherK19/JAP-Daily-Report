@@ -5,7 +5,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const initDb = require('./config/initializeDB'); 
+const initDb = require('./config/initializeDB');
 
 // Create MySQL connection pool
 const url = require('url');
@@ -36,7 +36,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1); // Exit the process with an error code
+    process.exit(1);
   });
 
 const app = express();
@@ -88,7 +88,7 @@ app.use(session({
 // Import routers
 const UserRegisterRoutes = require('./routes/Userregister');
 const UserloginRoutes = require('./routes/Userlogin');
-const dailyReportRoutes = require('./routes/dailyReport');
+const dailyReportRoutes = require('./routes/dailyReport'); // Correct route
 const adminPortalRoutes = require('./routes/adminPortal');
 const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
@@ -100,7 +100,7 @@ app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
-app.use('/daily-report', dailyReportRoutes);
+app.use('/daily-report', dailyReportRoutes); 
 app.use('/admin/portal', adminPortalRoutes);
 app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
@@ -129,5 +129,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }).on('error', err => {
   console.error('Server failed to start:', err);
-  process.exit(1); 
+  process.exit(1);
 });
