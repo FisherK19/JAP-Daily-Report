@@ -2,38 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const mysql = require('mysql2/promise');
-require('dotenv').config();
 const path = require('path');
-const initDb = require('./config/initializeDB'); 
+const { pool } = require('./config/connection'); // Ensure this path is correct
+const initDb = require('./config/initializeDB'); // Ensure this path is correct
 
-// Create MySQL connection pool
-let pool;
-try {
-  pool = mysql.createPool({
-    connectionLimit: 80,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-  });
-  console.log('MySQL connection pool created');
-} catch (err) {
-  console.error('Error creating MySQL connection pool:', err);
-  process.exit(1);
-}
-
-// Test the database connection
-pool.getConnection()
-  .then(connection => {
-    console.log('Database connection successful');
-    connection.release();
-  })
-  .catch(err => {
-    console.error('Database connection failed:', err);
-    process.exit(1); // Exit the process with an error code
-  });
+require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
@@ -96,7 +69,7 @@ app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
-app.use('/daily-report', dailyReportRoutes); // This should correctly include the route
+app.use('/daily-report', dailyReportRoutes); // Ensure this path is correct
 app.use('/admin/portal', adminPortalRoutes);
 app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
@@ -125,5 +98,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }).on('error', err => {
   console.error('Server failed to start:', err);
-  process.exit(1); 
+  process.exit(1);
 });

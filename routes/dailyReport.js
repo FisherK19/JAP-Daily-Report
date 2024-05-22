@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/connection');
+const { pool } = require('../config/connection'); // Ensure this path is correct
 const path = require('path');
+
+// Serve the daily report HTML
+router.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
+});
 
 // Route to handle daily report submission
 router.post('/', (req, res) => {
@@ -40,3 +45,4 @@ router.post('/', (req, res) => {
 });
 
 module.exports = router;
+

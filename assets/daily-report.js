@@ -40,6 +40,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Delete employee entry
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.classList.contains('delete-employee-btn')) {
+            event.target.closest('.employee-entry').remove();
+        }
+    });
+
     // Form submission logic
     const dailyReportForm = document.getElementById('daily-report-form');
     if (dailyReportForm) {
@@ -60,19 +67,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            }).then(data => {
+            }).then(response => response.json()).then(data => {
                 alert(data.message);
-                if (data.message === 'Daily report submitted successfully') {
-                    const successMessage = document.createElement('div');
-                    successMessage.className = 'success-message';
-                    successMessage.innerText = 'Daily report submitted successfully';
-                    dailyReportForm.appendChild(successMessage);
-                }
             }).catch(error => {
                 console.error('Error:', error);
                 alert('An error occurred while submitting the report. Please try again.');
