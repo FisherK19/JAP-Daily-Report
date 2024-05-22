@@ -95,6 +95,23 @@ footer {
     margin-top: 20px;
 }
 
+/* Center alignment for employee and hours section */
+.center-table {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.center-table th, .center-table td {
+    text-align: center;
+}
+
+/* Center alignment for materials section */
+.center-input {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* Dropdown colors */
 select#report_copy.white {
     background-color: #ffffff;
