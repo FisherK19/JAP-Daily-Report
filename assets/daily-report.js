@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Update dropdown color based on selection
     const reportCopyDropdown = document.getElementById('report_copy');
 
     if (reportCopyDropdown) {
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDropdownColor();
     }
 
-    // Function to dynamically add employee sections
     const addEmployeeBtn = document.getElementById('add-employee-btn');
     const employeesSection = document.querySelector('.employees-section');
 
@@ -35,37 +33,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
             employeesSection.appendChild(employeeEntry);
 
-            // Add event listener for the new delete button
             employeeEntry.querySelector('.delete-employee-btn').addEventListener('click', function() {
                 employeeEntry.remove();
             });
         });
     }
 
-    // Form submission logic
     const dailyReportForm = document.getElementById('daily-report-form');
     if (dailyReportForm) {
         dailyReportForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
-            console.log('Form data:', data); // Log form data
+            console.log('Form data:', data);
             fetch('/daily-report', {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
             }).then(response => response.json()).then(data => {
                 if (data.message) {
-                    // Display success message
                     const successMessage = document.createElement('div');
                     successMessage.className = 'success-message';
                     successMessage.textContent = 'Daily report submitted successfully';
                     dailyReportForm.appendChild(successMessage);
 
-                    // Optionally, clear the form
                     dailyReportForm.reset();
 
-                    // Remove the success message after a few seconds
                     setTimeout(() => {
                         successMessage.remove();
                     }, 3000);
@@ -76,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Logout function
     const logoutLink = document.getElementById('logout-link');
     if (logoutLink) {
         logoutLink.addEventListener('click', function(event) {

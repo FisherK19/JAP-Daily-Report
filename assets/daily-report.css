@@ -90,20 +90,6 @@ button[type="submit"]:hover, button[type="button"]:hover {
     text-align: center;
 }
 
-/* Additional styling for the delete button */
-.delete-employee-btn {
-    background: none;
-    border: none;
-    color: #dc3545;
-    cursor: pointer;
-    font-size: 1.2em;
-}
-
-.delete-employee-btn:hover {
-    color: #c82333;
-}
-
-
 
 .form-section {
     margin-bottom: 20px;
