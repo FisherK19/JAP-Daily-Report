@@ -55,8 +55,8 @@ th {
 }
 
 input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
-    width: 100%;
-    padding: 8px;
+    width: 95%;
+    padding: 10px; /* Increase padding for larger fields */
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 10px;
