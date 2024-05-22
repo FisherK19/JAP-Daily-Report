@@ -55,11 +55,10 @@ th {
 }
 
 input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
-    width: 95%;
-    padding: 10px; /* Increase padding for larger fields */
+    width: calc(100% - 16px); /* Adjust width to fit better within the table cells */
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    margin-bottom: 10px;
     box-sizing: border-box;
 }
 
