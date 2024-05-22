@@ -6,17 +6,23 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
 const initDb = require('./config/initializeDB');
+const url = require('url');
+
+const JAWSDB_URL = process.env.JAWSDB_URL;
+const parsedUrl = url.parse(JAWSDB_URL);
+const [username, password] = parsedUrl.auth.split(':');
+const database = parsedUrl.pathname.substring(1);
+const host = parsedUrl.hostname;
 
 // Create MySQL connection pool
 let pool;
 try {
   pool = mysql.createPool({
     connectionLimit: 80,
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: host,
+    user: username,
+    password: password,
+    database: database,
   });
   console.log('MySQL connection pool created');
 } catch (err) {
@@ -32,7 +38,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1); // Exit the process with an error code
+    process.exit(1);
   });
 
 const app = express();
