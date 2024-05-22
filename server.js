@@ -77,7 +77,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: true, // Change to true if using HTTPS in production
+    secure: false, // Change to true if using HTTPS in production
   },
 }));
 
