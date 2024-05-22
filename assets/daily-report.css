@@ -35,20 +35,10 @@ form {
     width: 100%;
 }
 
-fieldset {
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-    padding: 10px;
-}
-
-legend {
-    font-weight: bold;
-    padding: 0 10px;
-}
-
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
 }
 
 table, th, td {
@@ -97,6 +87,11 @@ button[type="submit"]:hover {
     font-weight: bold;
     margin-bottom: 5px;
     display: block;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
 }
 
 /* Dropdown colors */
