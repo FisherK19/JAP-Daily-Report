@@ -6,13 +6,18 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
 const url = require('url');
-const initDb = require('./config/initializeDB');
 
+// Parse JAWSDB_URL
 const JAWSDB_URL = process.env.JAWSDB_URL;
-const parsedUrl = url.parse(JAWSDB_URL);
-const [username, password] = parsedUrl.auth.split(':');
+if (!JAWSDB_URL) {
+  console.error('Missing JAWSDB_URL environment variable.');
+  process.exit(1);
+}
+const parsedUrl = new URL(JAWSDB_URL);
+const [username, password] = parsedUrl.username.split(':');
 const database = parsedUrl.pathname.substring(1);
 const host = parsedUrl.hostname;
+const port = parsedUrl.port || 3306;
 
 // Create MySQL connection pool
 let pool;
@@ -20,6 +25,7 @@ try {
   pool = mysql.createPool({
     connectionLimit: 80,
     host: host,
+    port: port,
     user: username,
     password: password,
     database: database,
@@ -38,7 +44,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1);
+    process.exit(1); // Exit the process with an error code
   });
 
 const app = express();
@@ -107,14 +113,6 @@ app.use('/admin/portal', adminPortalRoutes);
 app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
-
-// Run database initialization script
-initDb().then(() => {
-  console.log('Database initialized');
-}).catch(err => {
-  console.error('Database initialization failed:', err);
-  process.exit(1); // Exit the process with an error code
-});
 
 // Logout route
 app.post('/logout', (req, res) => {
