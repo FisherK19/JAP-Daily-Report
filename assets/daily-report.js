@@ -30,9 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div><label>Straight</label><input type="text" name="straight_time[]"></div>
                 <div><label>Time & 1/2</label><input type="text" name="time_and_a_half[]"></div>
                 <div><label>Double Time</label><input type="text" name="double_time[]"></div>
+                <button type="button" class="delete-employee-btn">Delete</button>
             `;
 
             employeesSection.appendChild(employeeEntry);
+
+            // Add event listener for the new delete button
+            employeeEntry.querySelector('.delete-employee-btn').addEventListener('click', function() {
+                employeeEntry.remove();
+            });
         });
     }
 
