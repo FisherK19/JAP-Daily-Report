@@ -2,11 +2,38 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
-const path = require('path');
-const { pool } = require('./config/connection'); // Ensure this path is correct
-const initDb = require('./config/initializeDB'); // Ensure this path is correct
-
+const mysql = require('mysql2/promise');
 require('dotenv').config();
+const path = require('path');
+const initDb = require('./config/initializeDB');
+
+// Create MySQL connection pool
+let pool;
+try {
+  pool = mysql.createPool({
+    connectionLimit: 80,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  });
+  console.log('MySQL connection pool created');
+} catch (err) {
+  console.error('Error creating MySQL connection pool:', err);
+  process.exit(1);
+}
+
+// Test the database connection
+pool.getConnection()
+  .then(connection => {
+    console.log('Database connection successful');
+    connection.release();
+  })
+  .catch(err => {
+    console.error('Database connection failed:', err);
+    process.exit(1); // Exit the process with an error code
+  });
 
 const app = express();
 app.use(bodyParser.json());
@@ -50,7 +77,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: false, // Change to true if using HTTPS in production
+    secure: true, // Change to true if using HTTPS in production
   },
 }));
 
@@ -69,7 +96,7 @@ app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
-app.use('/daily-report', dailyReportRoutes); // Ensure this path is correct
+app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes);
 app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
