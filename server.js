@@ -5,7 +5,6 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const initDb = require('./config/initializeDB');
 const url = require('url');
 
 const JAWSDB_URL = process.env.JAWSDB_URL;
@@ -38,7 +37,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1);
+    process.exit(1); // Exit the process with an error code
   });
 
 const app = express();

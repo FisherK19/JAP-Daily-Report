@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS daily_reports;
 
 -- Create a table for storing admin user data
-CREATE TABLE IF NOT EXISTS admin_users (
+CREATE TABLE admin_users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS admin_users (
 );
 
 -- Create a table for storing user data with roles
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create a table for storing daily reports with more detailed fields
-CREATE TABLE IF NOT EXISTS daily_reports (
+CREATE TABLE daily_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date DATE NOT NULL,
     job_number VARCHAR(50),
@@ -62,6 +62,5 @@ CREATE TABLE IF NOT EXISTS daily_reports (
     title VARCHAR(255),
     content TEXT,
     admin_id INT,
-    username VARCHAR(255)
+    FOREIGN KEY (admin_id) REFERENCES admin_users(id)
 );
-
