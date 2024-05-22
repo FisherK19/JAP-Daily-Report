@@ -51,6 +51,8 @@ CREATE TABLE daily_reports (
     scaffolding VARCHAR(255),
     safety_equipment VARCHAR(255),
     miscellaneous_equipment VARCHAR(255),
+    material_description TEXT,
+    equipment_description TEXT,
     hours_worked DECIMAL(5,2) NOT NULL,
     employee VARCHAR(255) NOT NULL,
     straight_time DECIMAL(5,2) NOT NULL,

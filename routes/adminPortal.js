@@ -26,18 +26,13 @@ router.get('/users/:date', (req, res) => {
 
 // Function to add the header on each page
 function addHeader(doc) {
-    // Add company logo with explicit position and size
     const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
     doc.image(logoPath, {
         fit: [150, 150],
         align: 'center'
     });
-
-    // Add more space after the logo to prevent overlap
     doc.moveDown(3);
-
-    // Add header text
-    doc.fontSize(20).text(`Daily Reports`, { align: 'center' });
+    doc.fontSize(20).text('Daily Reports', { align: 'center' });
     doc.moveDown(2);
 }
 
@@ -59,56 +54,87 @@ router.get('/report/pdf/:date/:employee', (req, res) => {
         addHeader(doc);
 
         results.forEach(report => {
-            // Define header style
-            doc.fontSize(14).font('Helvetica-Bold');
+            doc.fontSize(14).font('Helvetica-Bold').text('Daily Report', { align: 'center' });
+            doc.moveDown(1);
 
-            // Format the date to exclude the timestamp
-            const formattedDate = new Date(report.date).toLocaleDateString('en-US', {
-                weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
-            });
+            // Table structure similar to HTML form
+            doc.fontSize(12).font('Helvetica-Bold').text('JOHN A. PAPALAS & COMPANY', { continued: true }).text('Date: ', { continued: true }).font('Helvetica').text(report.date);
+            doc.moveDown(0.5);
+            doc.font('Helvetica-Bold').text('Tel - 313-388-3000    Fax - 313-388-9864', { continued: true }).text('Job #: ', { continued: true }).font('Helvetica').text(report.job_number);
+            doc.moveDown(1);
 
-            // Add report details with custom styling
-            doc.text(`Date:`, { continued: true }).font('Helvetica').text(` ${formattedDate}`);
+            doc.font('Helvetica-Bold').text('Foreman: ', { continued: true }).font('Helvetica').text(report.foreman, { continued: true }).font('Helvetica-Bold').text('    T&M: ', { continued: true }).font('Helvetica').text(report.t_and_m ? 'Yes' : 'No', { continued: true }).font('Helvetica-Bold').text('    Contract: ', { continued: true }).font('Helvetica').text(report.contract ? 'Yes' : 'No');
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Job Number:`, { continued: true }).font('Helvetica').text(` ${report.job_number}`);
+            doc.font('Helvetica-Bold').text('Cellular #: ', { continued: true }).font('Helvetica').text(report.cell_number, { continued: true }).font('Helvetica-Bold').text('    Job Completion %: ', { continued: true }).font('Helvetica').text(report.job_completion);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Foreman:`, { continued: true }).font('Helvetica').text(` ${report.foreman}`);
+            doc.font('Helvetica-Bold').text('Customer: ', { continued: true }).font('Helvetica').text(report.customer, { continued: true }).font('Helvetica-Bold').text('    Shift/Start Time: ', { continued: true }).font('Helvetica').text(report.shift_start_time);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Customer:`, { continued: true }).font('Helvetica').text(` ${report.customer}`);
+            doc.font('Helvetica-Bold').text('Customer PO #: ', { continued: true }).font('Helvetica').text(report.customer_po);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Customer PO:`, { continued: true }).font('Helvetica').text(` ${report.customer_po}`);
+            doc.font('Helvetica-Bold').text('Job Site: ', { continued: true }).font('Helvetica').text(report.job_site);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Job Site:`, { continued: true }).font('Helvetica').text(` ${report.job_site}`);
+            doc.font('Helvetica-Bold').text('Job Description: ', { continued: true }).font('Helvetica').text(report.job_description);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Job Description:`, { continued: true }).font('Helvetica').text(` ${report.job_description}`);
+            doc.font('Helvetica-Bold').text('Sheeting/Materials: ', { continued: true }).font('Helvetica').text(report.material_description);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Employees:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Job Completion:`, { continued: true }).font('Helvetica').text(` ${report.job_completion}`);
+            doc.fontSize(10).font('Helvetica-Bold').text('Hours Worked   Employee   Straight   Time & 1/2   Double Time');
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Material Description:`, { continued: true }).font('Helvetica').text(` ${report.material_description}`);
+            doc.font('Helvetica').text(`${report.hours_worked}   ${report.employee}   ${report.straight_time}   ${report.time_and_a_half}   ${report.double_time}`);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Equipment:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Equipment Description:`, { continued: true }).font('Helvetica').text(` ${report.equipment_description}`);
+            doc.fontSize(10).font('Helvetica-Bold').text('Trucks: ', { continued: true }).font('Helvetica').text(report.trucks, { continued: true }).font('Helvetica-Bold').text('   Welders: ', { continued: true }).font('Helvetica').text(report.welders, { continued: true }).font('Helvetica-Bold').text('   Generators: ', { continued: true }).font('Helvetica').text(report.generators);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Hours Worked:`, { continued: true }).font('Helvetica').text(` ${report.hours_worked}`);
+            doc.font('Helvetica-Bold').text('Compressors: ', { continued: true }).font('Helvetica').text(report.compressors, { continued: true }).font('Helvetica-Bold').text('   Fuel: ', { continued: true }).font('Helvetica').text(report.fuel, { continued: true }).font('Helvetica-Bold').text('   Scaffolding: ', { continued: true }).font('Helvetica').text(report.scaffolding);
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Employee:`, { continued: true }).font('Helvetica').text(` ${report.employee}`);
+            doc.font('Helvetica-Bold').text('Safety Equipment: ', { continued: true }).font('Helvetica').text(report.safety_equipment, { continued: true }).font('Helvetica-Bold').text('   Miscellaneous: ', { continued: true }).font('Helvetica').text(report.miscellaneous_equipment);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Sub-Contract:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Straight Time:`, { continued: true }).font('Helvetica').text(` ${report.straight_time}`);
+            doc.fontSize(10).font('Helvetica').text(report.sub_contract);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Emergency Purchases:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Double Time:`, { continued: true }).font('Helvetica').text(` ${report.double_time}`);
+            doc.fontSize(10).font('Helvetica').text(report.emergency_purchases);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Delay/Lost Time:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Time and 1/2:`, { continued: true }).font('Helvetica').text(` ${report.time_and_a_half}`);
+            doc.fontSize(10).font('Helvetica').text(report.delay_lost_time);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Employees Off:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Emergency Purchases:`, { continued: true }).font('Helvetica').text(` ${report.emergency_purchases}`);
+            doc.fontSize(10).font('Helvetica').text(report.employees_off);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Temperature/Humidity:', { align: 'left' });
             doc.moveDown(0.5);
-            doc.font('Helvetica-Bold').text(`Approved By:`, { continued: true }).font('Helvetica').text(` ${report.approved_by}`);
-            doc.moveDown(2); // Add extra space between entries
+            doc.fontSize(10).font('Helvetica').text(report.temperature_humidity);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Approved By:', { align: 'left' });
+            doc.moveDown(0.5);
+            doc.fontSize(10).font('Helvetica').text(report.approved_by);
+            doc.moveDown(1);
+
+            doc.fontSize(12).font('Helvetica-Bold').text('Report Copy:', { align: 'left' });
+            doc.moveDown(0.5);
+            doc.fontSize(10).font('Helvetica').text(report.report_copy);
+            doc.moveDown(2);
+
+            // Add footer at the bottom of the first page
+            const pageHeight = doc.page.height;
+            const footerY = pageHeight - 50; // Position 50 units from the bottom
+            doc.y = footerY; // Set the current position to the footerY value
+            doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
         });
-
-        // Add footer at the bottom of the first page
-        const pageHeight = doc.page.height;
-        const footerY = pageHeight - 50; // Position 50 units from the bottom
-        doc.y = footerY; // Set the current position to the footerY value
-        doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
 
         doc.end();
     });

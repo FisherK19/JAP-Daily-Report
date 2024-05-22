@@ -6,6 +6,7 @@ const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
 const url = require('url');
+const initDb = require('./config/initializeDB');
 
 const JAWSDB_URL = process.env.JAWSDB_URL;
 const parsedUrl = url.parse(JAWSDB_URL);
@@ -37,7 +38,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1); // Exit the process with an error code
+    process.exit(1);
   });
 
 const app = express();
@@ -129,4 +130,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
