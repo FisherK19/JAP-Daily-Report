@@ -55,7 +55,7 @@ th {
 }
 
 input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
-    width: calc(100% - 16px); /* Adjust width to fit better within the table cells */
+    width: 100%; /* Adjust width to fit better within the table cells */
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -98,6 +98,11 @@ footer {
 .center-table {
     width: 100%;
     margin: 0 auto;
+}
+
+.center-table th, .center-table td {
+    text-align: center;
+    vertical-align: middle;
 }
 
 /* Center alignment for materials section */
