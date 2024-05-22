@@ -1,14 +1,14 @@
-/* Global styles */
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    box-sizing: border-box;
 }
 
 .container {
-    max-width: 960px;
+    width: 100%;
+    max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
@@ -16,73 +16,60 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Header styles */
-header {
-    background-color: #343a40;
-    color: #fff;
+.header-section {
     text-align: center;
-    padding: 20px 0;
+    margin-bottom: 20px;
 }
 
-header img {
-    max-width: 300px; 
+.header-section img {
+    max-width: 200px;
     margin-bottom: 10px;
 }
 
-header h1 {
+.header-section h1 {
     font-size: 24px;
     margin: 0;
-    color: #333;
 }
 
-/* Navigation styles */
-nav ul {
-    list-style: none;
-    padding: 0;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: #007bff;
-}
-
-nav ul li a:hover {
-    text-decoration: underline;
-}
-
-/* Form styles */
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="date"],
-input[type="checkbox"] {
+form {
     width: 100%;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
     padding: 10px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
+    width: 100%;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    transition: border-color 0.3s ease-in-out;
-}
-
-input[type="text"]:focus,
-input[type="date"]:focus,
-input[type="checkbox"]:focus {
-    border-color: #007bff;
-    outline: none;
+    margin-bottom: 10px;
 }
 
 input[type="checkbox"] {
@@ -96,34 +83,31 @@ button[type="submit"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
 }
 
 button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-/* Employee hours styles */
-.employee-hours {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+.form-section {
+    margin-bottom: 20px;
 }
 
-.employee-entry {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 4px;
+.form-section label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
 }
 
-/* Footer styles */
-footer {
-    text-align: center;
-    margin-top: 20px;
+/* Dropdown colors */
+select#report_copy.white {
+    background-color: #ffffff;
 }
 
-footer p {
-    font-size: 14px;
-    color: #777;
+select#report_copy.yellow {
+    background-color: #ffffcc;
+}
+
+select#report_copy.pink {
+    background-color: #ffcccb;
 }
