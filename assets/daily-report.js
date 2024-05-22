@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.message) {
                     const successMessage = document.createElement('div');
                     successMessage.className = 'success-message';
-                    successMessage.textContent = 'Daily report submitted successfully';
+                    successMessage.textContent = data.message;
                     dailyReportForm.appendChild(successMessage);
 
                     dailyReportForm.reset();

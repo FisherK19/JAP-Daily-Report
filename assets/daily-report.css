@@ -1,195 +1,103 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
 }
-
 .container {
-    width: 100%;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 .header-section {
     text-align: center;
     margin-bottom: 20px;
 }
-
 .header-section img {
     max-width: 200px;
     margin-bottom: 10px;
 }
-
 .header-section h1 {
     font-size: 24px;
     margin: 0;
 }
-
 form {
     width: 100%;
 }
-
+fieldset {
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+}
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
 }
-
 table, th, td {
     border: 1px solid #ddd;
 }
-
 th, td {
     padding: 8px;
-    text-align: center;
+    text-align: left;
 }
-
 th {
     background-color: #f2f2f2;
 }
-
 input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
     width: 100%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
+    margin-bottom: 10px;
 }
-
 input[type="checkbox"] {
     width: auto;
 }
-
-button[type="submit"], button[type="button"] {
+button[type="submit"], #add-employee-btn {
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
 }
-
-button[type="submit"]:hover, button[type="button"]:hover {
+button[type="submit"]:hover, #add-employee-btn:hover {
     background-color: #0056b3;
 }
-
-.success-message {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #28a745;
-    background-color: #d4edda;
-    color: #155724;
-    border-radius: 4px;
-    text-align: center;
-}
-
-
-.form-section {
+.navbar {
     margin-bottom: 20px;
 }
-
-.form-section label {
-    font-weight: bold;
-    margin-bottom: 5px;
-    display: block;
+.navbar-nav .nav-link {
+    color: #000;
 }
-
-footer {
-    text-align: center;
-    margin-top: 20px;
+.navbar-nav .nav-link:hover {
+    color: #007bff;
 }
-
-.employees-section {
-    margin-bottom: 20px;
-}
-
 .employee-entry {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
 }
-
-.employee-entry > div {
-    flex: 1 1 calc(16% - 10px); /* Adjusted to fit more evenly */
-    margin: 5px;
-}
-
-.employee-entry > div input {
-    width: 100%;
-}
-
 .delete-employee-btn {
-    background: none;
+    background-color: transparent;
     border: none;
-    color: #007bff;
     cursor: pointer;
-    margin-left: 10px;
-    padding: 8px;
-    font-size: 16px;
+    color: red;
 }
-
-.delete-employee-btn:hover {
-    color: #0056b3;
+.delete-employee-btn i {
+    font-size: 1.5em;
 }
-
-#add-employee-btn {
-    margin-top: -10px; /* Move the button closer to the employee entries */
-}
-
-@media (max-width: 768px) {
-    .header-section h1 {
-        font-size: 20px;
-    }
-
-    table, th, td {
-        font-size: 14px;
-        padding: 6px;
-    }
-
-    input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
-        padding: 6px;
-    }
-
-    button[type="submit"], button[type="button"] {
-        padding: 8px 16px;
-        font-size: 14px;
-    }
-
-    .employee-entry > div {
-        flex: 1 1 100%;
-        margin: 5px 0;
-    }
-}
-
-@media (max-width: 480px) {
-    .header-section h1 {
-        font-size: 18px;
-    }
-
-    table, th, td {
-        font-size: 12px;
-        padding: 4px;
-    }
-
-    input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
-        padding: 4px;
-    }
-
-    button[type="submit"], button[type="button"] {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
-    .employee-entry > div {
-        flex: 1 1 100%;
-        margin: 5px 0;
-    }
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    text-align: center;
 }
