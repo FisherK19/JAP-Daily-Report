@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
+const path = require('path');
 
-// Route to submit a new daily report
+// Route to handle daily report submission
 router.post('/', (req, res) => {
     const {
         date, job_number, contract, foreman, cell_number, customer, customer_po,
-        job_site, job_description, job_completion, manlifts_equipment, manlifts_fuel,
-        sub_contract, emergency_purchases, delay_lost_time, employees_off, temperature_humidity,
-        approved_by, report_copy
+        job_site, job_description, job_completion, material_description, equipment_description,
+        hours_worked, employee, straight_time, double_time, time_and_a_half,
+        emergency_purchases, approved_by
     } = req.body;
 
     console.log('Received data:', req.body); // Log received data
@@ -16,23 +17,23 @@ router.post('/', (req, res) => {
     const sql = `
         INSERT INTO daily_reports (
             date, job_number, contract, foreman, cell_number, customer, customer_po,
-            job_site, job_description, job_completion, manlifts_equipment, manlifts_fuel,
-            sub_contract, emergency_purchases, delay_lost_time, employees_off, temperature_humidity,
-            approved_by, report_copy
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            job_site, job_description, job_completion, material_description, equipment_description,
+            hours_worked, employee, straight_time, double_time, time_and_a_half,
+            emergency_purchases, approved_by
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
         date, job_number, contract ? 1 : 0, foreman, cell_number, customer, customer_po,
-        job_site, job_description, job_completion, manlifts_equipment, manlifts_fuel,
-        sub_contract, emergency_purchases, delay_lost_time, employees_off, temperature_humidity,
-        approved_by, report_copy
+        job_site, job_description, job_completion, material_description, equipment_description,
+        hours_worked, employee, straight_time, double_time, time_and_a_half,
+        emergency_purchases, approved_by
     ];
 
     pool.query(sql, values, (error, results) => {
         if (error) {
             console.error('Error inserting data:', error.sqlMessage);
-            return res.status(500).json({ message: 'Internal server error', error: error.sqlMessage });
+            return res.status(500).json({ message: 'Internal server error' });
         }
         res.status(201).json({ message: 'Daily report submitted successfully' });
     });
