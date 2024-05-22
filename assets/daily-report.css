@@ -47,7 +47,7 @@ table, th, td {
 
 th, td {
     padding: 8px;
-    text-align: left;
+    text-align: center; /* Center align text */
 }
 
 th {
@@ -97,12 +97,8 @@ footer {
 
 /* Center alignment for employee and hours section */
 .center-table {
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
-}
-
-.center-table th, .center-table td {
-    text-align: center;
 }
 
 /* Center alignment for materials section */
