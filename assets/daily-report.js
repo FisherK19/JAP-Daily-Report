@@ -75,18 +75,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-});
 
-// Logout function
-function logout() {
-    fetch('/logout', {
-        method: 'POST',
-        credentials: 'same-origin'
-    }).then(response => {
-        if (response.ok) {
-            window.location.href = '/login';
-        } else {
-            alert('Logout failed');
-        }
-    });
-}
+    // Logout function
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed');
+                }
+            });
+        });
+    }
+});
