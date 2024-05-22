@@ -7,7 +7,6 @@ require('dotenv').config();
 const path = require('path');
 const url = require('url');
 
-// Parse JAWSDB_URL
 const JAWSDB_URL = process.env.JAWSDB_URL;
 const parsedUrl = url.parse(JAWSDB_URL);
 const [username, password] = parsedUrl.auth.split(':');
@@ -38,7 +37,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1);
+    process.exit(1); // Exit the process with an error code
   });
 
 const app = express();
