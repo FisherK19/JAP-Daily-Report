@@ -8,28 +8,15 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
         }
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid #000;
-        }
-        th, td {
-            padding: 4px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
         }
         .header-section {
             text-align: center;
@@ -43,11 +30,38 @@
             font-size: 24px;
             margin: 0;
         }
+        form {
+            width: 100%;
+        }
+        fieldset {
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        legend {
+            font-weight: bold;
+            padding: 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
         input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
             width: 100%;
-            padding: 5px;
+            padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            margin-bottom: 10px;
         }
         input[type="checkbox"] {
             width: auto;
@@ -62,6 +76,14 @@
         }
         button[type="submit"]:hover {
             background-color: #0056b3;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .form-section label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
         }
     </style>
 </head>
@@ -115,6 +137,405 @@
                     <th>Job Description:</th>
                     <td colspan="7"><textarea name="job_description" required></textarea></td>
                 </tr>
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
+                <tr>
+                    <th rowspan="2">Hours Worked</th>
+                    <th rowspan="2">EMPLOYEE</th>
+                    <th colspan="3">Hours</th>
+                    <th rowspan="2">SHEETING</th>
+                </tr>
+                <tr>
+                    <th>Straight</th>
+                    <th>Time & 1/2</th>
+                    <th>Double Time</th>
+                </tr>
+                <!-- Repeat this block for each employee entry -->
+                <tr>
+                    <td><input type="text" name="hours_worked[]"></td>
+                    <td><input type="text" name="employee[]"></td>
+                    <td><input type="text" name="straight_time[]"></td>
+                    <td><input type="text" name="time_and_a_half[]"></td>
+                    <td><input type="text" name="double_time[]"></td>
+                    <td></td>
+                </tr>
+                <!-- Repeat up to 20 times -->
                 <tr>
                     <th rowspan="2">Hours Worked</th>
                     <th rowspan="2">EMPLOYEE</th>
