@@ -55,7 +55,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
             }).then(response => response.json()).then(data => {
-                alert(data.message);
+                if (data.message) {
+                    // Display success message
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.textContent = 'Daily report submitted successfully';
+                    dailyReportForm.appendChild(successMessage);
+
+                    // Optionally, clear the form
+                    dailyReportForm.reset();
+
+                    // Remove the success message after a few seconds
+                    setTimeout(() => {
+                        successMessage.remove();
+                    }, 3000);
+                }
             }).catch(error => {
                 console.error('Error:', error);
             });
