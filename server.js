@@ -5,7 +5,7 @@ const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 const path = require('path');
-const initDb = require('./config/initializeDB'); // Ensure this matches the file name
+const initDb = require('./config/initializeDB'); 
 
 // Create MySQL connection pool
 const url = require('url');
@@ -129,5 +129,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 }).on('error', err => {
   console.error('Server failed to start:', err);
-  process.exit(1); // Exit the process with an error code
+  process.exit(1); 
 });

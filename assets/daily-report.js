@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
             }).then(response => response.json()).then(data => {
+                console.log('Server response:', data); // Log server response
                 if (data.message) {
                     const successMessage = document.createElement('div');
                     successMessage.className = 'success-message';

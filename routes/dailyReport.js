@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     const {
         date, job_number, contract, foreman, cell_number, customer, customer_po,
-        job_site, job_description, job_completion, siding, roofing, flashing, miscellaneous,
+        job_site, job_description, job_completion, sheeting_materials,
         trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
         hours_worked, employee, straight_time, double_time, time_and_a_half,
         emergency_purchases, approved_by
@@ -23,16 +23,16 @@ router.post('/', (req, res) => {
     const sql = `
         INSERT INTO daily_reports (
             date, job_number, contract, foreman, cell_number, customer, customer_po,
-            job_site, job_description, job_completion, siding, roofing, flashing, miscellaneous,
+            job_site, job_description, job_completion, sheeting_materials,
             trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
             hours_worked, employee, straight_time, double_time, time_and_a_half,
             emergency_purchases, approved_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const values = [
         date, job_number, contract ? 1 : 0, foreman, cell_number, customer, customer_po,
-        job_site, job_description, job_completion, siding, roofing, flashing, miscellaneous,
+        job_site, job_description, job_completion, sheeting_materials,
         trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
         hours_worked, employee, straight_time, double_time, time_and_a_half,
         emergency_purchases, approved_by
