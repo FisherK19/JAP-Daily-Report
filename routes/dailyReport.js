@@ -1,6 +1,7 @@
+// dailyReport.js
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/connection'); // Ensure this path is correct
+const { pool } = require('../config/connection'); 
 const path = require('path');
 
 // Serve the daily report HTML
@@ -45,4 +46,3 @@ router.post('/', (req, res) => {
 });
 
 module.exports = router;
-
