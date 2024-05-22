@@ -107,7 +107,7 @@ footer {
 }
 
 .employee-entry > div {
-    flex: 1 1 calc(20% - 10px);
+    flex: 1 1 calc(16% - 10px); /* Adjusted to fit more evenly */
     margin: 5px;
 }
 
@@ -121,13 +121,15 @@ footer {
     color: #007bff;
     cursor: pointer;
     margin-left: 10px;
+    padding: 8px;
+    font-size: 16px;
 }
 
 .delete-employee-btn:hover {
     color: #0056b3;
 }
 
-.add-employee-btn {
+#add-employee-btn {
     margin-top: -10px; /* Move the button closer to the employee entries */
 }
 
