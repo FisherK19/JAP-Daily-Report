@@ -96,7 +96,7 @@ app.use('/admin/register', adminRegisterRoutes);
 app.use('/admin/login', adminLoginRoutes);
 app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
-app.use('/daily-report', dailyReportRoutes); 
+app.use('/daily-report', dailyReportRoutes); // This should correctly include the route
 app.use('/admin/portal', adminPortalRoutes);
 app.use('/admin/reports', adminReportRoutes);
 app.use('/users', userRoutes);
