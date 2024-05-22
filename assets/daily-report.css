@@ -124,3 +124,44 @@ select#report_copy.yellow {
 select#report_copy.pink {
     background-color: #ffcccb;
 }
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .header-section h1 {
+        font-size: 20px;
+    }
+
+    table, th, td {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
+        padding: 6px;
+    }
+
+    button[type="submit"] {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-section h1 {
+        font-size: 18px;
+    }
+
+    table, th, td {
+        font-size: 12px;
+        padding: 4px;
+    }
+
+    input[type="text"], input[type="date"], input[type="checkbox"], textarea, select {
+        padding: 4px;
+    }
+
+    button[type="submit"] {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+}
