@@ -76,6 +76,8 @@
                                 option.value = user.employee;
                                 option.textContent = user.employee;
                                 userSelect.appendChild(option);
+                            } else {
+                                console.log('Skipping empty or invalid user:', user);
                             }
                         });
                     }
@@ -121,6 +123,8 @@
             });
         }
     </script>
+    
+             
     
     
 </body>
