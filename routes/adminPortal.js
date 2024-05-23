@@ -13,16 +13,26 @@ router.get('/', (req, res) => {
 // Route to fetch users for a specific date
 router.get('/users/:date', (req, res) => {
     const { date } = req.params;
-    console.log(`Fetching users for date: ${date}`); // Debug log
     pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
         if (error) {
-            console.error('Error fetching users:', error); // Error log
+            console.error('Error fetching users:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
-        console.log('Users fetched:', results); // Debug log
         res.status(200).json(results);
     });
 });
+
+// Function to add the header on each page
+function addHeader(doc) {
+    const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
+    doc.image(logoPath, {
+        fit: [150, 150],
+        align: 'center'
+    });
+    doc.moveDown(3);
+    doc.fontSize(20).text('Daily Reports', { align: 'center' });
+    doc.moveDown(2);
+}
 
 // Route for generating user-specific PDF report
 router.get('/report/pdf/:date/:employee', (req, res) => {
@@ -38,7 +48,6 @@ router.get('/report/pdf/:date/:employee', (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.pdf`);
         doc.pipe(res);
 
-        // Add header on the first page
         addHeader(doc);
 
         results.forEach(report => {
@@ -118,6 +127,11 @@ router.get('/report/pdf/:date/:employee', (req, res) => {
             doc.moveDown(2);
         });
 
+        const pageHeight = doc.page.height;
+        const footerY = pageHeight - 50;
+        doc.y = footerY;
+        doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
+
         doc.end();
     });
 });
@@ -196,7 +210,6 @@ router.get('/report/all/pdf/:date', (req, res) => {
 
         const doc = new PDFDocument({ margin: 50 });
 
-        // Event listener for adding header on new pages
         doc.on('pageAdded', () => {
             addHeader(doc);
         });
@@ -205,27 +218,23 @@ router.get('/report/all/pdf/:date', (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=all_reports_${date}.pdf`);
         doc.pipe(res);
 
-        // Add header on the first page
         addHeader(doc);
 
         let firstReport = true;
 
         results.forEach(report => {
             if (!firstReport) {
-                doc.addPage(); // Add a page break between user reports
+                doc.addPage();
             } else {
                 firstReport = false;
             }
 
-            // Define header style
             doc.fontSize(14).font('Helvetica-Bold');
 
-            // Format the date to exclude the timestamp
             const formattedDate = new Date(report.date).toLocaleDateString('en-US', {
                 weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
             });
 
-            // Add report details with custom styling
             doc.text(`Date:`, { continued: true }).font('Helvetica').text(` ${formattedDate}`);
             doc.moveDown(0.5);
             doc.font('Helvetica-Bold').text(`Job Number:`, { continued: true }).font('Helvetica').text(` ${report.job_number}`);
@@ -259,13 +268,12 @@ router.get('/report/all/pdf/:date', (req, res) => {
             doc.font('Helvetica-Bold').text(`Emergency Purchases:`, { continued: true }).font('Helvetica').text(` ${report.emergency_purchases}`);
             doc.moveDown(0.5);
             doc.font('Helvetica-Bold').text(`Approved By:`, { continued: true }).font('Helvetica').text(` ${report.approved_by}`);
-            doc.moveDown(2); // Add extra space between entries
+            doc.moveDown(2);
         });
 
-        // Add footer at the bottom of the first page
         const pageHeight = doc.page.height;
-        const footerY = pageHeight - 50; // Position 50 units from the bottom
-        doc.y = footerY; // Set the current position to the footerY value
+        const footerY = pageHeight - 50;
+        doc.y = footerY;
         doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
 
         doc.end();
@@ -336,17 +344,6 @@ router.get('/report/all/excel/:date', (req, res) => {
 });
 
 module.exports = router;
-
-function addHeader(doc) {
-    const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
-    doc.image(logoPath, {
-        fit: [150, 150],
-        align: 'center'
-    });
-    doc.moveDown(3);
-    doc.fontSize(20).text('Daily Reports', { align: 'center' });
-    doc.moveDown(2);
-}
 
 
 

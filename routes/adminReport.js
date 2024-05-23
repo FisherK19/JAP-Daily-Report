@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
-const pdfkit = require('pdfkit');
-const fs = require('fs');
+const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 
 // Configure Nodemailer transporter
@@ -19,7 +18,7 @@ const transporter = nodemailer.createTransport({
 // Function to send email alert with download link to PDF report
 function sendAlertEmail(adminEmail, userId, pdfPath) {
     const mailOptions = {
-        from: 'fisherkristie19@icloud.com',
+        from: process.env.EMAIL_ADDRESS,
         to: adminEmail,
         subject: 'New PDF Daily Report Downloaded',
         html: `A new PDF daily report has been downloaded for user ${userId}.<br>Download Link: <a href="${pdfPath}">${pdfPath}</a>`
@@ -40,10 +39,10 @@ router.get('/pdf/:userId', async (req, res) => {
 
     try {
         // Fetch user's daily reports from the database
-        const reports = await pool.query('SELECT * FROM daily_reports WHERE user_id = ?', [userId]);
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE user_id = ?', [userId]);
 
         // Create a new PDF document
-        const doc = new pdfkit();
+        const doc = new PDFDocument();
         const pdfPath = `user_${userId}_reports.pdf`;
 
         // Write daily reports data to the PDF document
@@ -62,7 +61,7 @@ router.get('/pdf/:userId', async (req, res) => {
         doc.end();
 
         // Send email alert with download link to admin
-        const adminEmail = 'fisherkristie19@icloud.com'; // Replace with actual admin email
+        const adminEmail = process.env.EMAIL_ADDRESS; // Use a variable for the admin email
         sendAlertEmail(adminEmail, userId, pdfPath);
     } catch (error) {
         console.error('Error generating PDF:', error);
@@ -71,3 +70,4 @@ router.get('/pdf/:userId', async (req, res) => {
 });
 
 module.exports = router;
+
