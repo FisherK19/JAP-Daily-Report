@@ -16,12 +16,12 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send email alert with download link to PDF report
-function sendAlertEmail(adminEmail, userId, pdfPath) {
+function sendAlertEmail(adminEmail, username, pdfPath) {
     const mailOptions = {
         from: process.env.EMAIL_ADDRESS,
         to: adminEmail,
         subject: 'New PDF Daily Report Downloaded',
-        html: `A new PDF daily report has been downloaded for user ${userId}.<br>Download Link: <a href="${pdfPath}">${pdfPath}</a>`
+        html: `A new PDF daily report has been downloaded for user ${username}.<br>Download Link: <a href="${pdfPath}">${pdfPath}</a>`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -34,16 +34,16 @@ function sendAlertEmail(adminEmail, userId, pdfPath) {
 }
 
 // Route to generate and download PDF report for a specific user
-router.get('/pdf/:userId', async (req, res) => {
-    const { userId } = req.params;
+router.get('/pdf/:username', async (req, res) => {
+    const { username } = req.params;
 
     try {
         // Fetch user's daily reports from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE user_id = ?', [userId]);
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [userId]);
 
         // Create a new PDF document
         const doc = new PDFDocument();
-        const pdfPath = `user_${userId}_reports.pdf`;
+        const pdfPath = `user_${username}_reports.pdf`;
 
         // Write daily reports data to the PDF document
         reports.forEach(report => {
@@ -62,7 +62,7 @@ router.get('/pdf/:userId', async (req, res) => {
 
         // Send email alert with download link to admin
         const adminEmail = process.env.EMAIL_ADDRESS; // Use a variable for the admin email
-        sendAlertEmail(adminEmail, userId, pdfPath);
+        sendAlertEmail(adminEmail, username, pdfPath);
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error' });
