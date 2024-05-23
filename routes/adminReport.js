@@ -39,7 +39,7 @@ router.get('/pdf/:username', async (req, res) => {
 
     try {
         // Fetch user's daily reports from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [userId]);
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE employee = ?', [username]);
 
         // Create a new PDF document
         const doc = new PDFDocument();

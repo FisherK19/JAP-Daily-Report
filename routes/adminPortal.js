@@ -10,16 +10,13 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/adminportal.html'));
 });
 
-// Route to fetch users for a specific date
-router.get('/users/:date', (req, res) => {
-    const { date } = req.params;
-    console.log(`Fetching users for date: ${date}`);
-    pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
+// Route to fetch users for the dropdown
+router.get('/users', (req, res) => {
+    pool.query('SELECT username FROM users', (error, results) => {
         if (error) {
             console.error('Error fetching users:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
-        console.log('Users fetched:', results);
         res.status(200).json(results);
     });
 });
@@ -345,7 +342,6 @@ router.get('/report/all/excel/:date', (req, res) => {
 });
 
 module.exports = router;
-
 
 
 
