@@ -8,16 +8,21 @@ The Daily Report App is a web application designed to manage and generate daily 
 - Fetch and display daily reports by date
 - Download daily reports as PDF or Excel files
 - Select users for specific date reports
-- Send email alerts when reports are downloaded
-
+- Forgot password function - email will be sent to the email provided with a reset link
 ## Screenshots
+### Main Page
 ![Main Page](assets/images/main-page.png)
 
+### Admin Portal
+![Admin Portal](assets/images/admin-portal.png)
+
+### Daily Reports
+![Daily Reports](assets/images/daily-reports.png)
 ## Requirements
 - Node.js
 - MySQL database
 - Heroku account (for deployment)
-- Office 365 email account (for email alerts)
+- Office 365 email account 
 
 ## Installation
 - npm install
@@ -33,13 +38,13 @@ cd JAP-Daily-Report
 
 
 ### Configure Environment Variables
-PORT=3000
-DB_HOST=localhost
-DB_USER=your_db_user
-DB_PASSWORD=your_db_password
-DB_NAME=jap_timesheet
-EMAIL_ADDRESS=your_office365_email
-EMAIL_PASSWORD=your_office365_email_password
+- PORT=3000
+- DB_HOST=localhost
+- DB_USER=your_db_user
+- DB_PASSWORD=your_db_password
+- DB_NAME=jap_timesheet
+- EMAIL_ADDRESS=your_office365_email
+- EMAIL_PASSWORD=your_office365_email_password
 
 ### Usage
 npm start
@@ -52,7 +57,7 @@ Open your web browser and navigate to http://localhost:3000.
 1. Log in using your admin credentials.
 2. Select a date to fetch users and their reports.
 3. Download reports as PDF or Excel files.
-4. Receive email alerts for downloaded reports.
+4. Receive email with reset link for forgot password.
 
 ### Contributing
 1. Fork the repository.
