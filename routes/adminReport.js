@@ -1,20 +1,18 @@
-// routes/adminReport.js
-
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
     host: 'smtp.office365.com',
     port: 587,
-    secure: false,
+    secure: false, 
     auth: {
-        user: process.env.EMAIL_ADDRESS,
+        user: process.env.EMAIL_ADDRESS, 
         pass: process.env.EMAIL_PASSWORD
     }
 });
@@ -40,10 +38,13 @@ function sendAlertEmail(adminEmail, username, pdfPath) {
 // Route to generate and download PDF report for a specific user
 router.get('/pdf/:username', async (req, res) => {
     const { username } = req.params;
+    console.log(`Generating report for username: ${username}`); // Debug log
 
     try {
         // Fetch user's daily reports from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE employee = ?', [username]);
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        
+        console.log(`Reports fetched: ${JSON.stringify(reports)}`); // Debug log
 
         // Check if reports exist for the user
         if (reports.length === 0) {
@@ -90,4 +91,3 @@ router.get('/pdf/:username', async (req, res) => {
 });
 
 module.exports = router;
-
