@@ -11,18 +11,16 @@ router.get('/', (req, res) => {
 });
 
 // Route to fetch users for a specific date
-router.get('/users/:date', (req, res) => {
+router.get('/users/:date', async (req, res) => {
     const { date } = req.params;
-    console.log(`Fetching users for date: ${date}`);
-    pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        if (error) {
-            console.error('Error fetching users:', error);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-        const filteredResults = results.filter(user => user.employee.trim() !== '');
-        console.log('Users fetched:', filteredResults);
+    try {
+        const [results] = await pool.query('SELECT username FROM users WHERE created_at = ?', [date]);
+        const filteredResults = results.filter(user => user.username.trim() !== '');
         res.status(200).json(filteredResults);
-    });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // Function to add the header on each page

@@ -48,45 +48,31 @@
     </footer>
 
     <script>
-        function fetchUsersByDate() {
+        async function fetchUsersByDate() {
             const date = document.getElementById('report-date').value;
             if (!date) return;
-    
-            console.log(`Fetching users for date: ${date}`); // Debug log
-    
-            fetch(`/admin/portal/users/${date}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+
+            try {
+                const response = await fetch(`/admin/portal/users/${date}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const users = await response.json();
+                const userSelect = document.getElementById('user-select');
+                userSelect.innerHTML = '<option value="">Select User</option>';
+                users.forEach(user => {
+                    if (user.username && user.username.trim() !== '') {
+                        const option = document.createElement('option');
+                        option.value = user.username;
+                        option.textContent = user.username;
+                        userSelect.appendChild(option);
                     }
-                    return response.json();
-                })
-                .then(users => {
-                    console.log('Users received:', users); // Debug log
-    
-                    const userSelect = document.getElementById('user-select');
-                    userSelect.innerHTML = '<option value="">Select User</option>';
-                    if (users.length === 0) {
-                        console.log('No users found for the selected date.');
-                    } else {
-                        users.forEach(user => {
-                            if (user.employee && user.employee.trim() !== '') {
-                                console.log(`Adding user: ${user.employee}`);
-                                const option = document.createElement('option');
-                                option.value = user.employee;
-                                option.textContent = user.employee;
-                                userSelect.appendChild(option);
-                            } else {
-                                console.log('Skipping empty or invalid user:', user);
-                            }
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching users:', error);
                 });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
         }
-    
+
         function downloadUserReport(format) {
             const date = document.getElementById('report-date').value;
             const user = document.getElementById('user-select').value;
@@ -94,22 +80,22 @@
                 alert('Please select a date and a user.');
                 return;
             }
-    
+
             const url = `/admin/portal/report/${format}/${date}/${user}`;
             window.location.href = url;
         }
-    
+
         function downloadReport(format) {
             const date = document.getElementById('report-date').value;
             if (!date) {
                 alert('Please select a date.');
                 return;
             }
-    
+
             const url = `/admin/portal/report/all/${format}/${date}`;
             window.location.href = url;
         }
-    
+
         function logout() {
             fetch('/logout', {
                 method: 'POST',
@@ -123,10 +109,6 @@
             });
         }
     </script>
-    
-             
-    
-    
 </body>
 </html>
 
