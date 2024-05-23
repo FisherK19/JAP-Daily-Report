@@ -55,7 +55,12 @@
             console.log(`Fetching users for date: ${date}`); // Debug log
     
             fetch(`/admin/portal/users/${date}`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(users => {
                     console.log('Users received:', users); // Debug log
     
@@ -65,11 +70,13 @@
                         console.log('No users found for the selected date.');
                     } else {
                         users.forEach(user => {
-                            console.log(`Adding user: ${user.employee}`);
-                            const option = document.createElement('option');
-                            option.value = user.employee;
-                            option.textContent = user.employee;
-                            userSelect.appendChild(option);
+                            if (user.employee && user.employee.trim() !== '') {
+                                console.log(`Adding user: ${user.employee}`);
+                                const option = document.createElement('option');
+                                option.value = user.employee;
+                                option.textContent = user.employee;
+                                userSelect.appendChild(option);
+                            }
                         });
                     }
                 })
@@ -115,8 +122,10 @@
         }
     </script>
     
+    
 </body>
 </html>
+
 
 
 
