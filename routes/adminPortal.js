@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 router.get('/users', async (req, res) => {
     try {
         const [results] = await pool.query('SELECT DISTINCT username FROM daily_reports');
-        const filteredResults = results.filter(user => user.username.trim() !== '');
+        const filteredResults = results.filter(user => user.username && user.username.trim() !== '');
         res.status(200).json(filteredResults);
     } catch (error) {
         console.error('Error fetching users:', error);
