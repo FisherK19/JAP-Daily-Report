@@ -13,9 +13,8 @@ router.get('/', (req, res) => {
 // Route to fetch users for a specific date
 router.get('/users', async (req, res) => {
     try {
-        const [results] = await pool.query('SELECT DISTINCT username FROM daily_reports');
-        const filteredResults = results.filter(user => user.username && user.username.trim() !== '');
-        res.status(200).json(filteredResults);
+        const [results] = await pool.query('SELECT DISTINCT username FROM users WHERE username IS NOT NULL AND username != ""');
+        res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ message: 'Internal server error' });
