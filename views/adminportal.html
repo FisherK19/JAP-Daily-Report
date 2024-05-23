@@ -105,6 +105,10 @@
                 }
             });
         }
+                function downloadUserReport(username) {
+            const url = `/admin/portal/report/pdf/${username}`;
+            window.location.href = url;
+        }
 
         // Fetch users on page load
         window.onload = fetchUsers;
