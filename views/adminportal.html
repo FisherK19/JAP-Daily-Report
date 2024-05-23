@@ -32,7 +32,7 @@
 
             <div>
                 <label for="report-date">Select Date:</label>
-                <input type="date" id="report-date" onchange="fetchUsersByDate()">
+                <input type="date" id="report-date">
                 <label for="user-select">Select User:</label>
                 <select id="user-select">
                     <option value="">Select User</option>
@@ -48,12 +48,9 @@
     </footer>
 
     <script>
-        async function fetchUsersByDate() {
-            const date = document.getElementById('report-date').value;
-            if (!date) return;
-
+        async function fetchUsers() {
             try {
-                const response = await fetch(`/admin/portal/users/${date}`);
+                const response = await fetch(`/admin/portal/users`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -108,6 +105,9 @@
                 }
             });
         }
+
+        // Fetch users on page load
+        window.onload = fetchUsers;
     </script>
 </body>
 </html>

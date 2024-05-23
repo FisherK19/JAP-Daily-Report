@@ -11,10 +11,9 @@ router.get('/', (req, res) => {
 });
 
 // Route to fetch users for a specific date
-router.get('/users/:date', async (req, res) => {
-    const { date } = req.params;
+router.get('/users', async (req, res) => {
     try {
-        const [results] = await pool.query('SELECT username FROM users WHERE created_at = ?', [date]);
+        const [results] = await pool.query('SELECT DISTINCT username FROM daily_reports');
         const filteredResults = results.filter(user => user.username.trim() !== '');
         res.status(200).json(filteredResults);
     } catch (error) {
