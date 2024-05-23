@@ -86,7 +86,13 @@
         }
 
         function downloadReport(format) {
-            const url = `/admin/portal/report/${format}`;
+            const date = document.getElementById('report-date').value;
+            if (!date) {
+                alert('Please select a date.');
+                return;
+            }
+
+            const url = `/admin/portal/report/all/${format}/${date}`;
             window.location.href = url;
         }
 
