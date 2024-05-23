@@ -13,13 +13,13 @@ router.get('/', (req, res) => {
 // Route to fetch users for a specific date
 router.get('/users/:date', (req, res) => {
     const { date } = req.params;
-    console.log(`Fetching users for date: ${date}`);
+    console.log(`Fetching users for date: ${date}`); // Debug log
     pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
         if (error) {
-            console.error('Error fetching users:', error);
+            console.error('Error fetching users:', error); // Error log
             return res.status(500).json({ message: 'Internal server error' });
         }
-        console.log('Users fetched:', results);
+        console.log('Users fetched:', results); // Debug log
         res.status(200).json(results);
     });
 });
