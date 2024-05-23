@@ -114,7 +114,7 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
 app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes);
-app.use('/admin/reports', adminReportRoutes);
+app.use('/admin/portal/report', adminReportRoutes);
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
