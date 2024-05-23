@@ -14,10 +14,7 @@ router.get('/', (req, res) => {
 router.get('/users/:date', (req, res) => {
     const { date } = req.params;
     console.log(`Fetching users for date: ${date}`); // Debug log
-    const start = Date.now();
     pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        const duration = Date.now() - start;
-        console.log('Query duration:', duration, 'ms');
         if (error) {
             console.error('Error fetching users:', error); // Error log
             return res.status(500).json({ message: 'Internal server error' });
@@ -26,23 +23,6 @@ router.get('/users/:date', (req, res) => {
         res.status(200).json(results);
     });
 });
-
-// Function to add the header on each page
-function addHeader(doc) {
-    // Add company logo with explicit position and size
-    const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
-    doc.image(logoPath, {
-        fit: [150, 150],
-        align: 'center'
-    });
-
-    // Add more space after the logo to prevent overlap
-    doc.moveDown(3);
-
-    // Add header text
-    doc.fontSize(20).text(`Daily Reports`, { align: 'center' });
-    doc.moveDown(2);
-}
 
 // Route for generating user-specific PDF report
 router.get('/report/pdf/:date/:employee', (req, res) => {
@@ -208,10 +188,7 @@ router.get('/report/excel/:date/:employee', (req, res) => {
 // Route for generating all reports as PDF for a specific date
 router.get('/report/all/pdf/:date', (req, res) => {
     const { date } = req.params;
-    const start = Date.now();
     pool.query('SELECT * FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        const duration = Date.now() - start;
-        console.log('Query duration:', duration, 'ms');
         if (error) {
             console.error(error);
             return res.status(500).json({ message: 'Internal server error' });
@@ -298,10 +275,7 @@ router.get('/report/all/pdf/:date', (req, res) => {
 // Route for generating all reports as Excel for a specific date
 router.get('/report/all/excel/:date', (req, res) => {
     const { date } = req.params;
-    const start = Date.now();
     pool.query('SELECT * FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        const duration = Date.now() - start;
-        console.log('Query duration:', duration, 'ms');
         if (error) {
             console.error(error);
             return res.status(500).json({ message: 'Internal server error' });
@@ -362,6 +336,17 @@ router.get('/report/all/excel/:date', (req, res) => {
 });
 
 module.exports = router;
+
+function addHeader(doc) {
+    const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
+    doc.image(logoPath, {
+        fit: [150, 150],
+        align: 'center'
+    });
+    doc.moveDown(3);
+    doc.fontSize(20).text('Daily Reports', { align: 'center' });
+    doc.moveDown(2);
+}
 
 
 

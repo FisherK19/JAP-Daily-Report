@@ -63,8 +63,8 @@
                     userSelect.innerHTML = '<option value="">Select User</option>';
                     users.forEach(user => {
                         const option = document.createElement('option');
-                        option.value = user;
-                        option.textContent = user;
+                        option.value = user.employee;
+                        option.textContent = user.employee;
                         userSelect.appendChild(option);
                     });
                 })
@@ -86,8 +86,7 @@
         }
 
         function downloadReport(format) {
-            const date = document.getElementById('report-date').value;
-            const url = date ? `/admin/portal/report/all/${format}/${date}` : `/admin/portal/report/${format}`;
+            const url = `/admin/portal/report/${format}`;
             window.location.href = url;
         }
 
@@ -106,7 +105,6 @@
     </script>
 </body>
 </html>
-
 
 
 
