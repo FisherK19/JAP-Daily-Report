@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
-const path = require('path');
 const PDFDocument = require('pdfkit');
 const excel = require('exceljs');
+const path = require('path');
 
 // Serve the admin portal page
 router.get('/', (req, res) => {
@@ -13,11 +13,13 @@ router.get('/', (req, res) => {
 // Route to fetch users for a specific date
 router.get('/users/:date', (req, res) => {
     const { date } = req.params;
+    console.log(`Fetching users for date: ${date}`);
     pool.query('SELECT DISTINCT employee FROM daily_reports WHERE date = ?', [date], (error, results) => {
         if (error) {
             console.error('Error fetching users:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
+        console.log('Users fetched:', results);
         res.status(200).json(results);
     });
 });
@@ -54,7 +56,6 @@ router.get('/report/pdf/:date/:employee', (req, res) => {
             doc.fontSize(14).font('Helvetica-Bold').text('Daily Report', { align: 'center' });
             doc.moveDown(1);
 
-            // Table structure similar to HTML form
             doc.fontSize(12).font('Helvetica-Bold').text('JOHN A. PAPALAS & COMPANY', { continued: true }).text('Date: ', { continued: true }).font('Helvetica').text(report.date);
             doc.moveDown(0.5);
             doc.font('Helvetica-Bold').text('Tel - 313-388-3000    Fax - 313-388-9864', { continued: true }).text('Job #: ', { continued: true }).font('Helvetica').text(report.job_number);
