@@ -31,6 +31,7 @@ router.post('/', async (req, res) => {
 
         console.log('Received data:', req.body);
 
+        // Make sure the number of values matches the number of columns
         const sql = `
             INSERT INTO daily_reports (
                 date, job_number, t_and_m, contract, foreman, cell_number, customer, customer_po,
@@ -53,6 +54,12 @@ router.post('/', async (req, res) => {
 
         console.log('SQL Query:', sql);
         console.log('Values:', values);
+        console.log('Number of columns:', sql.split(',').length - 1);
+        console.log('Number of values:', values.length);
+
+        if (sql.split(',').length - 1 !== values.length) {
+            throw new Error('Column count does not match value count');
+        }
 
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
@@ -65,4 +72,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
