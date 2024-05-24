@@ -97,6 +97,14 @@ app.use(session({
   },
 }));
 
+app.get('/current-user', (req, res) => {
+  if (req.session.user) {
+      res.json({ username: req.session.user.username });
+  } else {
+      res.status(401).json({ message: 'No user logged in' });
+  }
+});
+
 // Import routers
 const UserRegisterRoutes = require('./routes/Userregister');
 const UserloginRoutes = require('./routes/Userlogin');

@@ -5,7 +5,7 @@ const path = require('path');
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views/daily-report.html'));
+    res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
 
 // Route to handle daily report submission
@@ -50,6 +50,9 @@ router.post('/', async (req, res) => {
             emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         ];
+
+        console.log('SQL Query:', sql);
+        console.log('Values:', values);
 
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
