@@ -102,7 +102,7 @@ const UserRegisterRoutes = require('./routes/Userregister');
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
-const adminReportRoutes = require('./routes/adminReport');
+const adminReportRoutes = require('./routes/adminReport'); 
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
@@ -114,7 +114,7 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
 app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes);
-app.use('/admin/portal/report', adminReportRoutes); // Ensure this line matches your route
+app.use('/admin/portal/report', adminReportRoutes); 
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
