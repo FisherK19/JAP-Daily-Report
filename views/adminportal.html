@@ -71,14 +71,13 @@
         }
 
         function downloadUserReport(format) {
-            const date = document.getElementById('report-date').value;
             const user = document.getElementById('user-select').value;
-            if (!date || !user) {
-                alert('Please select a date and a user.');
+            if (!user) {
+                alert('Please select a user.');
                 return;
             }
 
-            const url = `/admin/portal/report/${format}/${date}/${user}`;
+            const url = `/admin/portal/report/${format}/${user}`;
             window.location.href = url;
         }
 
@@ -105,17 +104,12 @@
                 }
             });
         }
-                function downloadUserReport(username) {
-            const url = `/admin/portal/report/pdf/${username}`;
-            window.location.href = url;
-        }
 
         // Fetch users on page load
         window.onload = fetchUsers;
     </script>
 </body>
 </html>
-
 
 
 

@@ -93,7 +93,7 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: false, // Change to true if using HTTPS in production
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
   },
 }));
 
@@ -114,7 +114,7 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
 app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes);
-app.use('/admin/report', adminReportRoutes);
+app.use('/admin/portal/report', adminReportRoutes); // Ensure this line matches your route
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
@@ -132,4 +132,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
