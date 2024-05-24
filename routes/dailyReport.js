@@ -31,17 +31,14 @@ router.post('/', async (req, res) => {
 
         console.log('Received data:', req.body);
 
-        // Make sure the number of values matches the number of columns
-        const sql = `
-            INSERT INTO daily_reports (
-                date, job_number, t_and_m, contract, foreman, cell_number, customer, customer_po,
-                job_site, job_description, job_completion, siding, roofing, flashing, miscellaneous,
-                trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
-                material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half,
-                emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
-                manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
+        const columns = [
+            'date', 'job_number', 't_and_m', 'contract', 'foreman', 'cell_number', 'customer', 'customer_po',
+            'job_site', 'job_description', 'job_completion', 'siding', 'roofing', 'flashing', 'miscellaneous',
+            'trucks', 'welders', 'generators', 'compressors', 'fuel', 'scaffolding', 'safety_equipment', 'miscellaneous_equipment',
+            'material_description', 'equipment_description', 'hours_worked', 'employee', 'straight_time', 'double_time', 'time_and_a_half',
+            'emergency_purchases', 'approved_by', 'shift_start_time', 'temperature_humidity', 'report_copy',
+            'manlifts_equipment', 'manlifts_fuel', 'delay_lost_time', 'employees_off', 'sub_contract', 'username'
+        ];
 
         const values = [
             date, job_number, t_and_m ? 1 : 0, contract ? 1 : 0, foreman, cell_number, customer, customer_po,
@@ -54,12 +51,19 @@ router.post('/', async (req, res) => {
 
         console.log('SQL Query:', sql);
         console.log('Values:', values);
-        console.log('Number of columns:', sql.split(',').length - 1);
+        console.log('Number of columns:', columns.length);
         console.log('Number of values:', values.length);
 
-        if (sql.split(',').length - 1 !== values.length) {
-            throw new Error('Column count does not match value count');
+        if (columns.length !== values.length) {
+            console.error('Column count does not match value count');
+            return res.status(400).json({ message: 'Column count does not match value count' });
         }
+
+        const sql = `
+            INSERT INTO daily_reports (
+                ${columns.join(', ')}
+            ) VALUES (${values.map(() => '?').join(', ')})
+        `;
 
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
