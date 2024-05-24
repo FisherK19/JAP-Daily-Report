@@ -53,8 +53,20 @@ function generatePDF(reports, username, res) {
         doc.text(`Job Site: ${report.job_site}`);
         doc.text(`Job Description: ${report.job_description}`);
         doc.text(`Job Completion: ${report.job_completion}`);
-        doc.text(`Materials: ${report.material_description}`);
-        doc.text(`Equipment: ${report.equipment_description}`);
+        doc.text(`Siding: ${report.siding}`);
+        doc.text(`Roofing: ${report.roofing}`);
+        doc.text(`Flashing: ${report.flashing}`);
+        doc.text(`Miscellaneous: ${report.miscellaneous}`);
+        doc.text(`Trucks: ${report.trucks}`);
+        doc.text(`Welders: ${report.welders}`);
+        doc.text(`Generators: ${report.generators}`);
+        doc.text(`Compressors: ${report.compressors}`);
+        doc.text(`Fuel: ${report.fuel}`);
+        doc.text(`Scaffolding: ${report.scaffolding}`);
+        doc.text(`Safety Equipment: ${report.safety_equipment}`);
+        doc.text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`);
+        doc.text(`Material Description: ${report.material_description}`);
+        doc.text(`Equipment Description: ${report.equipment_description}`);
         doc.text(`Hours Worked: ${report.hours_worked}`);
         doc.text(`Employee: ${report.employee}`);
         doc.text(`Straight Time: ${report.straight_time}`);
@@ -62,6 +74,9 @@ function generatePDF(reports, username, res) {
         doc.text(`Double Time: ${report.double_time}`);
         doc.text(`Emergency Purchases: ${report.emergency_purchases}`);
         doc.text(`Approved By: ${report.approved_by}`);
+        doc.text(`Shift Start Time: ${report.shift_start_time}`);
+        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`);
+        doc.text(`Report Copy: ${report.report_copy}`);
         doc.moveDown();
     });
 
@@ -85,15 +100,30 @@ function generateExcel(reports, username, res) {
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
         { header: 'Job Completion', key: 'job_completion', width: 15 },
-        { header: 'Materials', key: 'material_description', width: 30 },
-        { header: 'Equipment', key: 'equipment_description', width: 30 },
+        { header: 'Siding', key: 'siding', width: 15 },
+        { header: 'Roofing', key: 'roofing', width: 15 },
+        { header: 'Flashing', key: 'flashing', width: 15 },
+        { header: 'Miscellaneous', key: 'miscellaneous', width: 15 },
+        { header: 'Trucks', key: 'trucks', width: 15 },
+        { header: 'Welders', key: 'welders', width: 15 },
+        { header: 'Generators', key: 'generators', width: 15 },
+        { header: 'Compressors', key: 'compressors', width: 15 },
+        { header: 'Fuel', key: 'fuel', width: 15 },
+        { header: 'Scaffolding', key: 'scaffolding', width: 15 },
+        { header: 'Safety Equipment', key: 'safety_equipment', width: 15 },
+        { header: 'Miscellaneous Equipment', key: 'miscellaneous_equipment', width: 15 },
+        { header: 'Material Description', key: 'material_description', width: 30 },
+        { header: 'Equipment Description', key: 'equipment_description', width: 30 },
         { header: 'Hours Worked', key: 'hours_worked', width: 15 },
         { header: 'Employee', key: 'employee', width: 15 },
         { header: 'Straight Time', key: 'straight_time', width: 15 },
         { header: 'Time and a Half', key: 'time_and_a_half', width: 15 },
         { header: 'Double Time', key: 'double_time', width: 15 },
         { header: 'Emergency Purchases', key: 'emergency_purchases', width: 30 },
-        { header: 'Approved By', key: 'approved_by', width: 15 }
+        { header: 'Approved By', key: 'approved_by', width: 15 },
+        { header: 'Shift Start Time', key: 'shift_start_time', width: 15 },
+        { header: 'Temperature/Humidity', key: 'temperature_humidity', width: 30 },
+        { header: 'Report Copy', key: 'report_copy', width: 15 }
     ];
 
     reports.forEach(report => {
@@ -109,6 +139,18 @@ function generateExcel(reports, username, res) {
             job_site: report.job_site,
             job_description: report.job_description,
             job_completion: report.job_completion,
+            siding: report.siding,
+            roofing: report.roofing,
+            flashing: report.flashing,
+            miscellaneous: report.miscellaneous,
+            trucks: report.trucks,
+            welders: report.welders,
+            generators: report.generators,
+            compressors: report.compressors,
+            fuel: report.fuel,
+            scaffolding: report.scaffolding,
+            safety_equipment: report.safety_equipment,
+            miscellaneous_equipment: report.miscellaneous_equipment,
             material_description: report.material_description,
             equipment_description: report.equipment_description,
             hours_worked: report.hours_worked,
@@ -117,7 +159,10 @@ function generateExcel(reports, username, res) {
             time_and_a_half: report.time_and_a_half,
             double_time: report.double_time,
             emergency_purchases: report.emergency_purchases,
-            approved_by: report.approved_by
+            approved_by: report.approved_by,
+            shift_start_time: report.shift_start_time,
+            temperature_humidity: report.temperature_humidity,
+            report_copy: report.report_copy
         });
     });
 
@@ -164,10 +209,6 @@ router.get('/excel/:username', async (req, res) => {
         }
 
         generateExcel(reports, username, res);
-
-        const adminEmail = process.env.EMAIL_ADDRESS;
-        const excelPath = `user_${username}_reports.xlsx`;
-        sendAlertEmail(adminEmail, username, excelPath, 'Excel');
     } catch (error) {
         console.error('Error generating Excel:', error);
         res.status(500).json({ message: 'Internal server error' });
