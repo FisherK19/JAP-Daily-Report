@@ -181,6 +181,9 @@ router.get('/pdf/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        
+        console.log(`Fetched reports for user ${username}:`, reports); // Log query results
+        console.log(`Total reports found: ${reports.length}`);
 
         if (reports.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user.' });
@@ -203,6 +206,9 @@ router.get('/excel/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        
+        console.log(`Fetched reports for user ${username}:`, reports); // Log query results
+        console.log(`Total reports found: ${reports.length}`);
 
         if (reports.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user.' });

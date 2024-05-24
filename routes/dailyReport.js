@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
             trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
             material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half,
             emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
-            manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract
+            manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username 
         } = req.body;
 
         console.log('Received data:', req.body);
@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
                 trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
                 material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half,
                 emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
-                manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract
+                manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
             trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
             material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half,
             emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
-            manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract
+            manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         ];
 
         const [results] = await pool.query(sql, values);
