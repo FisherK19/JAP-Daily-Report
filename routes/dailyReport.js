@@ -49,13 +49,10 @@ router.post('/', async (req, res) => {
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         ];
 
-        console.log('SQL Query:', sql);
-        console.log('Values:', values);
-        console.log('Number of columns:', columns.length);
-        console.log('Number of values:', values.length);
-
         if (columns.length !== values.length) {
             console.error('Column count does not match value count');
+            console.error('Number of columns:', columns.length);
+            console.error('Number of values:', values.length);
             return res.status(400).json({ message: 'Column count does not match value count' });
         }
 
@@ -64,6 +61,9 @@ router.post('/', async (req, res) => {
                 ${columns.join(', ')}
             ) VALUES (${values.map(() => '?').join(', ')})
         `;
+
+        console.log('SQL Query:', sql);
+        console.log('Values:', values);
 
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
