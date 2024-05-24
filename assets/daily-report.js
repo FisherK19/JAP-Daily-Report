@@ -67,7 +67,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
-            }).then(response => response.json()).then(data => {
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
                 alert(data.message);
             }).catch(error => {
                 console.error('Error:', error);
@@ -75,21 +80,25 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Logout function
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            fetch('/logout', {
+                method: 'POST',
+                credentials: 'same-origin'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed');
+                }
+            }).catch(error => {
+                console.error('Logout error:', error);
+            });
+        });
+    }
 });
 
-// Logout function
-document.getElementById('logout-link').addEventListener('click', function(event) {
-    event.preventDefault();
-    fetch('/logout', {
-        method: 'POST',
-        credentials: 'same-origin'
-    }).then(response => {
-        if (response.ok) {
-            window.location.href = '/login';
-        } else {
-            alert('Logout failed');
-        }
-    }).catch(error => {
-        console.error('Logout error:', error);
-    });
-});

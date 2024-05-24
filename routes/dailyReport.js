@@ -5,17 +5,20 @@ const path = require('path');
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
+    res.sendFile(path.join(__dirname, '../views/daily-report.html'));
 });
 
 // Route to handle daily report submission
 router.post('/', async (req, res) => {
     try {
-        const username = req.session.username; // Retrieve username from session
+        const user = req.session.user; // Retrieve user from session
 
-        if (!username) {
+        if (!user) {
+            console.log('No user logged in');
             return res.status(401).json({ message: 'Unauthorized: No user logged in' });
         }
+
+        const username = user.username;
 
         const {
             date, job_number, t_and_m, contract, foreman, cell_number, customer, customer_po,
