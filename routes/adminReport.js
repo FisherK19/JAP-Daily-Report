@@ -44,35 +44,24 @@ function generatePDF(reports, username, res) {
     reports.forEach(report => {
         doc.text(`Date: ${report.date}`);
         doc.text(`Job Number: ${report.job_number}`);
+        doc.text(`T&M: ${report.t_and_m}`);
+        doc.text(`Contract: ${report.contract}`);
         doc.text(`Foreman: ${report.foreman}`);
         doc.text(`Cell Number: ${report.cell_number}`);
         doc.text(`Customer: ${report.customer}`);
         doc.text(`Customer PO: ${report.customer_po}`);
         doc.text(`Job Site: ${report.job_site}`);
         doc.text(`Job Description: ${report.job_description}`);
-        doc.text(`Sheeting / Materials: ${report.materials}`);
+        doc.text(`Job Completion: ${report.job_completion}`);
+        doc.text(`Materials: ${report.material_description}`);
+        doc.text(`Equipment: ${report.equipment_description}`);
         doc.text(`Hours Worked: ${report.hours_worked}`);
         doc.text(`Employee: ${report.employee}`);
         doc.text(`Straight Time: ${report.straight_time}`);
         doc.text(`Time and a Half: ${report.time_and_a_half}`);
         doc.text(`Double Time: ${report.double_time}`);
-        doc.text(`Trucks: ${report.trucks}`);
-        doc.text(`Welders: ${report.welders}`);
-        doc.text(`Generators: ${report.generators}`);
-        doc.text(`Compressors: ${report.compressors}`);
-        doc.text(`Company Fuel: ${report.fuel}`);
-        doc.text(`Scaffolding: ${report.scaffolding}`);
-        doc.text(`Safety Equipment: ${report.safety_equipment}`);
-        doc.text(`Miscellaneous: ${report.miscellaneous_equipment}`);
-        doc.text(`Manlifts / Rentals: ${report.manlifts_equipment}`);
-        doc.text(`Rental Fuel: ${report.manlifts_fuel}`);
-        doc.text(`Sub-Contract: ${report.sub_contract}`);
         doc.text(`Emergency Purchases: ${report.emergency_purchases}`);
-        doc.text(`Delay / Lost Time: ${report.delay_lost_time}`);
-        doc.text(`Employees Off: ${report.employees_off}`);
-        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`);
         doc.text(`Approved By: ${report.approved_by}`);
-        doc.text(`Report Copy: ${report.report_copy}`);
         doc.moveDown();
     });
 
@@ -87,46 +76,57 @@ function generateExcel(reports, username, res) {
     worksheet.columns = [
         { header: 'Date', key: 'date', width: 15 },
         { header: 'Job Number', key: 'job_number', width: 15 },
+        { header: 'T&M', key: 't_and_m', width: 15 },
+        { header: 'Contract', key: 'contract', width: 15 },
         { header: 'Foreman', key: 'foreman', width: 15 },
         { header: 'Cell Number', key: 'cell_number', width: 15 },
         { header: 'Customer', key: 'customer', width: 15 },
         { header: 'Customer PO', key: 'customer_po', width: 15 },
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
-        { header: 'Sheeting / Materials', key: 'materials', width: 30 },
+        { header: 'Job Completion', key: 'job_completion', width: 15 },
+        { header: 'Materials', key: 'material_description', width: 30 },
+        { header: 'Equipment', key: 'equipment_description', width: 30 },
         { header: 'Hours Worked', key: 'hours_worked', width: 15 },
         { header: 'Employee', key: 'employee', width: 15 },
         { header: 'Straight Time', key: 'straight_time', width: 15 },
         { header: 'Time and a Half', key: 'time_and_a_half', width: 15 },
         { header: 'Double Time', key: 'double_time', width: 15 },
-        { header: 'Trucks', key: 'trucks', width: 15 },
-        { header: 'Welders', key: 'welders', width: 15 },
-        { header: 'Generators', key: 'generators', width: 15 },
-        { header: 'Compressors', key: 'compressors', width: 15 },
-        { header: 'Company Fuel', key: 'fuel', width: 15 },
-        { header: 'Scaffolding', key: 'scaffolding', width: 15 },
-        { header: 'Safety Equipment', key: 'safety_equipment', width: 15 },
-        { header: 'Miscellaneous Equipment', key: 'miscellaneous_equipment', width: 15 },
-        { header: 'Manlifts / Rentals', key: 'manlifts_equipment', width: 15 },
-        { header: 'Rental Fuel', key: 'manlifts_fuel', width: 15 },
-        { header: 'Sub-Contract', key: 'sub_contract', width: 30 },
         { header: 'Emergency Purchases', key: 'emergency_purchases', width: 30 },
-        { header: 'Delay / Lost Time', key: 'delay_lost_time', width: 30 },
-        { header: 'Employees Off', key: 'employees_off', width: 30 },
-        { header: 'Temperature/Humidity', key: 'temperature_humidity', width: 30 },
-        { header: 'Approved By', key: 'approved_by', width: 15 },
-        { header: 'Report Copy', key: 'report_copy', width: 15 }
+        { header: 'Approved By', key: 'approved_by', width: 15 }
     ];
 
     reports.forEach(report => {
-        worksheet.addRow(report);
+        worksheet.addRow({
+            date: report.date,
+            job_number: report.job_number,
+            t_and_m: report.t_and_m,
+            contract: report.contract,
+            foreman: report.foreman,
+            cell_number: report.cell_number,
+            customer: report.customer,
+            customer_po: report.customer_po,
+            job_site: report.job_site,
+            job_description: report.job_description,
+            job_completion: report.job_completion,
+            material_description: report.material_description,
+            equipment_description: report.equipment_description,
+            hours_worked: report.hours_worked,
+            employee: report.employee,
+            straight_time: report.straight_time,
+            time_and_a_half: report.time_and_a_half,
+            double_time: report.double_time,
+            emergency_purchases: report.emergency_purchases,
+            approved_by: report.approved_by
+        });
     });
 
     const excelPath = `user_${username}_reports.xlsx`;
     res.setHeader('Content-Disposition', `attachment; filename="${excelPath}"`);
-
     workbook.xlsx.write(res).then(() => {
         res.end();
+        const adminEmail = process.env.EMAIL_ADDRESS;
+        sendAlertEmail(adminEmail, username, excelPath, 'Excel');
     });
 }
 
@@ -142,7 +142,10 @@ router.get('/pdf/:username', async (req, res) => {
         }
 
         generatePDF(reports, username, res);
-        sendAlertEmail(process.env.EMAIL_ADDRESS, username, `/path/to/pdf/${pdfPath}`, 'PDF');
+
+        const adminEmail = process.env.EMAIL_ADDRESS;
+        const pdfPath = `user_${username}_reports.pdf`;
+        sendAlertEmail(adminEmail, username, pdfPath, 'PDF');
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -161,7 +164,10 @@ router.get('/excel/:username', async (req, res) => {
         }
 
         generateExcel(reports, username, res);
-        sendAlertEmail(process.env.EMAIL_ADDRESS, username, `/path/to/excel/${excelPath}`, 'Excel');
+
+        const adminEmail = process.env.EMAIL_ADDRESS;
+        const excelPath = `user_${username}_reports.xlsx`;
+        sendAlertEmail(adminEmail, username, excelPath, 'Excel');
     } catch (error) {
         console.error('Error generating Excel:', error);
         res.status(500).json({ message: 'Internal server error' });
