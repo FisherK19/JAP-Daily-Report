@@ -5,6 +5,12 @@ const PDFDocument = require('pdfkit');
 const path = require('path');
 const fs = require('fs');
 
+// Ensure the reports directory exists
+const reportsDir = path.join(__dirname, '../reports');
+if (!fs.existsSync(reportsDir)) {
+    fs.mkdirSync(reportsDir, { recursive: true });
+}
+
 // Serve the daily report HTML
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
@@ -37,7 +43,7 @@ router.post('/', async (req, res) => {
 
         // Create PDF
         const doc = new PDFDocument();
-        const pdfPath = path.join(__dirname, '../reports', `report_${Date.now()}.pdf`);
+        const pdfPath = path.join(reportsDir, `report_${Date.now()}.pdf`);
         doc.pipe(fs.createWriteStream(pdfPath));
 
         // Add company logo
