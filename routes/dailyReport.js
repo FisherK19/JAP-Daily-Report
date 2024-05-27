@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
-const path = require('path');
 const PDFDocument = require('pdfkit');
+const path = require('path');
 const fs = require('fs');
 
 // Serve the daily report HTML
