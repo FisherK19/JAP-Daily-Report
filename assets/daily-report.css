@@ -36,6 +36,34 @@ body {
     margin: 0;
 }
 
+.navbar {
+    background-color: #007bff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.navbar-nav {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.nav-item {
+    margin-left: 20px;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
 form {
     width: 100%;
 }
@@ -94,7 +122,6 @@ button[type="submit"]:hover, button[type="button"]:hover {
     border-radius: 4px;
     text-align: center;
 }
-
 
 .form-section {
     margin-bottom: 20px;

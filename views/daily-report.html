@@ -13,25 +13,18 @@
             <img src="/assets/images/company-logo.png" alt="Company Logo">
             <h1>Daily Report</h1>
         </div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" id="logout-link">Logout</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="logout-link">Logout</a>
+                </li>
+            </ul>
         </nav>
         <form id="daily-report-form">
-            <input type="hidden" name="username" value="user"> <!-- Update this to dynamically set the username -->
+            <input type="hidden" name="username" value="user"> 
             <table>
                 <tr>
                     <th colspan="4">JOHN A. PAPALAS & COMPANY</th>
@@ -188,8 +181,8 @@
             if (reportCopyDropdown) {
                 function updateDropdownColor() {
                     const selectedValue = reportCopyDropdown.value;
-                    reportCopyDropdown.className = ''; // Reset classes
-                    reportCopyDropdown.classList.add(selectedValue); // Add class based on value
+                    reportCopyDropdown.className = ''; 
+                    reportCopyDropdown.classList.add(selectedValue); 
                 }
 
                 reportCopyDropdown.addEventListener('change', updateDropdownColor);
