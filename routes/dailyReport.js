@@ -13,6 +13,8 @@ router.get('/', (req, res) => {
 // Route to handle daily report submission and generate PDF
 router.post('/', async (req, res) => {
     try {
+        console.log('Received a POST request');
+        
         const user = req.session.user; // Retrieve user from session
 
         if (!user) {
@@ -31,7 +33,7 @@ router.post('/', async (req, res) => {
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract
         } = req.body;
 
-        console.log('Received data:', req.body);
+        console.log('Form data:', req.body);
 
         // Create PDF
         const doc = new PDFDocument();
