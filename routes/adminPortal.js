@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
-const excel = require('exceljs');
+const ExcelJS = require('exceljs');
 const path = require('path');
 
 // Serve the admin portal page
@@ -34,12 +34,12 @@ function addHeader(doc) {
 }
 
 // Route for generating user-specific PDF report
-router.get('/report/pdf/:date/:employee', (req, res) => {
+router.get('/report/pdf/:date/:employee', async (req, res) => {
     const { date, employee } = req.params;
-    pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee]);
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
 
         const doc = new PDFDocument({ margin: 50 });
@@ -131,19 +131,22 @@ router.get('/report/pdf/:date/:employee', (req, res) => {
         doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
 
         doc.end();
-    });
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // Route for generating user-specific Excel report
-router.get('/report/excel/:date/:employee', (req, res) => {
+router.get('/report/excel/:date/:employee', async (req, res) => {
     const { date, employee } = req.params;
-    pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee]);
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
 
-        const workbook = new excel.Workbook();
+        const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Daily Reports');
 
         worksheet.columns = [
@@ -191,19 +194,21 @@ router.get('/report/excel/:date/:employee', (req, res) => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.xlsx`);
 
-        workbook.xlsx.write(res).then(() => {
-            res.end();
-        });
-    });
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        console.error('Error generating Excel:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // Route for generating all reports as PDF for a specific date
-router.get('/report/all/pdf/:date', (req, res) => {
+router.get('/report/all/pdf/:date', async (req, res) => {
     const { date } = req.params;
-    pool.query('SELECT * FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No reports found for the given date.' });
         }
 
         const doc = new PDFDocument({ margin: 50 });
@@ -275,19 +280,22 @@ router.get('/report/all/pdf/:date', (req, res) => {
         doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
 
         doc.end();
-    });
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 // Route for generating all reports as Excel for a specific date
-router.get('/report/all/excel/:date', (req, res) => {
+router.get('/report/all/excel/:date', async (req, res) => {
     const { date } = req.params;
-    pool.query('SELECT * FROM daily_reports WHERE date = ?', [date], (error, results) => {
-        if (error) {
-            console.error(error);
-            return res.status(500).json({ message: 'Internal server error' });
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'No reports found for the given date.' });
         }
 
-        const workbook = new excel.Workbook();
+        const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Daily Reports');
 
         worksheet.columns = [
@@ -335,13 +343,16 @@ router.get('/report/all/excel/:date', (req, res) => {
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         res.setHeader('Content-Disposition', `attachment; filename=all_reports_${date}.xlsx`);
 
-        workbook.xlsx.write(res).then(() => {
-            res.end();
-        });
-    });
+        await workbook.xlsx.write(res);
+        res.end();
+    } catch (error) {
+        console.error('Error generating Excel:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 
 module.exports = router;
+
 
 
 
