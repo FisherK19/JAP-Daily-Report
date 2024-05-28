@@ -4,6 +4,7 @@ const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
+const path = require('path');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -42,7 +43,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image('path/to/logo.png', { width: 100 })
+    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 100 })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
