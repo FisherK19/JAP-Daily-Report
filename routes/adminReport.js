@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const path = require('path');
-const { pool } = require('../config/connection');
-const ExcelJS = require('exceljs');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -38,16 +37,9 @@ function sendAlertEmail(adminEmail, username, reportPath, reportType) {
 // Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
-    let buffers = [];
-    doc.on('data', buffers.push.bind(buffers));
-    doc.on('end', () => {
-        let pdfData = Buffer.concat(buffers);
-        res.writeHead(200, {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename="user_${username}_reports.pdf"`,
-            'Content-Length': pdfData.length
-        }).end(pdfData);
-    });
+    const pdfPath = `user_${username}_reports.pdf`;
+    res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
+    doc.pipe(res);
 
     // Header
     doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50, align: 'center' })
@@ -60,41 +52,40 @@ function generatePDF(reports, username, res) {
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
     reports.forEach(report => {
-        doc.fontSize(10)
-            .text(`Date: ${new Date(report.date).toDateString()}`, { align: 'left' })
-            .text(`Job Number: ${report.job_number}`, { align: 'left' })
-            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { align: 'left' })
-            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'left' })
-            .text(`Foreman: ${report.foreman}`, { align: 'left' })
-            .text(`Cell Number: ${report.cell_number}`, { align: 'left' })
-            .text(`Customer: ${report.customer}`, { align: 'left' })
-            .text(`Customer PO: ${report.customer_po}`, { align: 'left' })
-            .text(`Job Site: ${report.job_site}`, { align: 'left' })
-            .text(`Job Description: ${report.job_description}`, { align: 'left' })
-            .text(`Job Completion: ${report.job_completion}`, { align: 'left' })
-            .text(`Trucks: ${report.trucks}`, { align: 'left' })
-            .text(`Welders: ${report.welders}`, { align: 'left' })
-            .text(`Generators: ${report.generators}`, { align: 'left' })
-            .text(`Compressors: ${report.compressors}`, { align: 'left' })
-            .text(`Fuel: ${report.fuel}`, { align: 'left' })
-            .text(`Scaffolding: ${report.scaffolding}`, { align: 'left' })
-            .text(`Safety Equipment: ${report.safety_equipment}`, { align: 'left' })
-            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'left' })
-            .text(`Material Description: ${report.material_description}`, { align: 'left' })
-            .text(`Equipment Description: ${report.equipment_description}`, { align: 'left' })
-            .text(`Hours Worked: ${report.hours_worked}`, { align: 'left' })
-            .text(`Employee: ${report.employee}`, { align: 'left' })
-            .text(`Straight Time: ${report.straight_time}`, { align: 'left' })
-            .text(`Time and a Half: ${report.time_and_a_half}`, { align: 'left' })
-            .text(`Double Time: ${report.double_time}`, { align: 'left' })
-            .text(`Emergency Purchases: ${report.emergency_purchases}`, { align: 'left' })
-            .text(`Approved By: ${report.approved_by}`, { align: 'left' })
-            .text(`Shift Start Time: ${report.shift_start_time}`, { align: 'left' })
-            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'left' })
-            .text(`Report Copy: ${report.report_copy}`, { align: 'left' })
+        doc.fontSize(10).text(`Date: ${new Date(report.date).toDateString()}`, { align: 'left' })
+            .moveDown()
+            .fontSize(10).text(`Job Number: ${report.job_number}`, { align: 'left' })
+            .fontSize(10).text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { align: 'left' })
+            .fontSize(10).text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'left' })
+            .fontSize(10).text(`Foreman: ${report.foreman}`, { align: 'left' })
+            .fontSize(10).text(`Cell Number: ${report.cell_number}`, { align: 'left' })
+            .fontSize(10).text(`Customer: ${report.customer}`, { align: 'left' })
+            .fontSize(10).text(`Customer PO: ${report.customer_po}`, { align: 'left' })
+            .fontSize(10).text(`Job Site: ${report.job_site}`, { align: 'left' })
+            .fontSize(10).text(`Job Description: ${report.job_description}`, { align: 'left' })
+            .fontSize(10).text(`Job Completion: ${report.job_completion}`, { align: 'left' })
+            .fontSize(10).text(`Trucks: ${report.trucks}`, { align: 'left' })
+            .fontSize(10).text(`Welders: ${report.welders}`, { align: 'left' })
+            .fontSize(10).text(`Generators: ${report.generators}`, { align: 'left' })
+            .fontSize(10).text(`Compressors: ${report.compressors}`, { align: 'left' })
+            .fontSize(10).text(`Fuel: ${report.fuel}`, { align: 'left' })
+            .fontSize(10).text(`Scaffolding: ${report.scaffolding}`, { align: 'left' })
+            .fontSize(10).text(`Safety Equipment: ${report.safety_equipment}`, { align: 'left' })
+            .fontSize(10).text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'left' })
+            .fontSize(10).text(`Material Description: ${report.material_description}`, { align: 'left' })
+            .fontSize(10).text(`Equipment Description: ${report.equipment_description}`, { align: 'left' })
+            .fontSize(10).text(`Hours Worked: ${report.hours_worked}`, { align: 'left' })
+            .fontSize(10).text(`Employee: ${report.employee}`, { align: 'left' })
+            .fontSize(10).text(`Straight Time: ${report.straight_time}`, { align: 'left' })
+            .fontSize(10).text(`Time and a Half: ${report.time_and_a_half}`, { align: 'left' })
+            .fontSize(10).text(`Double Time: ${report.double_time}`, { align: 'left' })
+            .fontSize(10).text(`Emergency Purchases: ${report.emergency_purchases}`, { align: 'left' })
+            .fontSize(10).text(`Approved By: ${report.approved_by}`, { align: 'left' })
+            .fontSize(10).text(`Shift Start Time: ${report.shift_start_time}`, { align: 'left' })
+            .fontSize(10).text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'left' })
+            .fontSize(10).text(`Report Copy: ${report.report_copy}`, { align: 'left' })
             .moveDown();
         
-        // Add a new page if the current one is full
         if (doc.y > 700) {
             doc.addPage();
         }
@@ -201,7 +192,7 @@ router.get('/pdf/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
+        
         console.log(`Fetched reports for user ${username}:`, reports); // Log query results
         console.log(`Total reports found: ${reports.length}`);
 
@@ -226,7 +217,7 @@ router.get('/excel/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
+        
         console.log(`Fetched reports for user ${username}:`, reports); // Log query results
         console.log(`Total reports found: ${reports.length}`);
 
