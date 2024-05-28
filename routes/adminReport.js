@@ -5,7 +5,6 @@ const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
 const path = require('path');
 
-// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -29,105 +28,106 @@ function generatePDF(reports, username, res) {
 
     // Iterate through each report
     reports.forEach(report => {
-        // First column
-        const leftColumn = [
-            `Date: ${new Date(report.date).toDateString()}`,
-            `T&M: ${report.t_and_m ? 'Yes' : 'No'}`,
-            `Foreman: ${report.foreman}`,
-            `Customer: ${report.customer}`,
-            `Job Site: ${report.job_site}`,
-            `Job Description: ${report.job_description}`,
-            `Temperature/Humidity: ${report.temperature_humidity}`,
-            `Sheeting / Materials: ${report.materials}`,
-        ].join('\n');
+        // Add content in table format
+        doc.fontSize(10);
 
-        doc.fontSize(10).text(leftColumn, { width: 250 });
+        const tableData = [
+            { label: 'Date:', value: new Date(report.date).toDateString() },
+            { label: 'T&M:', value: report.t_and_m ? 'Yes' : 'No' },
+            { label: 'Foreman:', value: report.foreman },
+            { label: 'Customer:', value: report.customer },
+            { label: 'Job Site:', value: report.job_site },
+            { label: 'Job Description:', value: report.job_description },
+            { label: 'Temperature/Humidity:', value: report.temperature_humidity },
+            { label: 'Sheeting / Materials:', value: report.materials }
+        ];
 
-        // Second column
-        const rightColumn = [
-            `Job Number: ${report.job_number}`,
-            `Contract: ${report.contract ? 'Yes' : 'No'}`,
-            `Cell Number: ${report.cell_number}`,
-            `Customer PO: ${report.customer_po}`,
-            `Job Completion: ${report.job_completion}`,
-            `Shift Start Time: ${report.shift_start_time}`,
-            `Equipment Description: ${report.equipment_description}`,
-            `Report Copy: ${report.report_copy}`,
-        ].join('\n');
+        const rightTableData = [
+            { label: 'Job Number:', value: report.job_number },
+            { label: 'Contract:', value: report.contract ? 'Yes' : 'No' },
+            { label: 'Cell Number:', value: report.cell_number },
+            { label: 'Customer PO:', value: report.customer_po },
+            { label: 'Job Completion:', value: report.job_completion },
+            { label: 'Shift Start Time:', value: report.shift_start_time },
+            { label: 'Equipment Description:', value: report.equipment_description },
+            { label: 'Report Copy:', value: report.report_copy }
+        ];
 
-        doc.text(rightColumn, 300, doc.y - doc.currentLineHeight(), { width: 250 });
+        const employeesData = (report.employees || []).map(employee => [
+            employee.hours_worked,
+            employee.employee,
+            employee.straight_time,
+            employee.time_and_a_half,
+            employee.double_time
+        ]);
 
-        doc.moveDown(1);
+        const equipmentData = [
+            { label: 'Trucks:', value: report.trucks },
+            { label: 'Welders:', value: report.welders },
+            { label: 'Generators:', value: report.generators },
+            { label: 'Compressors:', value: report.compressors },
+            { label: 'Company Fuel:', value: report.fuel },
+            { label: 'Scaffolding:', value: report.scaffolding },
+            { label: 'Safety Equipment:', value: report.safety_equipment },
+            { label: 'Miscellaneous Equipment:', value: report.miscellaneous_equipment }
+        ];
 
-        // Employees section
-        if (report.employees && report.employees.length > 0) {
-            doc.fontSize(10).text('Employees:', { underline: true });
-            report.employees.forEach(employee => {
-                doc.text(
-                    `Hours Worked: ${employee.hours_worked}\nEmployee: ${employee.employee}\nStraight Time: ${employee.straight_time}\nTime and a Half: ${employee.time_and_a_half}\nDouble Time: ${employee.double_time}`
-                );
+        const manliftsData = [
+            { label: 'Manlifts Equipment:', value: report.manlifts_equipment },
+            { label: 'Fuel:', value: report.manlifts_fuel }
+        ];
+
+        const otherData = [
+            { label: 'Sub-Contract:', value: report.sub_contract },
+            { label: 'Emergency Purchases:', value: report.emergency_purchases },
+            { label: 'Delay / Lost Time:', value: report.delay_lost_time },
+            { label: 'Employees Off:', value: report.employees_off },
+            { label: 'Approved By:', value: report.approved_by }
+        ];
+
+        // Draw left and right tables
+        const drawTable = (data, x, y) => {
+            data.forEach(row => {
+                doc.text(row.label, x, y);
+                doc.text(row.value, x + 150, y);
+                y += 15;
+            });
+        };
+
+        drawTable(tableData, 30, doc.y);
+        drawTable(rightTableData, 300, doc.y - (tableData.length * 15));
+
+        // Draw Employees Table
+        if (employeesData.length > 0) {
+            doc.moveDown(1).text('Employees:', { underline: true });
+            doc.moveDown(0.5);
+            employeesData.forEach((employee, index) => {
+                employee.forEach((value, colIndex) => {
+                    doc.text(value, 30 + colIndex * 100, doc.y);
+                });
                 doc.moveDown(0.5);
             });
         }
 
-        // Equipment section
-        const equipmentSection = [
-            'Equipment:',
-            `Trucks: ${report.trucks}`,
-            `Welders: ${report.welders}`,
-            `Generators: ${report.generators}`,
-            `Compressors: ${report.compressors}`,
-            `Company Fuel: ${report.fuel}`,
-            `Scaffolding: ${report.scaffolding}`,
-            `Safety Equipment: ${report.safety_equipment}`,
-            `Miscellaneous Equipment: ${report.miscellaneous_equipment}`,
-        ].join('\n');
+        // Draw Equipment Table
+        doc.moveDown(1).text('Equipment:', { underline: true });
+        drawTable(equipmentData, 30, doc.y);
 
-        doc.text(equipmentSection, { width: 250 });
-        doc.moveDown(0.5);
+        // Draw Manlifts/Rentals Table
+        doc.moveDown(1).text('Manlifts / Rentals:', { underline: true });
+        drawTable(manliftsData, 30, doc.y);
 
-        // Manlifts / Rentals section
-        const manliftsSection = [
-            'Manlifts / Rentals:',
-            `Manlifts Equipment: ${report.manlifts_equipment}`,
-            `Fuel: ${report.manlifts_fuel}`,
-        ].join('\n');
-
-        doc.text(manliftsSection, { width: 250 });
-        doc.moveDown(0.5);
-
-        // Sub-Contract section
-        doc.text('Sub-Contract:', { underline: true });
-        doc.text(report.sub_contract || 'N/A');
-        doc.moveDown(0.5);
-
-        // Emergency Purchases section
-        doc.text('Emergency Purchases:', { underline: true });
-        doc.text(report.emergency_purchases || 'N/A');
-        doc.moveDown(0.5);
-
-        // Delay / Lost Time section
-        doc.text('Delay / Lost Time:', { underline: true });
-        doc.text(report.delay_lost_time || 'N/A');
-        doc.moveDown(0.5);
-
-        // Employees Off section
-        doc.text('Employees Off:', { underline: true });
-        doc.text(report.employees_off || 'N/A');
-        doc.moveDown(0.5);
-
-        // Approved By section
-        doc.text('Approved By:', { underline: true });
-        doc.text(report.approved_by || 'N/A');
-        doc.moveDown(0.5);
+        // Draw Other Sections
+        otherData.forEach(row => {
+            doc.moveDown(1).text(row.label, { underline: true });
+            doc.text(row.value || 'N/A');
+        });
 
         doc.addPage(); // Add a new page for the next report if necessary
     });
 
     doc.end();
 }
-
-
 // Function to generate Excel report
 function generateExcel(reports, username, res) {
     const workbook = new ExcelJS.Workbook();
