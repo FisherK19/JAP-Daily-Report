@@ -21,7 +21,7 @@ header {
 #company-logo {
   width: 100px;
   display: block;
-  margin-bottom: 10px;
+  margin: 0 auto 10px auto;
 }
 
 nav {
@@ -50,15 +50,12 @@ nav ul {
 }
 
 .nav-link:hover {
-  background-color: #3b3c3e;
+  background-color: #575757;
 }
 
 main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 20px;
-  min-height: calc(100vh - 120px);
+  text-align: center;
 }
 
 .form-section {
@@ -68,13 +65,11 @@ main {
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 600px;
-  width: 100%;
-  text-align: center;
+  text-align: left;
 }
 
 .form-group {
   margin-bottom: 15px;
-  text-align: left;
 }
 
 label {
@@ -102,8 +97,6 @@ select {
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s;
-  width: 100%;
-  max-width: 200px;
 }
 
 .btn-secondary {
@@ -123,4 +116,8 @@ footer {
   position: fixed;
   width: 100%;
   bottom: 0;
+}
+
+footer p {
+  margin: 0;
 }
