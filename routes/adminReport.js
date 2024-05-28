@@ -5,7 +5,6 @@ const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
 const path = require('path');
-require('pdfkit-table');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -53,47 +52,33 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    // Create table
-    const table = {
-        headers: ['Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number', 'Customer', 'Customer PO', 'Job Site', 'Job Description', 'Job Completion', 'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel', 'Scaffolding', 'Safety Equipment', 'Miscellaneous Equipment', 'Material Description', 'Equipment Description', 'Hours Worked', 'Employee', 'Straight Time', 'Time and a Half', 'Double Time', 'Emergency Purchases', 'Approved By', 'Shift Start Time', 'Temperature/Humidity', 'Report Copy'],
-        rows: reports.map(report => [
-            new Date(report.date).toDateString(),
-            report.job_number,
-            report.t_and_m ? 'Yes' : 'No',
-            report.contract ? 'Yes' : 'No',
-            report.foreman,
-            report.cell_number,
-            report.customer,
-            report.customer_po,
-            report.job_site,
-            report.job_description,
-            report.job_completion,
-            report.trucks,
-            report.welders,
-            report.generators,
-            report.compressors,
-            report.fuel,
-            report.scaffolding,
-            report.safety_equipment,
-            report.miscellaneous_equipment,
-            report.material_description,
-            report.equipment_description,
-            report.hours_worked,
-            report.employee,
-            report.straight_time,
-            report.time_and_a_half,
-            report.double_time,
-            report.emergency_purchases,
-            report.approved_by,
-            report.shift_start_time,
-            report.temperature_humidity,
-            report.report_copy
-        ])
-    };
-
-    doc.table(table, {
-        prepareHeader: () => doc.font('Helvetica-Bold').fontSize(10),
-        prepareRow: (row, i) => doc.font('Helvetica').fontSize(10)
+    // Table Header
+    const headers = ['Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number', 'Customer', 'Customer PO', 'Job Site', 'Job Description', 'Job Completion', 'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel', 'Scaffolding', 'Safety Equipment', 'Miscellaneous Equipment', 'Material Description', 'Equipment Description', 'Hours Worked', 'Employee', 'Straight Time', 'Time and a Half', 'Double Time', 'Emergency Purchases', 'Approved By', 'Shift Start Time', 'Temperature/Humidity', 'Report Copy'];
+    
+    // Table Content
+    const tableTop = 150;
+    const itemWidth = 70;
+    let yPos = tableTop;
+    
+    doc.fontSize(10).font('Helvetica-Bold');
+    headers.forEach((header, i) => {
+        doc.text(header, 30 + i * itemWidth, yPos, { width: itemWidth, align: 'center' });
+    });
+    
+    yPos += 20;
+    doc.font('Helvetica').fontSize(8);
+    reports.forEach((report, rowIndex) => {
+        if (yPos > 750) {
+            doc.addPage();
+            yPos = 50;
+        }
+        headers.forEach((header, i) => {
+            let text = report[header.toLowerCase().replace(/ /g, '_')];
+            if (header === 'Date') text = new Date(text).toDateString();
+            if (header === 'T&M' || header === 'Contract') text = text ? 'Yes' : 'No';
+            doc.text(text || '', 30 + i * itemWidth, yPos, { width: itemWidth, align: 'center' });
+        });
+        yPos += 20;
     });
 
     doc.end();
