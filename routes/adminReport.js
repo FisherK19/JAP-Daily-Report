@@ -5,6 +5,7 @@ const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
 const path = require('path');
+const PDFTable = require('pdfkit-table');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -52,84 +53,77 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    reports.forEach(report => {
-        doc.fontSize(10);
-        
-        // First section
-        doc.text(`Date: ${new Date(report.date).toDateString()}`, { continued: true, width: 200 })
-            .text(`Job Number: ${report.job_number}`, { align: 'right' })
-            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true, width: 200 })
-            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
-            .text(`Foreman: ${report.foreman}`, { continued: true, width: 200 })
-            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
-            .moveDown(0.5);
-
-        // Second section
-        doc.text(`Customer: ${report.customer}`, { continued: true, width: 200 })
-            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
-            .text(`Job Site: ${report.job_site}`, { continued: true, width: 200 })
-            .text(`Job Completion: ${report.job_completion}`, { align: 'right' })
-            .text(`Shift Start Time: ${report.shift_start_time}`, { continued: true, width: 200 })
-            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'right' })
-            .moveDown(0.5);
-
-        // Third section
-        doc.text(`Job Description: ${report.job_description}`)
-            .text(`Sheeting / Materials: ${report.material_description}`)
-            .moveDown(0.5);
-
-        // Fourth section (Employees)
-        doc.text('Employees:', { underline: true })
-            .text(`Hours Worked: ${report.hours_worked}`)
-            .text(`Employee: ${report.employee}`)
-            .text(`Straight Time: ${report.straight_time}`)
-            .text(`Time and a Half: ${report.time_and_a_half}`)
-            .text(`Double Time: ${report.double_time}`)
-            .moveDown(0.5);
-
-        // Fifth section (Equipment)
-        doc.text('Equipment:', { underline: true })
-            .text(`Trucks: ${report.trucks}`)
-            .text(`Welders: ${report.welders}`)
-            .text(`Generators: ${report.generators}`)
-            .text(`Compressors: ${report.compressors}`)
-            .text(`Fuel: ${report.fuel}`)
-            .text(`Scaffolding: ${report.scaffolding}`)
-            .text(`Safety Equipment: ${report.safety_equipment}`)
-            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`)
-            .moveDown(0.5);
-
-        // Sixth section (Manlifts/Rentals)
-        doc.text('Manlifts / Rentals:', { underline: true })
-            .text(`Manlifts Equipment: ${report.manlifts_equipment}`)
-            .text(`Fuel: ${report.manlifts_fuel}`)
-            .moveDown(0.5);
-
-        // Seventh section (Sub-Contract and other fields)
-        doc.text('Sub-Contract:', { underline: true })
-            .text(report.sub_contract)
-            .moveDown(0.5);
-
-        doc.text('Emergency Purchases:', { underline: true })
-            .text(report.emergency_purchases)
-            .moveDown(0.5);
-
-        doc.text('Delay / Lost Time:', { underline: true })
-            .text(report.delay_lost_time)
-            .moveDown(0.5);
-
-        doc.text('Employees Off:', { underline: true })
-            .text(report.employees_off)
-            .moveDown(0.5);
-
-        doc.text(`Approved By: ${report.approved_by}`)
-            .text(`Report Copy: ${report.report_copy}`)
-            .moveDown(1);
-
-        if (doc.y > 700) {
-            doc.addPage();
-        }
+    // Create table
+    const table = new PDFTable(doc, {
+        columns: [
+            { header: 'Date', width: 80 },
+            { header: 'Job Number', width: 80 },
+            { header: 'T&M', width: 50 },
+            { header: 'Contract', width: 80 },
+            { header: 'Foreman', width: 80 },
+            { header: 'Cell Number', width: 100 },
+            { header: 'Customer', width: 80 },
+            { header: 'Customer PO', width: 80 },
+            { header: 'Job Site', width: 80 },
+            { header: 'Job Description', width: 150 },
+            { header: 'Job Completion', width: 100 },
+            { header: 'Trucks', width: 80 },
+            { header: 'Welders', width: 80 },
+            { header: 'Generators', width: 80 },
+            { header: 'Compressors', width: 80 },
+            { header: 'Fuel', width: 80 },
+            { header: 'Scaffolding', width: 80 },
+            { header: 'Safety Equipment', width: 100 },
+            { header: 'Miscellaneous Equipment', width: 100 },
+            { header: 'Material Description', width: 100 },
+            { header: 'Equipment Description', width: 100 },
+            { header: 'Hours Worked', width: 80 },
+            { header: 'Employee', width: 80 },
+            { header: 'Straight Time', width: 80 },
+            { header: 'Time and a Half', width: 80 },
+            { header: 'Double Time', width: 80 },
+            { header: 'Emergency Purchases', width: 150 },
+            { header: 'Approved By', width: 100 },
+            { header: 'Shift Start Time', width: 100 },
+            { header: 'Temperature/Humidity', width: 100 },
+            { header: 'Report Copy', width: 100 }
+        ],
+        rows: reports.map(report => [
+            new Date(report.date).toDateString(),
+            report.job_number,
+            report.t_and_m ? 'Yes' : 'No',
+            report.contract ? 'Yes' : 'No',
+            report.foreman,
+            report.cell_number,
+            report.customer,
+            report.customer_po,
+            report.job_site,
+            report.job_description,
+            report.job_completion,
+            report.trucks,
+            report.welders,
+            report.generators,
+            report.compressors,
+            report.fuel,
+            report.scaffolding,
+            report.safety_equipment,
+            report.miscellaneous_equipment,
+            report.material_description,
+            report.equipment_description,
+            report.hours_worked,
+            report.employee,
+            report.straight_time,
+            report.time_and_a_half,
+            report.double_time,
+            report.emergency_purchases,
+            report.approved_by,
+            report.shift_start_time,
+            report.temperature_humidity,
+            report.report_copy
+        ])
     });
+
+    table.draw();
 
     doc.end();
 }
