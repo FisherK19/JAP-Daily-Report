@@ -3,8 +3,8 @@ const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
+const path = require('path');
 
-// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -12,56 +12,81 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image('assets/images/company-logo.png', 50, 45, { width: 50 })
-        .fillColor('#444444')
+    doc.image('assets/images/company-logo.png', 50, 45, { width: 70 })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', 110, 57)
-        .fontSize(10)
-        .text('Tel - 313-388-3000    Fax - 313-388-9864', 200, 65, { align: 'right' })
+        .fontSize(12)
+        .text('Tel - 313-388-3000    Fax - 313-388-9864', 110, 77)
         .moveDown();
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
+    // Content
     reports.forEach(report => {
-        doc.fontSize(10).text(`Date: ${new Date(report.date).toDateString()}`, { align: 'left' });
-        doc.fontSize(10).text(`Job Number: ${report.job_number}`, { align: 'left' });
-        doc.fontSize(10).text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { align: 'left' });
-        doc.fontSize(10).text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'left' });
-        doc.fontSize(10).text(`Foreman: ${report.foreman}`, { align: 'left' });
-        doc.fontSize(10).text(`Cell Number: ${report.cell_number}`, { align: 'left' });
-        doc.fontSize(10).text(`Customer: ${report.customer}`, { align: 'left' });
-        doc.fontSize(10).text(`Customer PO: ${report.customer_po}`, { align: 'left' });
-        doc.fontSize(10).text(`Job Site: ${report.job_site}`, { align: 'left' });
-        doc.fontSize(10).text(`Job Description: ${report.job_description}`, { align: 'left' });
-        doc.fontSize(10).text(`Job Completion: ${report.job_completion}`, { align: 'left' });
-        doc.fontSize(10).text(`Trucks: ${report.trucks}`, { align: 'left' });
-        doc.fontSize(10).text(`Welders: ${report.welders}`, { align: 'left' });
-        doc.fontSize(10).text(`Generators: ${report.generators}`, { align: 'left' });
-        doc.fontSize(10).text(`Compressors: ${report.compressors}`, { align: 'left' });
-        doc.fontSize(10).text(`Fuel: ${report.fuel}`, { align: 'left' });
-        doc.fontSize(10).text(`Scaffolding: ${report.scaffolding}`, { align: 'left' });
-        doc.fontSize(10).text(`Safety Equipment: ${report.safety_equipment}`, { align: 'left' });
-        doc.fontSize(10).text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'left' });
-        doc.fontSize(10).text(`Material Description: ${report.material_description}`, { align: 'left' });
-        doc.fontSize(10).text(`Equipment Description: ${report.equipment_description}`, { align: 'left' });
-        doc.fontSize(10).text(`Hours Worked: ${report.hours_worked}`, { align: 'left' });
-        doc.fontSize(10).text(`Employee: ${report.employee}`, { align: 'left' });
-        doc.fontSize(10).text(`Straight Time: ${report.straight_time}`, { align: 'left' });
-        doc.fontSize(10).text(`Time and a Half: ${report.time_and_a_half}`, { align: 'left' });
-        doc.fontSize(10).text(`Double Time: ${report.double_time}`, { align: 'left' });
-        doc.fontSize(10).text(`Emergency Purchases: ${report.emergency_purchases}`, { align: 'left' });
-        doc.fontSize(10).text(`Approved By: ${report.approved_by}`, { align: 'left' });
-        doc.fontSize(10).text(`Shift Start Time: ${report.shift_start_time}`, { align: 'left' });
-        doc.fontSize(10).text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'left' });
-        doc.fontSize(10).text(`Report Copy: ${report.report_copy}`, { align: 'left' });
-
-        doc.moveDown();
+        doc.moveDown()
+            .fontSize(10)
+            .text(`Date: ${new Date(report.date).toDateString()}`, { continued: true })
+            .text(`Job Number: ${report.job_number}`, { align: 'right' })
+            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true })
+            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
+            .text(`Foreman: ${report.foreman}`, { continued: true })
+            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
+            .text(`Customer: ${report.customer}`, { continued: true })
+            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
+            .text(`Job Site: ${report.job_site}`, { continued: true })
+            .text(`Job Completion: ${report.job_completion}`, { align: 'right' })
+            .text(`Shift Start Time: ${report.shift_start_time}`, { continued: true })
+            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'right' })
+            .moveDown()
+            .text(`Job Description: ${report.job_description}`)
+            .text(`Sheeting / Materials: ${report.material_description}`)
+            .moveDown()
+            .text('Employees:', { underline: true })
+            .text(`Hours Worked: ${report.hours_worked}`)
+            .text(`Employee: ${report.employee}`)
+            .text(`Straight Time: ${report.straight_time}`)
+            .text(`Time and a Half: ${report.time_and_a_half}`)
+            .text(`Double Time: ${report.double_time}`)
+            .moveDown()
+            .text('Equipment:', { underline: true })
+            .text(`Trucks: ${report.trucks}`)
+            .text(`Welders: ${report.welders}`)
+            .text(`Generators: ${report.generators}`)
+            .text(`Compressors: ${report.compressors}`)
+            .text(`Company Fuel: ${report.fuel}`)
+            .text(`Scaffolding: ${report.scaffolding}`)
+            .text(`Safety Equipment: ${report.safety_equipment}`)
+            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`)
+            .moveDown()
+            .text('Manlifts / Rentals:', { underline: true })
+            .text(`Manlifts Equipment: ${report.manlifts_equipment}`)
+            .text(`Fuel: ${report.manlifts_fuel}`)
+            .moveDown()
+            .text('Sub-Contract:', { underline: true })
+            .text(report.sub_contract)
+            .moveDown()
+            .text('Emergency Purchases:', { underline: true })
+            .text(report.emergency_purchases)
+            .moveDown()
+            .text('Delay / Lost Time:', { underline: true })
+            .text(report.delay_lost_time)
+            .moveDown()
+            .text('Employees Off:', { underline: true })
+            .text(report.employees_off)
+            .moveDown()
+            .text('Approved By:', { underline: true })
+            .text(report.approved_by)
+            .moveDown()
+            .text('Report Copy:', { underline: true })
+            .text(report.report_copy)
+            .moveDown()
+            .text('---------------------------------------')
+            .moveDown();
     });
 
     doc.end();
 }
 
-// Function to generate Excel report
 function generateExcel(reports, username, res) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Daily Reports');
@@ -78,14 +103,6 @@ function generateExcel(reports, username, res) {
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
         { header: 'Job Completion', key: 'job_completion', width: 15 },
-        { header: 'Trucks', key: 'trucks', width: 15 },
-        { header: 'Welders', key: 'welders', width: 15 },
-        { header: 'Generators', key: 'generators', width: 15 },
-        { header: 'Compressors', key: 'compressors', width: 15 },
-        { header: 'Fuel', key: 'fuel', width: 15 },
-        { header: 'Scaffolding', key: 'scaffolding', width: 15 },
-        { header: 'Safety Equipment', key: 'safety_equipment', width: 15 },
-        { header: 'Miscellaneous Equipment', key: 'miscellaneous_equipment', width: 15 },
         { header: 'Material Description', key: 'material_description', width: 30 },
         { header: 'Equipment Description', key: 'equipment_description', width: 30 },
         { header: 'Hours Worked', key: 'hours_worked', width: 15 },
@@ -97,43 +114,24 @@ function generateExcel(reports, username, res) {
         { header: 'Approved By', key: 'approved_by', width: 15 },
         { header: 'Shift Start Time', key: 'shift_start_time', width: 15 },
         { header: 'Temperature/Humidity', key: 'temperature_humidity', width: 30 },
-        { header: 'Report Copy', key: 'report_copy', width: 15 }
+        { header: 'Report Copy', key: 'report_copy', width: 15 },
+        { header: 'Trucks', key: 'trucks', width: 15 },
+        { header: 'Welders', key: 'welders', width: 15 },
+        { header: 'Generators', key: 'generators', width: 15 },
+        { header: 'Compressors', key: 'compressors', width: 15 },
+        { header: 'Fuel', key: 'fuel', width: 15 },
+        { header: 'Scaffolding', key: 'scaffolding', width: 15 },
+        { header: 'Safety Equipment', key: 'safety_equipment', width: 15 },
+        { header: 'Miscellaneous Equipment', key: 'miscellaneous_equipment', width: 15 },
+        { header: 'Manlifts Equipment', key: 'manlifts_equipment', width: 15 },
+        { header: 'Manlifts Fuel', key: 'manlifts_fuel', width: 15 },
+        { header: 'Sub-Contract', key: 'sub_contract', width: 30 },
+        { header: 'Delay / Lost Time', key: 'delay_lost_time', width: 30 },
+        { header: 'Employees Off', key: 'employees_off', width: 30 }
     ];
 
     reports.forEach(report => {
-        worksheet.addRow({
-            date: report.date,
-            job_number: report.job_number,
-            t_and_m: report.t_and_m,
-            contract: report.contract,
-            foreman: report.foreman,
-            cell_number: report.cell_number,
-            customer: report.customer,
-            customer_po: report.customer_po,
-            job_site: report.job_site,
-            job_description: report.job_description,
-            job_completion: report.job_completion,
-            trucks: report.trucks,
-            welders: report.welders,
-            generators: report.generators,
-            compressors: report.compressors,
-            fuel: report.fuel,
-            scaffolding: report.scaffolding,
-            safety_equipment: report.safety_equipment,
-            miscellaneous_equipment: report.miscellaneous_equipment,
-            material_description: report.material_description,
-            equipment_description: report.equipment_description,
-            hours_worked: report.hours_worked,
-            employee: report.employee,
-            straight_time: report.straight_time,
-            time_and_a_half: report.time_and_a_half,
-            double_time: report.double_time,
-            emergency_purchases: report.emergency_purchases,
-            approved_by: report.approved_by,
-            shift_start_time: report.shift_start_time,
-            temperature_humidity: report.temperature_humidity,
-            report_copy: report.report_copy
-        });
+        worksheet.addRow(report);
     });
 
     const excelPath = `user_${username}_reports.xlsx`;
