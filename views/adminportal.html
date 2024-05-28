@@ -8,8 +8,10 @@
 </head>
 <body>
     <header>
-        <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo">
-        <h1>Admin Portal</h1>
+        <div class="header-content">
+            <img src="/assets/images/company-logo.png" alt="Company Logo" id="company-logo">
+            <h1>Admin Portal</h1>
+        </div>
     </header>
 
     <nav>
@@ -23,13 +25,19 @@
         </ul>
     </nav>
 
-            <div>
+    <main>
+        <section class="form-section">
+            <div class="form-group">
                 <label for="report-date">Select Date:</label>
                 <input type="date" id="report-date">
+            </div>
+            <div class="form-group">
                 <label for="user-select">Select User:</label>
                 <select id="user-select">
                     <option value="">Select User</option>
                 </select>
+            </div>
+            <div class="form-group">
                 <button onclick="downloadUserReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
                 <button onclick="downloadUserReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
             </div>
@@ -37,7 +45,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 John A. Pappalas Daily Report App. All rights reserved.</p>
+        <p>&copy; 2024 John A. Papalas Daily Report App. All rights reserved.</p>
     </footer>
 
     <script>
@@ -71,17 +79,6 @@
             }
 
             const url = `/admin/portal/report/${format}/${user}`;
-            window.location.href = url;
-        }
-
-        function downloadReport(format) {
-            const date = document.getElementById('report-date').value;
-            if (!date) {
-                alert('Please select a date.');
-                return;
-            }
-
-            const url = `/admin/portal/report/all/${format}/${date}`;
             window.location.href = url;
         }
 
