@@ -1,3 +1,11 @@
+const express = require('express');
+const router = express.Router();
+const { pool } = require('../config/connection');
+const PDFDocument = require('pdfkit');
+const ExcelJS = require('exceljs');
+const path = require('path');
+
+// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
