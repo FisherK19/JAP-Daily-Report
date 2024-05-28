@@ -119,6 +119,9 @@ router.post('/', async (req, res) => {
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         ];
 
+        console.log('SQL Query:', sql);
+        console.log('Values:', values);
+
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
         res.status(201).json({ message: 'Daily report submitted and PDF generated successfully', pdfPath });
