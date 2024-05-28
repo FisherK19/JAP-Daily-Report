@@ -1,8 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
+const ExcelJS = require('exceljs');
 const path = require('path');
 
 // Configure Nodemailer transporter
@@ -51,43 +49,52 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
+    // Table Header
+    const tableTop = doc.y;
+    const rowHeight = 20;
+
+    doc.fontSize(10);
+    const headers = [
+        'Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number',
+        'Customer', 'Customer PO', 'Job Site', 'Job Description', 'Job Completion',
+        'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel',
+        'Scaffolding', 'Safety Equipment', 'Miscellaneous Equipment', 'Material Description',
+        'Equipment Description', 'Hours Worked', 'Employee', 'Straight Time', 'Time and a Half',
+        'Double Time', 'Emergency Purchases', 'Approved By', 'Shift Start Time',
+        'Temperature/Humidity', 'Report Copy'
+    ];
+
+    const colWidths = [60, 70, 40, 50, 60, 70, 60, 70, 70, 90, 70, 50, 50, 70, 70, 40, 70, 80, 100, 120, 120, 60, 70, 60, 70, 70, 90, 70, 90, 100];
+
+    let x = 30;
+    headers.forEach((header, index) => {
+        doc.text(header, x, tableTop, { width: colWidths[index], align: 'left' });
+        x += colWidths[index];
+    });
+
+    let yPos = tableTop + rowHeight;
     reports.forEach(report => {
-        doc.fontSize(10).text(`Date: ${new Date(report.date).toDateString()}`, { align: 'left' })
-            .moveDown()
-            .fontSize(10).text(`Job Number: ${report.job_number}`, { align: 'left' })
-            .fontSize(10).text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { align: 'left' })
-            .fontSize(10).text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'left' })
-            .fontSize(10).text(`Foreman: ${report.foreman}`, { align: 'left' })
-            .fontSize(10).text(`Cell Number: ${report.cell_number}`, { align: 'left' })
-            .fontSize(10).text(`Customer: ${report.customer}`, { align: 'left' })
-            .fontSize(10).text(`Customer PO: ${report.customer_po}`, { align: 'left' })
-            .fontSize(10).text(`Job Site: ${report.job_site}`, { align: 'left' })
-            .fontSize(10).text(`Job Description: ${report.job_description}`, { align: 'left' })
-            .fontSize(10).text(`Job Completion: ${report.job_completion}`, { align: 'left' })
-            .fontSize(10).text(`Trucks: ${report.trucks}`, { align: 'left' })
-            .fontSize(10).text(`Welders: ${report.welders}`, { align: 'left' })
-            .fontSize(10).text(`Generators: ${report.generators}`, { align: 'left' })
-            .fontSize(10).text(`Compressors: ${report.compressors}`, { align: 'left' })
-            .fontSize(10).text(`Fuel: ${report.fuel}`, { align: 'left' })
-            .fontSize(10).text(`Scaffolding: ${report.scaffolding}`, { align: 'left' })
-            .fontSize(10).text(`Safety Equipment: ${report.safety_equipment}`, { align: 'left' })
-            .fontSize(10).text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'left' })
-            .fontSize(10).text(`Material Description: ${report.material_description}`, { align: 'left' })
-            .fontSize(10).text(`Equipment Description: ${report.equipment_description}`, { align: 'left' })
-            .fontSize(10).text(`Hours Worked: ${report.hours_worked}`, { align: 'left' })
-            .fontSize(10).text(`Employee: ${report.employee}`, { align: 'left' })
-            .fontSize(10).text(`Straight Time: ${report.straight_time}`, { align: 'left' })
-            .fontSize(10).text(`Time and a Half: ${report.time_and_a_half}`, { align: 'left' })
-            .fontSize(10).text(`Double Time: ${report.double_time}`, { align: 'left' })
-            .fontSize(10).text(`Emergency Purchases: ${report.emergency_purchases}`, { align: 'left' })
-            .fontSize(10).text(`Approved By: ${report.approved_by}`, { align: 'left' })
-            .fontSize(10).text(`Shift Start Time: ${report.shift_start_time}`, { align: 'left' })
-            .fontSize(10).text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'left' })
-            .fontSize(10).text(`Report Copy: ${report.report_copy}`, { align: 'left' })
-            .moveDown();
-        
-        if (doc.y > 700) {
+        x = 30;
+        const values = [
+            new Date(report.date).toDateString(), report.job_number, report.t_and_m ? 'Yes' : 'No',
+            report.contract ? 'Yes' : 'No', report.foreman, report.cell_number, report.customer,
+            report.customer_po, report.job_site, report.job_description, report.job_completion,
+            report.trucks, report.welders, report.generators, report.compressors, report.fuel,
+            report.scaffolding, report.safety_equipment, report.miscellaneous_equipment, report.material_description,
+            report.equipment_description, report.hours_worked, report.employee, report.straight_time, report.time_and_a_half,
+            report.double_time, report.emergency_purchases, report.approved_by, report.shift_start_time,
+            report.temperature_humidity, report.report_copy
+        ];
+
+        values.forEach((value, index) => {
+            doc.text(value, x, yPos, { width: colWidths[index], align: 'left' });
+            x += colWidths[index];
+        });
+
+        yPos += rowHeight;
+        if (yPos > 700) {
             doc.addPage();
+            yPos = 30;
         }
     });
 
