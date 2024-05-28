@@ -4,7 +4,6 @@ const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
-const path = require('path');
 
 // Configure Nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -18,98 +17,75 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send email alert with download link to report
-async function sendAlertEmail(adminEmail, username, reportPath, reportType) {
-    try {
-        await transporter.sendMail({
-            from: process.env.EMAIL_ADDRESS,
-            to: adminEmail,
-            subject: `New ${reportType} Daily Report Downloaded`,
-            html: `A new ${reportType} daily report has been downloaded for user ${username}.<br>Download Link: <a href="${reportPath}">${reportPath}</a>`
-        });
-        console.log('Email sent successfully.');
-    } catch (error) {
-        console.error('Error sending email:', error);
-    }
+function sendAlertEmail(adminEmail, username, reportPath, reportType) {
+    const mailOptions = {
+        from: process.env.EMAIL_ADDRESS,
+        to: adminEmail,
+        subject: `New ${reportType} Daily Report Downloaded`,
+        html: `A new ${reportType} daily report has been downloaded for user ${username}.<br>Download Link: <a href="${reportPath}">${reportPath}</a>`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error sending email:', error);
+        } else {
+            console.log('Email sent:', info.response);
+        }
+    });
 }
 
 // Function to generate PDF report
 function generatePDF(reports, username, res) {
-    const doc = new PDFDocument({ margin: 30 });
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
     res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
     doc.pipe(res);
 
-    // Add company logo
-    const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
-    doc.image(logoPath, {
-        fit: [100, 100],
-        align: 'center'
-    });
+    // Header
+    doc.image('path/to/logo.png', { width: 100 })
+        .fontSize(20)
+        .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
+        .fontSize(12)
+        .text('Tel - 313-388-3000    Fax - 313-388-9864', { align: 'center' })
+        .moveDown();
 
-    doc.moveDown(2); // Add some space after the logo
+    doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    // Add report title
-    doc.fontSize(18).text('Daily Report', { align: 'center' });
-    doc.moveDown();
+    // Table Header
+    const tableTop = doc.y;
+    const itemWidth = 90;
 
-    // Define table columns
-    const table = {
-        headers: [
-            'Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number', 'Customer', 'Customer PO',
-            'Job Site', 'Job Description', 'Job Completion', 'Siding', 'Roofing', 'Flashing', 'Miscellaneous',
-            'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel', 'Scaffolding', 'Safety Equipment',
-            'Miscellaneous Equipment', 'Material Description', 'Equipment Description', 'Hours Worked',
-            'Employee', 'Straight Time', 'Time and a Half', 'Double Time', 'Emergency Purchases', 'Approved By',
-            'Shift Start Time', 'Temperature/Humidity', 'Report Copy'
-        ],
-        rows: []
-    };
+    doc.fontSize(10);
+    doc.text('Date', 30, tableTop);
+    doc.text('Job Number', 120, tableTop);
+    doc.text('T&M', 200, tableTop);
+    doc.text('Contract', 250, tableTop);
+    doc.text('Foreman', 310, tableTop);
+    doc.text('Cell Number', 380, tableTop);
 
-    // Add report data to table rows
+    // Table Content
+    let yPos = tableTop + 20;
     reports.forEach(report => {
-        table.rows.push([
-            report.date, report.job_number, report.t_and_m, report.contract, report.foreman, report.cell_number,
-            report.customer, report.customer_po, report.job_site, report.job_description, report.job_completion,
-            report.siding, report.roofing, report.flashing, report.miscellaneous, report.trucks, report.welders,
-            report.generators, report.compressors, report.fuel, report.scaffolding, report.safety_equipment,
-            report.miscellaneous_equipment, report.material_description, report.equipment_description,
-            report.hours_worked, report.employee, report.straight_time, report.time_and_a_half, report.double_time,
-            report.emergency_purchases, report.approved_by, report.shift_start_time, report.temperature_humidity,
-            report.report_copy
-        ]);
-    });
+        doc.fontSize(10);
+        doc.text(new Date(report.date).toDateString(), 30, yPos);
+        doc.text(report.job_number, 120, yPos);
+        doc.text(report.t_and_m ? 'Yes' : 'No', 200, yPos);
+        doc.text(report.contract ? 'Yes' : 'No', 250, yPos);
+        doc.text(report.foreman, 310, yPos);
+        doc.text(report.cell_number, 380, yPos);
 
-    // Draw the table
-    generateTable(doc, table);
+        yPos += 20;
+        if (yPos > 700) {
+            doc.addPage();
+            yPos = 30;
+        }
+    });
 
     doc.end();
 }
 
-// Helper function to draw a table
-function generateTable(doc, table) {
-    const startX = doc.x;
-    const startY = doc.y;
-
-    // Draw table headers
-    doc.fontSize(10).font('Helvetica-Bold');
-    table.headers.forEach((header, i) => {
-        doc.text(header, startX + i * 100, startY, { width: 100, align: 'center' });
-    });
-
-    doc.moveDown(1.5);
-
-    // Draw table rows
-    doc.fontSize(10).font('Helvetica');
-    table.rows.forEach(row => {
-        row.forEach((cell, i) => {
-            doc.text(cell, startX + i * 100, doc.y, { width: 100, align: 'center' });
-        });
-        doc.moveDown();
-    });
-}
-
 // Function to generate Excel report
-async function generateExcel(reports, username, res) {
+function generateExcel(reports, username, res) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Daily Reports');
 
@@ -193,11 +169,11 @@ async function generateExcel(reports, username, res) {
 
     const excelPath = `user_${username}_reports.xlsx`;
     res.setHeader('Content-Disposition', `attachment; filename="${excelPath}"`);
-    await workbook.xlsx.write(res);
-    res.end();
-
-    const adminEmail = process.env.EMAIL_ADDRESS;
-    await sendAlertEmail(adminEmail, username, excelPath, 'Excel');
+    workbook.xlsx.write(res).then(() => {
+        res.end();
+        const adminEmail = process.env.EMAIL_ADDRESS;
+        sendAlertEmail(adminEmail, username, excelPath, 'Excel');
+    });
 }
 
 // Route to generate and download PDF report for a specific user
@@ -206,14 +182,19 @@ router.get('/pdf/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        
+        console.log(`Fetched reports for user ${username}:`, reports); // Log query results
+        console.log(`Total reports found: ${reports.length}`);
+
         if (reports.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user.' });
         }
 
         generatePDF(reports, username, res);
+
         const adminEmail = process.env.EMAIL_ADDRESS;
         const pdfPath = `user_${username}_reports.pdf`;
-        await sendAlertEmail(adminEmail, username, pdfPath, 'PDF');
+        sendAlertEmail(adminEmail, username, pdfPath, 'PDF');
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -226,11 +207,15 @@ router.get('/excel/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        
+        console.log(`Fetched reports for user ${username}:`, reports); // Log query results
+        console.log(`Total reports found: ${reports.length}`);
+
         if (reports.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user.' });
         }
 
-        await generateExcel(reports, username, res);
+        generateExcel(reports, username, res);
     } catch (error) {
         console.error('Error generating Excel:', error);
         res.status(500).json({ message: 'Internal server error' });
