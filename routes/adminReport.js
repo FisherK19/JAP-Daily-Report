@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
 const path = require('path');
 
@@ -14,7 +13,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50, align: 'center' })
+    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50 })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
@@ -23,98 +22,51 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
+    // Iterate over each report to generate content
     reports.forEach(report => {
-        // Section 1: Basic Information
-        doc.fontSize(10)
-            .text(`Date: ${new Date(report.date).toDateString()}`, 30)
-            .text(`Job Number: ${report.job_number}`, { align: 'right' })
-            .moveDown()
-            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, 30)
-            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
-            .moveDown()
-            .text(`Foreman: ${report.foreman}`, 30)
-            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
-            .moveDown()
-            .text(`Customer: ${report.customer}`, 30)
-            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
-            .moveDown()
-            .text(`Job Site: ${report.job_site}`, 30)
-            .text(`Job Completion: ${report.job_completion}`, { align: 'right' })
-            .moveDown()
-            .text(`Shift Start Time: ${report.shift_start_time}`, 30)
-            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'right' })
-            .moveDown();
+        doc.fontSize(10);
+        
+        const startY = doc.y;
+        
+        doc.text(`Date: ${new Date(report.date).toDateString()}`, 30, startY);
+        doc.text(`Job Number: ${report.job_number}`, 300, startY);
 
-        // Section 2: Job Description and Materials
-        doc.text('Job Description:', { underline: true }).moveDown()
-            .text(report.job_description)
-            .moveDown()
-            .text('Sheeting / Materials:', { underline: true })
-            .text(report.material_description)
-            .moveDown();
+        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, 30, startY + 15);
+        doc.text(`Contract: ${report.contract ? 'Yes' : 'No'}`, 300, startY + 15);
 
-        // Section 3: Employee Details
-        doc.text('Employees:', { underline: true }).moveDown()
-            .text(`Hours Worked: ${report.hours_worked}`, 30)
-            .text(`Employee: ${report.employee}`, { align: 'right' })
-            .moveDown()
-            .text(`Straight Time: ${report.straight_time}`, 30)
-            .text(`Time and a Half: ${report.time_and_a_half}`, { align: 'right' })
-            .moveDown()
-            .text(`Double Time: ${report.double_time}`, 30)
-            .moveDown();
+        doc.text(`Foreman: ${report.foreman}`, 30, startY + 30);
+        doc.text(`Cell Number: ${report.cell_number}`, 300, startY + 30);
 
-        // Section 4: Equipment
-        doc.text('Equipment:', { underline: true }).moveDown()
-            .text(`Trucks: ${report.trucks}`, 30)
-            .text(`Welders: ${report.welders}`, { align: 'right' })
-            .moveDown()
-            .text(`Generators: ${report.generators}`, 30)
-            .text(`Compressors: ${report.compressors}`, { align: 'right' })
-            .moveDown()
-            .text(`Company Fuel: ${report.fuel}`, 30)
-            .text(`Scaffolding: ${report.scaffolding}`, { align: 'right' })
-            .moveDown()
-            .text(`Safety Equipment: ${report.safety_equipment}`, 30)
-            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'right' })
-            .moveDown();
+        doc.text(`Customer: ${report.customer}`, 30, startY + 45);
+        doc.text(`Customer PO: ${report.customer_po}`, 300, startY + 45);
 
-        // Section 5: Manlifts and Rentals
-        doc.text('Manlifts / Rentals:', { underline: true }).moveDown()
-            .text(`Manlifts Equipment: ${report.manlifts_equipment}`, 30)
-            .text(`Fuel: ${report.manlifts_fuel}`, { align: 'right' })
-            .moveDown();
+        doc.text(`Job Site: ${report.job_site}`, 30, startY + 60);
+        doc.text(`Job Completion: ${report.job_completion}`, 300, startY + 60);
 
-        // Section 6: Sub-Contract
-        doc.text('Sub-Contract:', { underline: true }).moveDown()
-            .text(report.sub_contract)
-            .moveDown();
+        doc.text(`Job Description: ${report.job_description}`, 30, startY + 75);
+        doc.text(`Shift Start Time: ${report.shift_start_time}`, 300, startY + 75);
 
-        // Section 7: Emergency Purchases
-        doc.text('Emergency Purchases:', { underline: true }).moveDown()
-            .text(report.emergency_purchases)
-            .moveDown();
+        doc.text(`Material Description: ${report.material_description}`, 30, startY + 90);
+        doc.text(`Equipment Description: ${report.equipment_description}`, 300, startY + 90);
 
-        // Section 8: Delay / Lost Time
-        doc.text('Delay / Lost Time:', { underline: true }).moveDown()
-            .text(report.delay_lost_time)
-            .moveDown();
+        doc.text(`Hours Worked: ${report.hours_worked}`, 30, startY + 105);
+        doc.text(`Employee: ${report.employee}`, 300, startY + 105);
 
-        // Section 9: Employees Off
-        doc.text('Employees Off:', { underline: true }).moveDown()
-            .text(report.employees_off)
-            .moveDown();
+        doc.text(`Straight Time: ${report.straight_time}`, 30, startY + 120);
+        doc.text(`Time and a Half: ${report.time_and_a_half}`, 300, startY + 120);
+        doc.text(`Double Time: ${report.double_time}`, 30, startY + 135);
 
-        // Section 10: Approved By
-        doc.text('Approved By:', { underline: true }).moveDown()
-            .text(report.approved_by)
-            .moveDown();
+        doc.text(`Emergency Purchases: ${report.emergency_purchases}`, 30, startY + 150);
+        doc.text(`Approved By: ${report.approved_by}`, 300, startY + 150);
 
-        // Section 11: Report Copy
-        doc.text('Report Copy:', { underline: true }).moveDown()
-            .text(report.report_copy)
-            .moveDown()
-            .addPage();
+        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`, 30, startY + 165);
+        doc.text(`Report Copy: ${report.report_copy}`, 300, startY + 165);
+
+        doc.moveDown();
+        
+        if (doc.y > 750) {
+            doc.addPage();
+        }
     });
 
     doc.end();
@@ -207,8 +159,6 @@ function generateExcel(reports, username, res) {
     res.setHeader('Content-Disposition', `attachment; filename="${excelPath}"`);
     workbook.xlsx.write(res).then(() => {
         res.end();
-        const adminEmail = process.env.EMAIL_ADDRESS;
-        sendAlertEmail(adminEmail, username, excelPath, 'Excel');
     });
 }
 
@@ -227,10 +177,6 @@ router.get('/pdf/:username', async (req, res) => {
         }
 
         generatePDF(reports, username, res);
-
-        const adminEmail = process.env.EMAIL_ADDRESS;
-        const pdfPath = `user_${username}_reports.pdf`;
-        sendAlertEmail(adminEmail, username, pdfPath, 'PDF');
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -259,3 +205,4 @@ router.get('/excel/:username', async (req, res) => {
 });
 
 module.exports = router;
+
