@@ -3,7 +3,6 @@ const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
-const path = require('path');
 
 // Function to generate PDF report
 function generatePDF(reports, username, res) {
@@ -13,60 +12,92 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50 })
+    doc.image('assets/images/company-logo.png', 50, 45, { width: 50 })
+        .fillColor('#444444')
         .fontSize(20)
-        .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
-        .fontSize(12)
-        .text('Tel - 313-388-3000    Fax - 313-388-9864', { align: 'center' })
+        .text('JOHN A. PAPALAS & COMPANY', 110, 57)
+        .fontSize(10)
+        .text('Tel - 313-388-3000    Fax - 313-388-9864', 200, 65, { align: 'right' })
         .moveDown();
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    // Iterate over each report to generate content
     reports.forEach(report => {
+        // Table with two columns for each section
         doc.fontSize(10);
-        
-        const startY = doc.y;
-        
-        doc.text(`Date: ${new Date(report.date).toDateString()}`, 30, startY);
-        doc.text(`Job Number: ${report.job_number}`, 300, startY);
-
-        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, 30, startY + 15);
-        doc.text(`Contract: ${report.contract ? 'Yes' : 'No'}`, 300, startY + 15);
-
-        doc.text(`Foreman: ${report.foreman}`, 30, startY + 30);
-        doc.text(`Cell Number: ${report.cell_number}`, 300, startY + 30);
-
-        doc.text(`Customer: ${report.customer}`, 30, startY + 45);
-        doc.text(`Customer PO: ${report.customer_po}`, 300, startY + 45);
-
-        doc.text(`Job Site: ${report.job_site}`, 30, startY + 60);
-        doc.text(`Job Completion: ${report.job_completion}`, 300, startY + 60);
-
-        doc.text(`Job Description: ${report.job_description}`, 30, startY + 75);
-        doc.text(`Shift Start Time: ${report.shift_start_time}`, 300, startY + 75);
-
-        doc.text(`Material Description: ${report.material_description}`, 30, startY + 90);
-        doc.text(`Equipment Description: ${report.equipment_description}`, 300, startY + 90);
-
-        doc.text(`Hours Worked: ${report.hours_worked}`, 30, startY + 105);
-        doc.text(`Employee: ${report.employee}`, 300, startY + 105);
-
-        doc.text(`Straight Time: ${report.straight_time}`, 30, startY + 120);
-        doc.text(`Time and a Half: ${report.time_and_a_half}`, 300, startY + 120);
-        doc.text(`Double Time: ${report.double_time}`, 30, startY + 135);
-
-        doc.text(`Emergency Purchases: ${report.emergency_purchases}`, 30, startY + 150);
-        doc.text(`Approved By: ${report.approved_by}`, 300, startY + 150);
-
-        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`, 30, startY + 165);
-        doc.text(`Report Copy: ${report.report_copy}`, 300, startY + 165);
+        const table = {
+            headers: [
+                { label: 'Date', property: 'date' },
+                { label: 'Job Number', property: 'job_number' },
+                { label: 'T&M', property: 't_and_m', align: 'center' },
+                { label: 'Contract', property: 'contract', align: 'center' },
+                { label: 'Foreman', property: 'foreman' },
+                { label: 'Cell Number', property: 'cell_number' },
+                { label: 'Customer', property: 'customer' },
+                { label: 'Customer PO', property: 'customer_po' },
+                { label: 'Job Site', property: 'job_site' },
+                { label: 'Job Description', property: 'job_description' },
+                { label: 'Job Completion', property: 'job_completion' },
+                { label: 'Trucks', property: 'trucks' },
+                { label: 'Welders', property: 'welders' },
+                { label: 'Generators', property: 'generators' },
+                { label: 'Compressors', property: 'compressors' },
+                { label: 'Fuel', property: 'fuel' },
+                { label: 'Scaffolding', property: 'scaffolding' },
+                { label: 'Safety Equipment', property: 'safety_equipment' },
+                { label: 'Miscellaneous Equipment', property: 'miscellaneous_equipment' },
+                { label: 'Material Description', property: 'material_description' },
+                { label: 'Equipment Description', property: 'equipment_description' },
+                { label: 'Hours Worked', property: 'hours_worked' },
+                { label: 'Employee', property: 'employee' },
+                { label: 'Straight Time', property: 'straight_time' },
+                { label: 'Time and a Half', property: 'time_and_a_half' },
+                { label: 'Double Time', property: 'double_time' },
+                { label: 'Emergency Purchases', property: 'emergency_purchases' },
+                { label: 'Approved By', property: 'approved_by' },
+                { label: 'Shift Start Time', property: 'shift_start_time' },
+                { label: 'Temperature/Humidity', property: 'temperature_humidity' },
+                { label: 'Report Copy', property: 'report_copy' },
+            ],
+            rows: [
+                [
+                    new Date(report.date).toDateString(),
+                    report.job_number,
+                    report.t_and_m ? 'Yes' : 'No',
+                    report.contract ? 'Yes' : 'No',
+                    report.foreman,
+                    report.cell_number,
+                    report.customer,
+                    report.customer_po,
+                    report.job_site,
+                    report.job_description,
+                    report.job_completion,
+                    report.trucks,
+                    report.welders,
+                    report.generators,
+                    report.compressors,
+                    report.fuel,
+                    report.scaffolding,
+                    report.safety_equipment,
+                    report.miscellaneous_equipment,
+                    report.material_description,
+                    report.equipment_description,
+                    report.hours_worked,
+                    report.employee,
+                    report.straight_time,
+                    report.time_and_a_half,
+                    report.double_time,
+                    report.emergency_purchases,
+                    report.approved_by,
+                    report.shift_start_time,
+                    report.temperature_humidity,
+                    report.report_copy
+                ]
+            ]
+        };
+        doc.table(table, { width: 500 });
 
         doc.moveDown();
-        
-        if (doc.y > 750) {
-            doc.addPage();
-        }
     });
 
     doc.end();
@@ -89,10 +120,6 @@ function generateExcel(reports, username, res) {
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
         { header: 'Job Completion', key: 'job_completion', width: 15 },
-        { header: 'Siding', key: 'siding', width: 15 },
-        { header: 'Roofing', key: 'roofing', width: 15 },
-        { header: 'Flashing', key: 'flashing', width: 15 },
-        { header: 'Miscellaneous', key: 'miscellaneous', width: 15 },
         { header: 'Trucks', key: 'trucks', width: 15 },
         { header: 'Welders', key: 'welders', width: 15 },
         { header: 'Generators', key: 'generators', width: 15 },
@@ -128,10 +155,6 @@ function generateExcel(reports, username, res) {
             job_site: report.job_site,
             job_description: report.job_description,
             job_completion: report.job_completion,
-            siding: report.siding,
-            roofing: report.roofing,
-            flashing: report.flashing,
-            miscellaneous: report.miscellaneous,
             trucks: report.trucks,
             welders: report.welders,
             generators: report.generators,
