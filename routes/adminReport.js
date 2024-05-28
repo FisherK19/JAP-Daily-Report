@@ -1,41 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const { pool } = require('../config/connection');
-const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
-const ExcelJS = require('exceljs');
-const path = require('path');
-
-// Configure Nodemailer transporter
-const transporter = nodemailer.createTransport({
-    host: 'smtp.office365.com',
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_ADDRESS,
-        pass: process.env.EMAIL_PASSWORD
-    }
-});
-
-// Function to send email alert with download link to report
-function sendAlertEmail(adminEmail, username, reportPath, reportType) {
-    const mailOptions = {
-        from: process.env.EMAIL_ADDRESS,
-        to: adminEmail,
-        subject: `New ${reportType} Daily Report Downloaded`,
-        html: `A new ${reportType} daily report has been downloaded for user ${username}.<br>Download Link: <a href="${reportPath}">${reportPath}</a>`
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error);
-        } else {
-            console.log('Email sent:', info.response);
-        }
-    });
-}
-
-// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -43,7 +5,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50 })
+    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50, align: 'center' })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
@@ -52,33 +14,98 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    // Table Header
-    const headers = ['Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number', 'Customer', 'Customer PO', 'Job Site', 'Job Description', 'Job Completion', 'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel', 'Scaffolding', 'Safety Equipment', 'Miscellaneous Equipment', 'Material Description', 'Equipment Description', 'Hours Worked', 'Employee', 'Straight Time', 'Time and a Half', 'Double Time', 'Emergency Purchases', 'Approved By', 'Shift Start Time', 'Temperature/Humidity', 'Report Copy'];
-    
-    // Table Content
-    const tableTop = 150;
-    const itemWidth = 70;
-    let yPos = tableTop;
-    
-    doc.fontSize(10).font('Helvetica-Bold');
-    headers.forEach((header, i) => {
-        doc.text(header, 30 + i * itemWidth, yPos, { width: itemWidth, align: 'center' });
-    });
-    
-    yPos += 20;
-    doc.font('Helvetica').fontSize(8);
-    reports.forEach((report, rowIndex) => {
-        if (yPos > 750) {
-            doc.addPage();
-            yPos = 50;
-        }
-        headers.forEach((header, i) => {
-            let text = report[header.toLowerCase().replace(/ /g, '_')];
-            if (header === 'Date') text = new Date(text).toDateString();
-            if (header === 'T&M' || header === 'Contract') text = text ? 'Yes' : 'No';
-            doc.text(text || '', 30 + i * itemWidth, yPos, { width: itemWidth, align: 'center' });
-        });
-        yPos += 20;
+    reports.forEach(report => {
+        // Section 1: Basic Information
+        doc.fontSize(10)
+            .text(`Date: ${new Date(report.date).toDateString()}`, 30)
+            .text(`Job Number: ${report.job_number}`, { align: 'right' })
+            .moveDown()
+            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, 30)
+            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
+            .moveDown()
+            .text(`Foreman: ${report.foreman}`, 30)
+            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
+            .moveDown()
+            .text(`Customer: ${report.customer}`, 30)
+            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
+            .moveDown()
+            .text(`Job Site: ${report.job_site}`, 30)
+            .text(`Job Completion: ${report.job_completion}`, { align: 'right' })
+            .moveDown()
+            .text(`Shift Start Time: ${report.shift_start_time}`, 30)
+            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'right' })
+            .moveDown();
+
+        // Section 2: Job Description and Materials
+        doc.text('Job Description:', { underline: true }).moveDown()
+            .text(report.job_description)
+            .moveDown()
+            .text('Sheeting / Materials:', { underline: true })
+            .text(report.material_description)
+            .moveDown();
+
+        // Section 3: Employee Details
+        doc.text('Employees:', { underline: true }).moveDown()
+            .text(`Hours Worked: ${report.hours_worked}`, 30)
+            .text(`Employee: ${report.employee}`, { align: 'right' })
+            .moveDown()
+            .text(`Straight Time: ${report.straight_time}`, 30)
+            .text(`Time and a Half: ${report.time_and_a_half}`, { align: 'right' })
+            .moveDown()
+            .text(`Double Time: ${report.double_time}`, 30)
+            .moveDown();
+
+        // Section 4: Equipment
+        doc.text('Equipment:', { underline: true }).moveDown()
+            .text(`Trucks: ${report.trucks}`, 30)
+            .text(`Welders: ${report.welders}`, { align: 'right' })
+            .moveDown()
+            .text(`Generators: ${report.generators}`, 30)
+            .text(`Compressors: ${report.compressors}`, { align: 'right' })
+            .moveDown()
+            .text(`Company Fuel: ${report.fuel}`, 30)
+            .text(`Scaffolding: ${report.scaffolding}`, { align: 'right' })
+            .moveDown()
+            .text(`Safety Equipment: ${report.safety_equipment}`, 30)
+            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, { align: 'right' })
+            .moveDown();
+
+        // Section 5: Manlifts and Rentals
+        doc.text('Manlifts / Rentals:', { underline: true }).moveDown()
+            .text(`Manlifts Equipment: ${report.manlifts_equipment}`, 30)
+            .text(`Fuel: ${report.manlifts_fuel}`, { align: 'right' })
+            .moveDown();
+
+        // Section 6: Sub-Contract
+        doc.text('Sub-Contract:', { underline: true }).moveDown()
+            .text(report.sub_contract)
+            .moveDown();
+
+        // Section 7: Emergency Purchases
+        doc.text('Emergency Purchases:', { underline: true }).moveDown()
+            .text(report.emergency_purchases)
+            .moveDown();
+
+        // Section 8: Delay / Lost Time
+        doc.text('Delay / Lost Time:', { underline: true }).moveDown()
+            .text(report.delay_lost_time)
+            .moveDown();
+
+        // Section 9: Employees Off
+        doc.text('Employees Off:', { underline: true }).moveDown()
+            .text(report.employees_off)
+            .moveDown();
+
+        // Section 10: Approved By
+        doc.text('Approved By:', { underline: true }).moveDown()
+            .text(report.approved_by)
+            .moveDown();
+
+        // Section 11: Report Copy
+        doc.text('Report Copy:', { underline: true }).moveDown()
+            .text(report.report_copy)
+            .moveDown()
+            .addPage();
     });
 
     doc.end();
