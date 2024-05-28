@@ -1,11 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const { pool } = require('../config/connection');
-const PDFDocument = require('pdfkit');
-const ExcelJS = require('exceljs');
-const path = require('path');
-
-// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -60,13 +52,15 @@ function generatePDF(reports, username, res) {
         doc.moveDown(1);
 
         // Employees section
-        doc.fontSize(10).text('Employees:', { underline: true });
-        report.employees.forEach(employee => {
-            doc.text(
-                `Hours Worked: ${employee.hours_worked}\nEmployee: ${employee.employee}\nStraight Time: ${employee.straight_time}\nTime and a Half: ${employee.time_and_a_half}\nDouble Time: ${employee.double_time}`
-            );
-            doc.moveDown(0.5);
-        });
+        if (report.employees && report.employees.length > 0) {
+            doc.fontSize(10).text('Employees:', { underline: true });
+            report.employees.forEach(employee => {
+                doc.text(
+                    `Hours Worked: ${employee.hours_worked}\nEmployee: ${employee.employee}\nStraight Time: ${employee.straight_time}\nTime and a Half: ${employee.time_and_a_half}\nDouble Time: ${employee.double_time}`
+                );
+                doc.moveDown(0.5);
+            });
+        }
 
         // Equipment section
         const equipmentSection = [
@@ -124,6 +118,7 @@ function generatePDF(reports, username, res) {
 
     doc.end();
 }
+
 
 // Function to generate Excel report
 function generateExcel(reports, username, res) {
