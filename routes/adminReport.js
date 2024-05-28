@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
-const ExcelJS = require('exceljs');
 const path = require('path');
-require('pdfkit-table');
+const ExcelJS = require('exceljs');
 
+// Function to generate PDF report
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -13,10 +13,8 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '..', 'assets', 'images', 'company-logo.png'), {
-        width: 100,
-        align: 'center'
-    }).moveDown(0.5);
+    doc.image(path.join(__dirname, '..', 'assets', 'images', 'company-logo.png'), { width: 100, align: 'center' })
+        .moveDown(0.5);
 
     doc.fontSize(18)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
@@ -27,94 +25,108 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown(1);
 
+    // Helper function to draw a table
+    function drawTable(data, startX, startY, rowHeight, columnWidths) {
+        let y = startY;
+        data.forEach((row, rowIndex) => {
+            let x = startX;
+            row.forEach((cell, cellIndex) => {
+                doc.rect(x, y, columnWidths[cellIndex], rowHeight).stroke();
+                doc.text(cell, x + 5, y + 5, { width: columnWidths[cellIndex] - 10, align: 'left' });
+                x += columnWidths[cellIndex];
+            });
+            y += rowHeight;
+        });
+    }
+
     // Iterate through each report
     reports.forEach(report => {
-        // Create table data
-        const tableData = {
-            headers: [
-                { label: 'Date:', value: new Date(report.date).toDateString() },
-                { label: 'Job Number:', value: report.job_number },
-                { label: 'T&M:', value: report.t_and_m ? 'Yes' : 'No' },
-                { label: 'Contract:', value: report.contract ? 'Yes' : 'No' },
-                { label: 'Foreman:', value: report.foreman },
-                { label: 'Cell Number:', value: report.cell_number },
-                { label: 'Customer:', value: report.customer },
-                { label: 'Customer PO:', value: report.customer_po },
-                { label: 'Job Site:', value: report.job_site },
-                { label: 'Job Description:', value: report.job_description },
-                { label: 'Job Completion:', value: report.job_completion },
-                { label: 'Shift Start Time:', value: report.shift_start_time },
-                { label: 'Temperature/Humidity:', value: report.temperature_humidity },
-                { label: 'Sheeting / Materials:', value: report.materials },
-                { label: 'Equipment Description:', value: report.equipment_description },
-                { label: 'Report Copy:', value: report.report_copy }
-            ],
-            rows: []
-        };
+        const startX = 30;
+        let startY = doc.y;
+        const rowHeight = 25;
+        const columnWidths = [100, 200];
 
-        const employeesData = (report.employees || []).map(employee => [
-            employee.hours_worked,
-            employee.employee,
-            employee.straight_time,
-            employee.time_and_a_half,
-            employee.double_time
-        ]);
+        // Report header
+        doc.font('Helvetica-Bold').fontSize(12);
+        doc.text(`Date:`, startX, startY);
+        doc.text(new Date(report.date).toDateString(), startX + columnWidths[0], startY);
 
+        startY += rowHeight;
+        doc.text(`Job Number:`, startX, startY);
+        doc.text(report.job_number, startX + columnWidths[0], startY);
+
+        // Other report details
+        const details = [
+            [`T&M:`, report.t_and_m ? 'Yes' : 'No'],
+            [`Contract:`, report.contract ? 'Yes' : 'No'],
+            [`Foreman:`, report.foreman],
+            [`Cell Number:`, report.cell_number],
+            [`Customer:`, report.customer],
+            [`Customer PO:`, report.customer_po],
+            [`Job Site:`, report.job_site],
+            [`Job Description:`, report.job_description],
+            [`Job Completion:`, report.job_completion],
+            [`Shift Start Time:`, report.shift_start_time],
+            [`Temperature/Humidity:`, report.temperature_humidity],
+            [`Sheeting / Materials:`, report.materials],
+            [`Equipment Description:`, report.equipment_description],
+            [`Report Copy:`, report.report_copy],
+        ];
+
+        doc.font('Helvetica').fontSize(10);
+        details.forEach(([label, value], index) => {
+            if (index % 2 === 0 && index !== 0) startY += rowHeight;
+            const column = index % 2 === 0 ? 0 : 1;
+            doc.text(label, startX + column * 300, startY);
+            doc.text(value, startX + column * 300 + columnWidths[0], startY);
+        });
+
+        startY += rowHeight;
+
+        // Equipment table
+        const equipmentHeaders = [['Equipment', 'Count']];
         const equipmentData = [
-            { label: 'Trucks:', value: report.trucks },
-            { label: 'Welders:', value: report.welders },
-            { label: 'Generators:', value: report.generators },
-            { label: 'Compressors:', value: report.compressors },
-            { label: 'Company Fuel:', value: report.fuel },
-            { label: 'Scaffolding:', value: report.scaffolding },
-            { label: 'Safety Equipment:', value: report.safety_equipment },
-            { label: 'Miscellaneous Equipment:', value: report.miscellaneous_equipment }
+            ['Trucks:', report.trucks],
+            ['Welders:', report.welders],
+            ['Generators:', report.generators],
+            ['Compressors:', report.compressors],
+            ['Company Fuel:', report.fuel],
+            ['Scaffolding:', report.scaffolding],
+            ['Safety Equipment:', report.safety_equipment],
+            ['Miscellaneous Equipment:', report.miscellaneous_equipment],
         ];
 
+        doc.moveDown().font('Helvetica-Bold').text('Equipment:', { underline: true }).moveDown(0.5);
+        drawTable(equipmentHeaders.concat(equipmentData), startX, startY, rowHeight, [150, 150]);
+
+        startY += rowHeight * (equipmentData.length + 1);
+
+        // Manlifts / Rentals table
+        const manliftsHeaders = [['Manlifts / Rentals', 'Details']];
         const manliftsData = [
-            { label: 'Manlifts Equipment:', value: report.manlifts_equipment },
-            { label: 'Fuel:', value: report.manlifts_fuel }
+            ['Manlifts Equipment:', report.manlifts_equipment],
+            ['Fuel:', report.manlifts_fuel],
         ];
 
-        const otherData = [
-            { label: 'Sub-Contract:', value: report.sub_contract },
-            { label: 'Emergency Purchases:', value: report.emergency_purchases },
-            { label: 'Delay / Lost Time:', value: report.delay_lost_time },
-            { label: 'Employees Off:', value: report.employees_off },
-            { label: 'Approved By:', value: report.approved_by }
+        doc.moveDown().font('Helvetica-Bold').text('Manlifts / Rentals:', { underline: true }).moveDown(0.5);
+        drawTable(manliftsHeaders.concat(manliftsData), startX, startY, rowHeight, [150, 150]);
+
+        startY += rowHeight * (manliftsData.length + 1);
+
+        // Other sections
+        const otherSections = [
+            ['Sub-Contract:', report.sub_contract || 'N/A'],
+            ['Emergency Purchases:', report.emergency_purchases || 'N/A'],
+            ['Delay / Lost Time:', report.delay_lost_time || 'N/A'],
+            ['Employees Off:', report.employees_off || 'N/A'],
+            ['Approved By:', report.approved_by || ''],
         ];
 
-        // Add table to the document
-        doc.table(tableData, {
-            prepareHeader: () => doc.font('Helvetica-Bold'),
-            prepareRow: (row, i) => doc.font('Helvetica').fontSize(10)
-        });
-
-        if (employeesData.length > 0) {
-            const employeesTable = {
-                headers: ['Hours Worked', 'Employee', 'Straight Time', 'Time & 1/2', 'Double Time'],
-                rows: employeesData
-            };
-            doc.moveDown(1).text('Employees:', { underline: true }).moveDown(0.5);
-            doc.table(employeesTable, {
-                prepareHeader: () => doc.font('Helvetica-Bold'),
-                prepareRow: (row, i) => doc.font('Helvetica').fontSize(10)
-            });
-        }
-
-        doc.moveDown(1).text('Equipment:', { underline: true }).moveDown(0.5);
-        equipmentData.forEach(item => {
-            doc.text(`${item.label} ${item.value}`, { indent: 20 });
-        });
-
-        doc.moveDown(1).text('Manlifts / Rentals:', { underline: true }).moveDown(0.5);
-        manliftsData.forEach(item => {
-            doc.text(`${item.label} ${item.value}`, { indent: 20 });
-        });
-
-        doc.moveDown(1);
-        otherData.forEach(item => {
-            doc.text(item.label, { underline: true }).text(item.value || 'N/A', { indent: 20 }).moveDown(0.5);
+        doc.moveDown().font('Helvetica-Bold').text('Other Details:', { underline: true }).moveDown(0.5);
+        otherSections.forEach(([label, value]) => {
+            doc.text(label, startX);
+            doc.text(value, startX + columnWidths[0]);
+            startY += rowHeight;
         });
 
         doc.addPage(); // Add a new page for the next report if necessary
@@ -140,6 +152,18 @@ function generateExcel(reports, username, res) {
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
         { header: 'Job Completion', key: 'job_completion', width: 15 },
+        { header: 'Siding', key: 'siding', width: 15 },
+        { header: 'Roofing', key: 'roofing', width: 15 },
+        { header: 'Flashing', key: 'flashing', width: 15 },
+        { header: 'Miscellaneous', key: 'miscellaneous', width: 15 },
+        { header: 'Trucks', key: 'trucks', width: 15 },
+        { header: 'Welders', key: 'welders', width: 15 },
+        { header: 'Generators', key: 'generators', width: 15 },
+        { header: 'Compressors', key: 'compressors', width: 15 },
+        { header: 'Fuel', key: 'fuel', width: 15 },
+        { header: 'Scaffolding', key: 'scaffolding', width: 15 },
+        { header: 'Safety Equipment', key: 'safety_equipment', width: 15 },
+        { header: 'Miscellaneous Equipment', key: 'miscellaneous_equipment', width: 15 },
         { header: 'Material Description', key: 'material_description', width: 30 },
         { header: 'Equipment Description', key: 'equipment_description', width: 30 },
         { header: 'Hours Worked', key: 'hours_worked', width: 15 },
@@ -167,6 +191,18 @@ function generateExcel(reports, username, res) {
             job_site: report.job_site,
             job_description: report.job_description,
             job_completion: report.job_completion,
+            siding: report.siding,
+            roofing: report.roofing,
+            flashing: report.flashing,
+            miscellaneous: report.miscellaneous,
+            trucks: report.trucks,
+            welders: report.welders,
+            generators: report.generators,
+            compressors: report.compressors,
+            fuel: report.fuel,
+            scaffolding: report.scaffolding,
+            safety_equipment: report.safety_equipment,
+            miscellaneous_equipment: report.miscellaneous_equipment,
             material_description: report.material_description,
             equipment_description: report.equipment_description,
             hours_worked: report.hours_worked,
@@ -195,7 +231,7 @@ router.get('/pdf/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
+        
         console.log(`Fetched reports for user ${username}:`, reports); // Log query results
         console.log(`Total reports found: ${reports.length}`);
 
@@ -216,7 +252,7 @@ router.get('/excel/:username', async (req, res) => {
 
     try {
         const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
+        
         console.log(`Fetched reports for user ${username}:`, reports); // Log query results
         console.log(`Total reports found: ${reports.length}`);
 
