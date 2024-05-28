@@ -43,7 +43,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50, align: 'center' })
+    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 50 })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
@@ -52,52 +52,82 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    // Table Header
-    const tableTop = doc.y;
-    const rowHeight = 20;
-
-    doc.fontSize(10);
-    const headers = [
-        'Date', 'Job Number', 'T&M', 'Contract', 'Foreman', 'Cell Number',
-        'Customer', 'Customer PO', 'Job Site', 'Job Description', 'Job Completion',
-        'Trucks', 'Welders', 'Generators', 'Compressors', 'Fuel',
-        'Scaffolding', 'Safety Equipment', 'Miscellaneous Equipment', 'Material Description',
-        'Equipment Description', 'Hours Worked', 'Employee', 'Straight Time', 'Time and a Half',
-        'Double Time', 'Emergency Purchases', 'Approved By', 'Shift Start Time',
-        'Temperature/Humidity', 'Report Copy'
-    ];
-
-    const colWidths = [60, 70, 40, 50, 60, 70, 60, 70, 70, 90, 70, 50, 50, 70, 70, 40, 70, 80, 100, 120, 120, 60, 70, 60, 70, 70, 90, 70, 90, 100];
-
-    let x = 30;
-    headers.forEach((header, index) => {
-        doc.text(header, x, tableTop, { width: colWidths[index], align: 'left' });
-        x += colWidths[index];
-    });
-
-    let yPos = tableTop + rowHeight;
     reports.forEach(report => {
-        x = 30;
-        const values = [
-            new Date(report.date).toDateString(), report.job_number, report.t_and_m ? 'Yes' : 'No',
-            report.contract ? 'Yes' : 'No', report.foreman, report.cell_number, report.customer,
-            report.customer_po, report.job_site, report.job_description, report.job_completion,
-            report.trucks, report.welders, report.generators, report.compressors, report.fuel,
-            report.scaffolding, report.safety_equipment, report.miscellaneous_equipment, report.material_description,
-            report.equipment_description, report.hours_worked, report.employee, report.straight_time, report.time_and_a_half,
-            report.double_time, report.emergency_purchases, report.approved_by, report.shift_start_time,
-            report.temperature_humidity, report.report_copy
-        ];
+        doc.fontSize(10);
+        
+        // First section
+        doc.text(`Date: ${new Date(report.date).toDateString()}`, { continued: true, width: 200 })
+            .text(`Job Number: ${report.job_number}`, { align: 'right' })
+            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true, width: 200 })
+            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
+            .text(`Foreman: ${report.foreman}`, { continued: true, width: 200 })
+            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
+            .moveDown(0.5);
 
-        values.forEach((value, index) => {
-            doc.text(value, x, yPos, { width: colWidths[index], align: 'left' });
-            x += colWidths[index];
-        });
+        // Second section
+        doc.text(`Customer: ${report.customer}`, { continued: true, width: 200 })
+            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
+            .text(`Job Site: ${report.job_site}`, { continued: true, width: 200 })
+            .text(`Job Completion: ${report.job_completion}`, { align: 'right' })
+            .text(`Shift Start Time: ${report.shift_start_time}`, { continued: true, width: 200 })
+            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { align: 'right' })
+            .moveDown(0.5);
 
-        yPos += rowHeight;
-        if (yPos > 700) {
+        // Third section
+        doc.text(`Job Description: ${report.job_description}`)
+            .text(`Sheeting / Materials: ${report.material_description}`)
+            .moveDown(0.5);
+
+        // Fourth section (Employees)
+        doc.text('Employees:', { underline: true })
+            .text(`Hours Worked: ${report.hours_worked}`)
+            .text(`Employee: ${report.employee}`)
+            .text(`Straight Time: ${report.straight_time}`)
+            .text(`Time and a Half: ${report.time_and_a_half}`)
+            .text(`Double Time: ${report.double_time}`)
+            .moveDown(0.5);
+
+        // Fifth section (Equipment)
+        doc.text('Equipment:', { underline: true })
+            .text(`Trucks: ${report.trucks}`)
+            .text(`Welders: ${report.welders}`)
+            .text(`Generators: ${report.generators}`)
+            .text(`Compressors: ${report.compressors}`)
+            .text(`Fuel: ${report.fuel}`)
+            .text(`Scaffolding: ${report.scaffolding}`)
+            .text(`Safety Equipment: ${report.safety_equipment}`)
+            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`)
+            .moveDown(0.5);
+
+        // Sixth section (Manlifts/Rentals)
+        doc.text('Manlifts / Rentals:', { underline: true })
+            .text(`Manlifts Equipment: ${report.manlifts_equipment}`)
+            .text(`Fuel: ${report.manlifts_fuel}`)
+            .moveDown(0.5);
+
+        // Seventh section (Sub-Contract and other fields)
+        doc.text('Sub-Contract:', { underline: true })
+            .text(report.sub_contract)
+            .moveDown(0.5);
+
+        doc.text('Emergency Purchases:', { underline: true })
+            .text(report.emergency_purchases)
+            .moveDown(0.5);
+
+        doc.text('Delay / Lost Time:', { underline: true })
+            .text(report.delay_lost_time)
+            .moveDown(0.5);
+
+        doc.text('Employees Off:', { underline: true })
+            .text(report.employees_off)
+            .moveDown(0.5);
+
+        doc.text(`Approved By: ${report.approved_by}`)
+            .text(`Report Copy: ${report.report_copy}`)
+            .moveDown(1);
+
+        if (doc.y > 700) {
             doc.addPage();
-            yPos = 30;
         }
     });
 
