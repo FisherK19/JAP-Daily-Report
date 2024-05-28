@@ -4,6 +4,7 @@ const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
 const path = require('path');
+require('pdfkit-table');
 
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
@@ -13,7 +14,7 @@ function generatePDF(reports, username, res) {
 
     // Header
     doc.image(path.join(__dirname, '..', 'assets', 'images', 'company-logo.png'), {
-        width: 80,
+        width: 100,
         align: 'center'
     }).moveDown(0.5);
 
@@ -28,30 +29,28 @@ function generatePDF(reports, username, res) {
 
     // Iterate through each report
     reports.forEach(report => {
-        // Add content in table format
-        doc.fontSize(10);
-
-        const tableData = [
-            { label: 'Date:', value: new Date(report.date).toDateString() },
-            { label: 'T&M:', value: report.t_and_m ? 'Yes' : 'No' },
-            { label: 'Foreman:', value: report.foreman },
-            { label: 'Customer:', value: report.customer },
-            { label: 'Job Site:', value: report.job_site },
-            { label: 'Job Description:', value: report.job_description },
-            { label: 'Temperature/Humidity:', value: report.temperature_humidity },
-            { label: 'Sheeting / Materials:', value: report.materials }
-        ];
-
-        const rightTableData = [
-            { label: 'Job Number:', value: report.job_number },
-            { label: 'Contract:', value: report.contract ? 'Yes' : 'No' },
-            { label: 'Cell Number:', value: report.cell_number },
-            { label: 'Customer PO:', value: report.customer_po },
-            { label: 'Job Completion:', value: report.job_completion },
-            { label: 'Shift Start Time:', value: report.shift_start_time },
-            { label: 'Equipment Description:', value: report.equipment_description },
-            { label: 'Report Copy:', value: report.report_copy }
-        ];
+        // Create table data
+        const tableData = {
+            headers: [
+                { label: 'Date:', value: new Date(report.date).toDateString() },
+                { label: 'Job Number:', value: report.job_number },
+                { label: 'T&M:', value: report.t_and_m ? 'Yes' : 'No' },
+                { label: 'Contract:', value: report.contract ? 'Yes' : 'No' },
+                { label: 'Foreman:', value: report.foreman },
+                { label: 'Cell Number:', value: report.cell_number },
+                { label: 'Customer:', value: report.customer },
+                { label: 'Customer PO:', value: report.customer_po },
+                { label: 'Job Site:', value: report.job_site },
+                { label: 'Job Description:', value: report.job_description },
+                { label: 'Job Completion:', value: report.job_completion },
+                { label: 'Shift Start Time:', value: report.shift_start_time },
+                { label: 'Temperature/Humidity:', value: report.temperature_humidity },
+                { label: 'Sheeting / Materials:', value: report.materials },
+                { label: 'Equipment Description:', value: report.equipment_description },
+                { label: 'Report Copy:', value: report.report_copy }
+            ],
+            rows: []
+        };
 
         const employeesData = (report.employees || []).map(employee => [
             employee.hours_worked,
@@ -85,42 +84,37 @@ function generatePDF(reports, username, res) {
             { label: 'Approved By:', value: report.approved_by }
         ];
 
-        // Draw left and right tables
-        const drawTable = (data, x, y) => {
-            data.forEach(row => {
-                doc.text(row.label, x, y);
-                doc.text(row.value, x + 150, y);
-                y += 15;
-            });
-        };
+        // Add table to the document
+        doc.table(tableData, {
+            prepareHeader: () => doc.font('Helvetica-Bold'),
+            prepareRow: (row, i) => doc.font('Helvetica').fontSize(10)
+        });
 
-        drawTable(tableData, 30, doc.y);
-        drawTable(rightTableData, 300, doc.y - (tableData.length * 15));
-
-        // Draw Employees Table
         if (employeesData.length > 0) {
-            doc.moveDown(1).text('Employees:', { underline: true });
-            doc.moveDown(0.5);
-            employeesData.forEach((employee, index) => {
-                employee.forEach((value, colIndex) => {
-                    doc.text(value, 30 + colIndex * 100, doc.y);
-                });
-                doc.moveDown(0.5);
+            const employeesTable = {
+                headers: ['Hours Worked', 'Employee', 'Straight Time', 'Time & 1/2', 'Double Time'],
+                rows: employeesData
+            };
+            doc.moveDown(1).text('Employees:', { underline: true }).moveDown(0.5);
+            doc.table(employeesTable, {
+                prepareHeader: () => doc.font('Helvetica-Bold'),
+                prepareRow: (row, i) => doc.font('Helvetica').fontSize(10)
             });
         }
 
-        // Draw Equipment Table
-        doc.moveDown(1).text('Equipment:', { underline: true });
-        drawTable(equipmentData, 30, doc.y);
+        doc.moveDown(1).text('Equipment:', { underline: true }).moveDown(0.5);
+        equipmentData.forEach(item => {
+            doc.text(`${item.label} ${item.value}`, { indent: 20 });
+        });
 
-        // Draw Manlifts/Rentals Table
-        doc.moveDown(1).text('Manlifts / Rentals:', { underline: true });
-        drawTable(manliftsData, 30, doc.y);
+        doc.moveDown(1).text('Manlifts / Rentals:', { underline: true }).moveDown(0.5);
+        manliftsData.forEach(item => {
+            doc.text(`${item.label} ${item.value}`, { indent: 20 });
+        });
 
-        // Draw Other Sections
-        otherData.forEach(row => {
-            doc.moveDown(1).text(row.label, { underline: true });
-            doc.text(row.value || 'N/A');
+        doc.moveDown(1);
+        otherData.forEach(item => {
+            doc.text(item.label, { underline: true }).text(item.value || 'N/A', { indent: 20 }).moveDown(0.5);
         });
 
         doc.addPage(); // Add a new page for the next report if necessary
@@ -128,6 +122,7 @@ function generatePDF(reports, username, res) {
 
     doc.end();
 }
+
 // Function to generate Excel report
 function generateExcel(reports, username, res) {
     const workbook = new ExcelJS.Workbook();
