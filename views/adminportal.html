@@ -26,7 +26,7 @@
     </nav>
 
     <main>
-        <section class="form-section">
+        <div class="form-section">
             <div class="form-group">
                 <label for="report-date">Select Date:</label>
                 <input type="date" id="report-date">
@@ -37,11 +37,9 @@
                     <option value="">Select User</option>
                 </select>
             </div>
-            <div class="form-group">
-                <button onclick="downloadUserReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
-                <button onclick="downloadUserReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
-            </div>
-        </section>
+            <button onclick="downloadUserReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
+            <button onclick="downloadUserReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
+        </div>
     </main>
 
     <footer>
@@ -82,6 +80,17 @@
             window.location.href = url;
         }
 
+        function downloadReport(format) {
+            const date = document.getElementById('report-date').value;
+            if (!date) {
+                alert('Please select a date.');
+                return;
+            }
+
+            const url = `/admin/portal/report/all/${format}/${date}`;
+            window.location.href = url;
+        }
+
         function logout() {
             fetch('/logout', {
                 method: 'POST',
@@ -100,7 +109,6 @@
     </script>
 </body>
 </html>
-
 
 
 

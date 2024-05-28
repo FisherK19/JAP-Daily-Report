@@ -26,7 +26,7 @@ function generatePDF(reports, username, res) {
     reports.forEach(report => {
         doc.fontSize(10);
 
-        // Table for main information
+        // Main information table
         const mainInfoTable = {
             headers: ['Key', 'Value'],
             rows: [
