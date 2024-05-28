@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
-const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
 const path = require('path');
 
@@ -24,30 +23,34 @@ function generatePDF(reports, username, res) {
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
     reports.forEach(report => {
-        doc.fontSize(10)
-            .text(`Date: ${new Date(report.date).toDateString()}`, { continued: true })
-            .text(`Job Number: ${report.job_number}`, { align: 'right' })
-            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true })
-            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' })
-            .text(`Foreman: ${report.foreman}`, { continued: true })
-            .text(`Cell Number: ${report.cell_number}`, { align: 'right' })
-            .text(`Customer: ${report.customer}`, { continued: true })
-            .text(`Customer PO: ${report.customer_po}`, { align: 'right' })
-            .text(`Job Site: ${report.job_site}`, { continued: true })
-            .text(`Job Description: ${report.job_description}`, { align: 'right' })
-            .text(`Job Completion: ${report.job_completion}`, { continued: true })
-            .text(`Shift Start Time: ${report.shift_start_time}`, { align: 'right' })
-            .text(`Temperature/Humidity: ${report.temperature_humidity}`, { continued: true })
-            .text(`Equipment Description: ${report.equipment_description}`, { align: 'right' })
-            .text(`Sheeting / Materials: ${report.material_description}`, { align: 'left' })
-            .text(`Report Copy: ${report.report_copy}`, { align: 'right' })
-            .moveDown();
+        doc.fontSize(10);
 
+        // Left column
+        doc.text(`Date: ${new Date(report.date).toDateString()}`);
+        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`);
+        doc.text(`Foreman: ${report.foreman}`);
+        doc.text(`Customer: ${report.customer}`);
+        doc.text(`Job Site: ${report.job_site}`);
+        doc.text(`Job Description: ${report.job_description}`);
+        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`);
+        doc.text(`Sheeting / Materials: ${report.material_description}`);
+
+        doc.moveDown();
+
+        // Right column
+        doc.text(`Job Number: ${report.job_number}`);
+        doc.text(`Contract: ${report.contract ? 'Yes' : 'No'}`);
+        doc.text(`Cell Number: ${report.cell_number}`);
+        doc.text(`Customer PO: ${report.customer_po}`);
+        doc.text(`Job Completion: ${report.job_completion}`);
+        doc.text(`Shift Start Time: ${report.shift_start_time}`);
+        doc.text(`Equipment Description: ${report.equipment_description}`);
+        doc.text(`Report Copy: ${report.report_copy}`);
+
+        doc.moveDown();
+
+        // Equipment table
         doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-        doc.fontSize(10)
-            .text('Equipment', 100, { continued: true })
-            .text('Count', 300, { align: 'right' });
-
         const equipmentData = [
             { name: 'Trucks', count: report.trucks },
             { name: 'Welders', count: report.welders },
@@ -58,23 +61,13 @@ function generatePDF(reports, username, res) {
             { name: 'Safety Equipment', count: report.safety_equipment },
             { name: 'Miscellaneous Equipment', count: report.miscellaneous_equipment }
         ];
-
-        doc.moveDown(0.5);
-
         equipmentData.forEach(item => {
-            doc.text(item.name, 100, { continued: true }).text(item.count, 300, { align: 'right' });
+            doc.text(`${item.name}: ${item.count}`);
         });
-
         doc.moveDown();
 
+        // Employees table
         doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
-        doc.fontSize(10)
-            .text('Employee', 100, { continued: true })
-            .text('Hours Worked', 200, { continued: true, align: 'right' })
-            .text('Straight Time', 300, { continued: true, align: 'right' })
-            .text('Time and a Half', 400, { continued: true, align: 'right' })
-            .text('Double Time', 500, { align: 'right' });
-
         const employeeData = [
             {
                 name: report.employee,
@@ -84,17 +77,13 @@ function generatePDF(reports, username, res) {
                 double_time: report.double_time
             }
         ];
-
-        doc.moveDown(0.5);
-
         employeeData.forEach(item => {
-            doc.text(item.name, 100, { continued: true })
-                .text(item.hours_worked, 200, { continued: true, align: 'right' })
-                .text(item.straight_time, 300, { continued: true, align: 'right' })
-                .text(item.time_and_a_half, 400, { continued: true, align: 'right' })
-                .text(item.double_time, 500, { align: 'right' });
+            doc.text(`Employee: ${item.name}`);
+            doc.text(`Hours Worked: ${item.hours_worked}`);
+            doc.text(`Straight Time: ${item.straight_time}`);
+            doc.text(`Time and a Half: ${item.time_and_a_half}`);
+            doc.text(`Double Time: ${item.double_time}`);
         });
-
         doc.moveDown(2);
     });
 
