@@ -35,7 +35,7 @@ function sendAlertEmail(adminEmail, username, reportPath, reportType) {
     });
 }
 
-// Function to generate PDF report
+
 function generatePDF(reports, username, res) {
     const doc = new PDFDocument({ margin: 30, size: 'A4' });
     const pdfPath = `user_${username}_reports.pdf`;
@@ -43,7 +43,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image(path.join(__dirname, '../assets/images/company-logo.png'), { width: 100 })
+    doc.image('path/to/logo.png', { width: 50, align: 'center' })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
@@ -53,37 +53,49 @@ function generatePDF(reports, username, res) {
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
     // Table Header
-    const tableTop = doc.y;
-    const itemWidth = 90;
-
     doc.fontSize(10);
-    doc.text('Date', 30, tableTop);
-    doc.text('Job Number', 120, tableTop);
-    doc.text('T&M', 200, tableTop);
-    doc.text('Contract', 250, tableTop);
-    doc.text('Foreman', 310, tableTop);
-    doc.text('Cell Number', 380, tableTop);
-
-    // Table Content
-    let yPos = tableTop + 20;
     reports.forEach(report => {
-        doc.fontSize(10);
-        doc.text(new Date(report.date).toDateString(), 30, yPos);
-        doc.text(report.job_number, 120, yPos);
-        doc.text(report.t_and_m ? 'Yes' : 'No', 200, yPos);
-        doc.text(report.contract ? 'Yes' : 'No', 250, yPos);
-        doc.text(report.foreman, 310, yPos);
-        doc.text(report.cell_number, 380, yPos);
+        doc.text(`Date: ${new Date(report.date).toDateString()}`, 30)
+            .text(`Job Number: ${report.job_number}`, 30)
+            .text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, 30)
+            .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, 30)
+            .text(`Foreman: ${report.foreman}`, 30)
+            .text(`Cell Number: ${report.cell_number}`, 30)
+            .text(`Customer: ${report.customer}`, 30)
+            .text(`Customer PO: ${report.customer_po}`, 30)
+            .text(`Job Site: ${report.job_site}`, 30)
+            .text(`Job Description: ${report.job_description}`, 30)
+            .text(`Job Completion: ${report.job_completion}`, 30)
+            .text(`Trucks: ${report.trucks}`, 30)
+            .text(`Welders: ${report.welders}`, 30)
+            .text(`Generators: ${report.generators}`, 30)
+            .text(`Compressors: ${report.compressors}`, 30)
+            .text(`Fuel: ${report.fuel}`, 30)
+            .text(`Scaffolding: ${report.scaffolding}`, 30)
+            .text(`Safety Equipment: ${report.safety_equipment}`, 30)
+            .text(`Miscellaneous Equipment: ${report.miscellaneous_equipment}`, 30)
+            .text(`Material Description: ${report.material_description}`, 30)
+            .text(`Equipment Description: ${report.equipment_description}`, 30)
+            .text(`Hours Worked: ${report.hours_worked}`, 30)
+            .text(`Employee: ${report.employee}`, 30)
+            .text(`Straight Time: ${report.straight_time}`, 30)
+            .text(`Time and a Half: ${report.time_and_a_half}`, 30)
+            .text(`Double Time: ${report.double_time}`, 30)
+            .text(`Emergency Purchases: ${report.emergency_purchases}`, 30)
+            .text(`Approved By: ${report.approved_by}`, 30)
+            .text(`Shift Start Time: ${report.shift_start_time}`, 30)
+            .text(`Temperature/Humidity: ${report.temperature_humidity}`, 30)
+            .text(`Report Copy: ${report.report_copy}`, 30)
+            .moveDown();
 
-        yPos += 20;
-        if (yPos > 700) {
+        if (doc.y > 700) {
             doc.addPage();
-            yPos = 30;
         }
     });
 
     doc.end();
 }
+
 
 // Function to generate Excel report
 function generateExcel(reports, username, res) {
