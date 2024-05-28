@@ -6,7 +6,7 @@ body {
 }
 
 header {
-  background-color: #333;
+  background-color: #3b3c3e;
   color: #fff;
   padding: 20px 0;
   text-align: center;
@@ -25,7 +25,7 @@ header {
 }
 
 nav {
-  background-color: #444;
+  background-color: #3b3c3e;
   overflow: hidden;
 }
 
@@ -50,7 +50,7 @@ nav ul {
 }
 
 .nav-link:hover {
-  background-color: #575757;
+  background-color: #3b3c3e;
 }
 
 main {

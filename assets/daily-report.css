@@ -173,7 +173,7 @@ footer {
 }
 
 #add-employee-btn {
-    margin-top: -10px; /* Move the button closer to the employee entries */
+    margin-top: -10px; 
 }
 
 @media (max-width: 768px) {

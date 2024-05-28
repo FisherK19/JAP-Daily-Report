@@ -4,6 +4,7 @@ const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
 const path = require('path');
+require('pdfkit-table');
 
 // Function to generate PDF report
 function generatePDF(reports, username, res) {
@@ -26,67 +27,74 @@ function generatePDF(reports, username, res) {
         doc.fontSize(10);
 
         // Table for main information
-        doc.text(`Date: ${new Date(report.date).toDateString()}`, { continued: true })
-           .text(`Job Number: ${report.job_number}`, { align: 'right' });
-
-        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true })
-           .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' });
-
-        doc.text(`Foreman: ${report.foreman}`, { continued: true })
-           .text(`Cell Number: ${report.cell_number}`, { align: 'right' });
-
-        doc.text(`Customer: ${report.customer}`, { continued: true })
-           .text(`Customer PO: ${report.customer_po}`, { align: 'right' });
-
-        doc.text(`Job Site: ${report.job_site}`, { continued: true })
-           .text(`Job Completion: ${report.job_completion}`, { align: 'right' });
-
-        doc.text(`Job Description: ${report.job_description}`, { continued: true })
-           .text(`Shift Start Time: ${report.shift_start_time}`, { align: 'right' });
-
-        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`, { continued: true })
-           .text(`Equipment Description: ${report.equipment_description}`, { align: 'right' });
-
-        doc.text(`Sheeting / Materials: ${report.material_description}`, { continued: true })
-           .text(`Report Copy: ${report.report_copy}`, { align: 'right' });
-
-        doc.moveDown();
+        doc.table(
+            {
+                headers: ['Key', 'Value'],
+                rows: [
+                    ['Date', new Date(report.date).toDateString()],
+                    ['Job Number', report.job_number],
+                    ['T&M', report.t_and_m ? 'Yes' : 'No'],
+                    ['Contract', report.contract ? 'Yes' : 'No'],
+                    ['Foreman', report.foreman],
+                    ['Cell Number', report.cell_number],
+                    ['Customer', report.customer],
+                    ['Customer PO', report.customer_po],
+                    ['Job Site', report.job_site],
+                    ['Job Description', report.job_description],
+                    ['Job Completion', report.job_completion],
+                    ['Shift Start Time', report.shift_start_time],
+                    ['Temperature/Humidity', report.temperature_humidity],
+                    ['Equipment Description', report.equipment_description],
+                    ['Sheeting / Materials', report.material_description],
+                    ['Report Copy', report.report_copy]
+                ]
+            },
+            { width: 500 }
+        ).moveDown();
 
         // Equipment table
         doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-        doc.table([
-            ['Equipment', 'Count'],
-            ['Trucks', report.trucks],
-            ['Welders', report.welders],
-            ['Generators', report.generators],
-            ['Compressors', report.compressors],
-            ['Company Fuel', report.fuel],
-            ['Scaffolding', report.scaffolding],
-            ['Safety Equipment', report.safety_equipment],
-            ['Miscellaneous Equipment', report.miscellaneous_equipment]
-        ], { width: 400, columnsSize: [300, 100] });
-
-        doc.moveDown();
+        doc.table(
+            {
+                headers: ['Equipment', 'Count'],
+                rows: [
+                    ['Trucks', report.trucks],
+                    ['Welders', report.welders],
+                    ['Generators', report.generators],
+                    ['Compressors', report.compressors],
+                    ['Company Fuel', report.fuel],
+                    ['Scaffolding', report.scaffolding],
+                    ['Safety Equipment', report.safety_equipment],
+                    ['Miscellaneous Equipment', report.miscellaneous_equipment]
+                ]
+            },
+            { width: 400 }
+        ).moveDown();
 
         // Employees table
         doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
-        const employeeData = [
+        doc.table(
             {
-                name: report.employee,
-                hours_worked: report.hours_worked,
-                straight_time: report.straight_time,
-                time_and_a_half: report.time_and_a_half,
-                double_time: report.double_time
-            }
-        ];
-        employeeData.forEach(item => {
-            doc.table([
-                ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
-                [item.name, item.hours_worked, item.straight_time, item.time_and_a_half, item.double_time]
-            ], { width: 400, columnsSize: [100, 75, 75, 75, 75] });
-        });
+                headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
+                rows: [
+                    [
+                        report.employee,
+                        report.hours_worked,
+                        report.straight_time,
+                        report.time_and_a_half,
+                        report.double_time
+                    ]
+                ]
+            },
+            { width: 500 }
+        ).moveDown(2);
 
-        doc.moveDown(2);
+        // Other details
+        doc.text(`Sub-Contract: ${report.sub_contract}`).moveDown(0.5);
+        doc.text(`Emergency Purchases: ${report.emergency_purchases}`).moveDown(0.5);
+        doc.text(`Delay / Lost Time: ${report.delay_lost_time}`).moveDown(0.5);
+        doc.text(`Employees Off: ${report.employees_off}`).moveDown(0.5);
+        doc.text(`Approved By: ${report.approved_by}`).moveDown(2);
     });
 
     doc.end();
