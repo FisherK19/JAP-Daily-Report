@@ -43,7 +43,7 @@ function generatePDF(reports, username, res) {
     doc.pipe(res);
 
     // Header
-    doc.image('path/to/logo.png', { width: 50, align: 'center' })
+    doc.image('../assets/images/company-logo.png', { width: 50, align: 'center' })
         .fontSize(20)
         .text('JOHN A. PAPALAS & COMPANY', { align: 'center' })
         .fontSize(12)
