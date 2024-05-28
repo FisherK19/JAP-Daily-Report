@@ -54,7 +54,11 @@ nav ul {
 }
 
 main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 20px;
+  min-height: calc(100vh - 120px);
 }
 
 .form-section {
@@ -64,10 +68,13 @@ main {
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 600px;
+  width: 100%;
+  text-align: center;
 }
 
 .form-group {
   margin-bottom: 15px;
+  text-align: left;
 }
 
 label {
@@ -95,6 +102,8 @@ select {
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s;
+  width: 100%;
+  max-width: 200px;
 }
 
 .btn-secondary {

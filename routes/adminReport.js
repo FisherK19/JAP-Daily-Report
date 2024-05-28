@@ -27,67 +27,61 @@ function generatePDF(reports, username, res) {
         doc.fontSize(10);
 
         // Table for main information
-        doc.table(
-            {
-                headers: ['Key', 'Value'],
-                rows: [
-                    ['Date', new Date(report.date).toDateString()],
-                    ['Job Number', report.job_number],
-                    ['T&M', report.t_and_m ? 'Yes' : 'No'],
-                    ['Contract', report.contract ? 'Yes' : 'No'],
-                    ['Foreman', report.foreman],
-                    ['Cell Number', report.cell_number],
-                    ['Customer', report.customer],
-                    ['Customer PO', report.customer_po],
-                    ['Job Site', report.job_site],
-                    ['Job Description', report.job_description],
-                    ['Job Completion', report.job_completion],
-                    ['Shift Start Time', report.shift_start_time],
-                    ['Temperature/Humidity', report.temperature_humidity],
-                    ['Equipment Description', report.equipment_description],
-                    ['Sheeting / Materials', report.material_description],
-                    ['Report Copy', report.report_copy]
-                ]
-            },
-            { width: 500 }
-        ).moveDown();
+        const mainInfoTable = {
+            headers: ['Key', 'Value'],
+            rows: [
+                ['Date', new Date(report.date).toDateString()],
+                ['Job Number', report.job_number],
+                ['T&M', report.t_and_m ? 'Yes' : 'No'],
+                ['Contract', report.contract ? 'Yes' : 'No'],
+                ['Foreman', report.foreman],
+                ['Cell Number', report.cell_number],
+                ['Customer', report.customer],
+                ['Customer PO', report.customer_po],
+                ['Job Site', report.job_site],
+                ['Job Description', report.job_description],
+                ['Job Completion', report.job_completion],
+                ['Shift Start Time', report.shift_start_time],
+                ['Temperature/Humidity', report.temperature_humidity],
+                ['Equipment Description', report.equipment_description],
+                ['Sheeting / Materials', report.material_description],
+                ['Report Copy', report.report_copy]
+            ]
+        };
+        doc.table(mainInfoTable, { width: 500 }).moveDown();
 
         // Equipment table
         doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-        doc.table(
-            {
-                headers: ['Equipment', 'Count'],
-                rows: [
-                    ['Trucks', report.trucks],
-                    ['Welders', report.welders],
-                    ['Generators', report.generators],
-                    ['Compressors', report.compressors],
-                    ['Company Fuel', report.fuel],
-                    ['Scaffolding', report.scaffolding],
-                    ['Safety Equipment', report.safety_equipment],
-                    ['Miscellaneous Equipment', report.miscellaneous_equipment]
-                ]
-            },
-            { width: 400 }
-        ).moveDown();
+        const equipmentTable = {
+            headers: ['Equipment', 'Count'],
+            rows: [
+                ['Trucks', report.trucks],
+                ['Welders', report.welders],
+                ['Generators', report.generators],
+                ['Compressors', report.compressors],
+                ['Company Fuel', report.fuel],
+                ['Scaffolding', report.scaffolding],
+                ['Safety Equipment', report.safety_equipment],
+                ['Miscellaneous Equipment', report.miscellaneous_equipment]
+            ]
+        };
+        doc.table(equipmentTable, { width: 400 }).moveDown();
 
         // Employees table
         doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
-        doc.table(
-            {
-                headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
-                rows: [
-                    [
-                        report.employee,
-                        report.hours_worked,
-                        report.straight_time,
-                        report.time_and_a_half,
-                        report.double_time
-                    ]
+        const employeesTable = {
+            headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
+            rows: [
+                [
+                    report.employee,
+                    report.hours_worked,
+                    report.straight_time,
+                    report.time_and_a_half,
+                    report.double_time
                 ]
-            },
-            { width: 500 }
-        ).moveDown(2);
+            ]
+        };
+        doc.table(employeesTable, { width: 500 }).moveDown(2);
 
         // Other details
         doc.text(`Sub-Contract: ${report.sub_contract}`).moveDown(0.5);
@@ -117,10 +111,6 @@ function generateExcel(reports, username, res) {
         { header: 'Job Site', key: 'job_site', width: 15 },
         { header: 'Job Description', key: 'job_description', width: 30 },
         { header: 'Job Completion', key: 'job_completion', width: 15 },
-        { header: 'Siding', key: 'siding', width: 15 },
-        { header: 'Roofing', key: 'roofing', width: 15 },
-        { header: 'Flashing', key: 'flashing', width: 15 },
-        { header: 'Miscellaneous', key: 'miscellaneous', width: 15 },
         { header: 'Trucks', key: 'trucks', width: 15 },
         { header: 'Welders', key: 'welders', width: 15 },
         { header: 'Generators', key: 'generators', width: 15 },
@@ -156,10 +146,6 @@ function generateExcel(reports, username, res) {
             job_site: report.job_site,
             job_description: report.job_description,
             job_completion: report.job_completion,
-            siding: report.siding,
-            roofing: report.roofing,
-            flashing: report.flashing,
-            miscellaneous: report.miscellaneous,
             trucks: report.trucks,
             welders: report.welders,
             generators: report.generators,
