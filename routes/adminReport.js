@@ -1,3 +1,6 @@
+const express = require('express');
+const router = express.Router();
+const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
@@ -240,4 +243,3 @@ router.get('/excel/:username', async (req, res) => {
 });
 
 module.exports = router;
-
