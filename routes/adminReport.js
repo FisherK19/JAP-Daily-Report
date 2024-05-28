@@ -25,45 +25,47 @@ function generatePDF(reports, username, res) {
     reports.forEach(report => {
         doc.fontSize(10);
 
-        // Left column
-        doc.text(`Date: ${new Date(report.date).toDateString()}`);
-        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`);
-        doc.text(`Foreman: ${report.foreman}`);
-        doc.text(`Customer: ${report.customer}`);
-        doc.text(`Job Site: ${report.job_site}`);
-        doc.text(`Job Description: ${report.job_description}`);
-        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`);
-        doc.text(`Sheeting / Materials: ${report.material_description}`);
+        // Table for main information
+        doc.text(`Date: ${new Date(report.date).toDateString()}`, { continued: true })
+           .text(`Job Number: ${report.job_number}`, { align: 'right' });
 
-        doc.moveDown();
+        doc.text(`T&M: ${report.t_and_m ? 'Yes' : 'No'}`, { continued: true })
+           .text(`Contract: ${report.contract ? 'Yes' : 'No'}`, { align: 'right' });
 
-        // Right column
-        doc.text(`Job Number: ${report.job_number}`);
-        doc.text(`Contract: ${report.contract ? 'Yes' : 'No'}`);
-        doc.text(`Cell Number: ${report.cell_number}`);
-        doc.text(`Customer PO: ${report.customer_po}`);
-        doc.text(`Job Completion: ${report.job_completion}`);
-        doc.text(`Shift Start Time: ${report.shift_start_time}`);
-        doc.text(`Equipment Description: ${report.equipment_description}`);
-        doc.text(`Report Copy: ${report.report_copy}`);
+        doc.text(`Foreman: ${report.foreman}`, { continued: true })
+           .text(`Cell Number: ${report.cell_number}`, { align: 'right' });
+
+        doc.text(`Customer: ${report.customer}`, { continued: true })
+           .text(`Customer PO: ${report.customer_po}`, { align: 'right' });
+
+        doc.text(`Job Site: ${report.job_site}`, { continued: true })
+           .text(`Job Completion: ${report.job_completion}`, { align: 'right' });
+
+        doc.text(`Job Description: ${report.job_description}`, { continued: true })
+           .text(`Shift Start Time: ${report.shift_start_time}`, { align: 'right' });
+
+        doc.text(`Temperature/Humidity: ${report.temperature_humidity}`, { continued: true })
+           .text(`Equipment Description: ${report.equipment_description}`, { align: 'right' });
+
+        doc.text(`Sheeting / Materials: ${report.material_description}`, { continued: true })
+           .text(`Report Copy: ${report.report_copy}`, { align: 'right' });
 
         doc.moveDown();
 
         // Equipment table
         doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-        const equipmentData = [
-            { name: 'Trucks', count: report.trucks },
-            { name: 'Welders', count: report.welders },
-            { name: 'Generators', count: report.generators },
-            { name: 'Compressors', count: report.compressors },
-            { name: 'Company Fuel', count: report.fuel },
-            { name: 'Scaffolding', count: report.scaffolding },
-            { name: 'Safety Equipment', count: report.safety_equipment },
-            { name: 'Miscellaneous Equipment', count: report.miscellaneous_equipment }
-        ];
-        equipmentData.forEach(item => {
-            doc.text(`${item.name}: ${item.count}`);
-        });
+        doc.table([
+            ['Equipment', 'Count'],
+            ['Trucks', report.trucks],
+            ['Welders', report.welders],
+            ['Generators', report.generators],
+            ['Compressors', report.compressors],
+            ['Company Fuel', report.fuel],
+            ['Scaffolding', report.scaffolding],
+            ['Safety Equipment', report.safety_equipment],
+            ['Miscellaneous Equipment', report.miscellaneous_equipment]
+        ], { width: 400, columnsSize: [300, 100] });
+
         doc.moveDown();
 
         // Employees table
@@ -78,12 +80,12 @@ function generatePDF(reports, username, res) {
             }
         ];
         employeeData.forEach(item => {
-            doc.text(`Employee: ${item.name}`);
-            doc.text(`Hours Worked: ${item.hours_worked}`);
-            doc.text(`Straight Time: ${item.straight_time}`);
-            doc.text(`Time and a Half: ${item.time_and_a_half}`);
-            doc.text(`Double Time: ${item.double_time}`);
+            doc.table([
+                ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
+                [item.name, item.hours_worked, item.straight_time, item.time_and_a_half, item.double_time]
+            ], { width: 400, columnsSize: [100, 75, 75, 75, 75] });
         });
+
         doc.moveDown(2);
     });
 
@@ -181,39 +183,51 @@ function generateExcel(reports, username, res) {
 }
 
 // Route to generate and download PDF report for a specific user
-router.get('/pdf/:username', async (req, res) => {
-    const { username } = req.params;
+router.get('/pdf/:username', (req, res) => {
+    const username = req.params.username;
 
-    try {
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
-        if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the user.' });
+    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
+        if (error) {
+            console.error('Error fetching reports:', error);
+            return res.status(500).send('Error fetching reports');
         }
 
-        generatePDF(reports, username, res);
-    } catch (error) {
-        console.error('Error generating PDF:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+        if (results.length === 0) {
+            return res.status(404).send('No reports found for this user');
+        }
+
+        generatePDF(results, username, res);
+    });
 });
 
 // Route to generate and download Excel report for a specific user
-router.get('/excel/:username', async (req, res) => {
-    const { username } = req.params;
+router.get('/excel/:username', (req, res) => {
+    const username = req.params.username;
 
-    try {
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
-
-        if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the user.' });
+    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
+        if (error) {
+            console.error('Error fetching reports:', error);
+            return res.status(500).send('Error fetching reports');
         }
 
-        generateExcel(reports, username, res);
-    } catch (error) {
-        console.error('Error generating Excel:', error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
+        if (results.length === 0) {
+            return res.status(404).send('No reports found for this user');
+        }
+
+        generateExcel(results, username, res);
+    });
+});
+
+// Route to fetch all users
+router.get('/users', (req, res) => {
+    pool.query('SELECT username FROM users', (error, results) => {
+        if (error) {
+            console.error('Error fetching users:', error);
+            return res.status(500).send('Error fetching users');
+        }
+
+        res.json(results);
+    });
 });
 
 module.exports = router;
