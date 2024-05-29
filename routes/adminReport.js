@@ -23,7 +23,8 @@ function generatePDF(reports, username, res) {
 
     doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-    reports.forEach(report => {
+    reports.forEach((report, index) => {
+        console.log(`Processing report ${index + 1} of ${reports.length}`);
         doc.fontSize(10);
 
         // Main information table
