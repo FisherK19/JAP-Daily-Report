@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
 
-// Route to handle daily report submission and generate PDF
+// Route to handle daily report submission
 router.post('/', async (req, res) => {
     try {
         console.log('Received a POST request');
@@ -41,63 +41,6 @@ router.post('/', async (req, res) => {
 
         console.log('Form data:', req.body);
 
-        // Create PDF
-        const doc = new PDFDocument();
-        const pdfPath = path.join(reportsDir, `report_${Date.now()}.pdf`);
-        doc.pipe(fs.createWriteStream(pdfPath));
-
-        // Add company logo
-        const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
-        doc.image(logoPath, {
-            fit: [150, 150],
-            align: 'center'
-        });
-
-        doc.fontSize(18).text('JOHN A. PAPALAS & COMPANY', { align: 'center' });
-        doc.fontSize(12).text('Tel - 313-388-3000    Fax - 313-388-9864', { align: 'center' });
-        doc.moveDown();
-
-        // Add report details
-        doc.fontSize(12).text(`Date: ${new Date(date).toDateString()}`, { align: 'left' });
-        doc.fontSize(12).text(`Job Number: ${job_number}`, { align: 'left' });
-        doc.fontSize(12).text(`T&M: ${t_and_m ? 'Yes' : 'No'}`, { align: 'left' });
-        doc.fontSize(12).text(`Contract: ${contract ? 'Yes' : 'No'}`, { align: 'left' });
-        doc.fontSize(12).text(`Foreman: ${foreman}`, { align: 'left' });
-        doc.fontSize(12).text(`Cell Number: ${cell_number}`, { align: 'left' });
-        doc.fontSize(12).text(`Customer: ${customer}`, { align: 'left' });
-        doc.fontSize(12).text(`Customer PO: ${customer_po}`, { align: 'left' });
-        doc.fontSize(12).text(`Job Site: ${job_site}`, { align: 'left' });
-        doc.fontSize(12).text(`Job Description: ${job_description}`, { align: 'left' });
-        doc.fontSize(12).text(`Job Completion: ${job_completion}`, { align: 'left' });
-        doc.fontSize(12).text(`Trucks: ${trucks}`, { align: 'left' });
-        doc.fontSize(12).text(`Welders: ${welders}`, { align: 'left' });
-        doc.fontSize(12).text(`Generators: ${generators}`, { align: 'left' });
-        doc.fontSize(12).text(`Compressors: ${compressors}`, { align: 'left' });
-        doc.fontSize(12).text(`Fuel: ${fuel}`, { align: 'left' });
-        doc.fontSize(12).text(`Scaffolding: ${scaffolding}`, { align: 'left' });
-        doc.fontSize(12).text(`Safety Equipment: ${safety_equipment}`, { align: 'left' });
-        doc.fontSize(12).text(`Miscellaneous Equipment: ${miscellaneous_equipment}`, { align: 'left' });
-        doc.fontSize(12).text(`Material Description: ${material_description}`, { align: 'left' });
-        doc.fontSize(12).text(`Equipment Description: ${equipment_description}`, { align: 'left' });
-        doc.fontSize(12).text(`Hours Worked: ${hours_worked}`, { align: 'left' });
-        doc.fontSize(12).text(`Employee: ${employee}`, { align: 'left' });
-        doc.fontSize(12).text(`Straight Time: ${straight_time}`, { align: 'left' });
-        doc.fontSize(12).text(`Time and a Half: ${time_and_a_half}`, { align: 'left' });
-        doc.fontSize(12).text(`Double Time: ${double_time}`, { align: 'left' });
-        doc.fontSize(12).text(`Emergency Purchases: ${emergency_purchases}`, { align: 'left' });
-        doc.fontSize(12).text(`Approved By: ${approved_by}`, { align: 'left' });
-        doc.fontSize(12).text(`Shift Start Time: ${shift_start_time}`, { align: 'left' });
-        doc.fontSize(12).text(`Temperature/Humidity: ${temperature_humidity}`, { align: 'left' });
-        doc.fontSize(12).text(`Report Copy: ${report_copy}`, { align: 'left' });
-        doc.fontSize(12).text(`Manlifts Equipment: ${manlifts_equipment}`, { align: 'left' });
-        doc.fontSize(12).text(`Manlifts Fuel: ${manlifts_fuel}`, { align: 'left' });
-        doc.fontSize(12).text(`Delay/Lost Time: ${delay_lost_time}`, { align: 'left' });
-        doc.fontSize(12).text(`Employees Off: ${employees_off}`, { align: 'left' });
-        doc.fontSize(12).text(`Sub-Contract: ${sub_contract}`, { align: 'left' });
-        doc.fontSize(12).text(`Username: ${username}`, { align: 'left' });
-
-        doc.end();
-
         // Define a field-value mapping
         const fieldValueMapping = {
             date, job_number, t_and_m: t_and_m ? 1 : 0, contract: contract ? 1 : 0, foreman, cell_number, customer, customer_po,
@@ -119,7 +62,7 @@ router.post('/', async (req, res) => {
 
         const [results] = await pool.query(sql, values);
         console.log('Insert result:', results);
-        res.status(201).json({ message: 'Daily report submitted and PDF generated successfully', pdfPath });
+        res.status(201).json({ message: 'Daily report submitted successfully' });
     } catch (error) {
         console.error('Error inserting data:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
