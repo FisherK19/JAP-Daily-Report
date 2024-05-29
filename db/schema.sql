@@ -24,6 +24,7 @@ CREATE TABLE users (
     reset_password_token VARCHAR(255),
     reset_password_expires BIGINT
 );
+
 -- Create a table for storing daily reports with more detailed fields
 CREATE TABLE daily_reports (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,23 +56,24 @@ CREATE TABLE daily_reports (
     time_and_a_half DECIMAL(5,2) NOT NULL,
     emergency_purchases TEXT NOT NULL,
     approved_by VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    title VARCHAR(255),
+    content TEXT,
+    admin_id INT,
+    username VARCHAR(255),
     shift_start_time VARCHAR(20),
     temperature_humidity TEXT,
-    report_copy ENUM('white', 'yellow', 'pink'),
-    manlifts_equipment VARCHAR(255),
-    manlifts_fuel VARCHAR(255),
-    delay_lost_time TEXT,
-    employees_off TEXT,
-    sub_contract TEXT,
-    username VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    -- Columns for additional employees
+    report_copy ENUM('white','yellow','pink'),
     employee_2_hours_worked DECIMAL(5,2),
     employee_2_name VARCHAR(255),
     employee_2_straight_time DECIMAL(5,2),
     employee_2_time_and_a_half DECIMAL(5,2),
     employee_2_double_time DECIMAL(5,2),
+    manlifts_equipment VARCHAR(255),
+    manlifts_fuel VARCHAR(255),
+    delay_lost_time TEXT,
+    employees_off TEXT,
+    sub_contract TEXT,
     employee_3_hours_worked DECIMAL(5,2),
     employee_3_name VARCHAR(255),
     employee_3_straight_time DECIMAL(5,2),
@@ -161,5 +163,6 @@ CREATE TABLE daily_reports (
     employee_20_name VARCHAR(255),
     employee_20_straight_time DECIMAL(5,2),
     employee_20_time_and_a_half DECIMAL(5,2),
-    employee_20_double_time DECIMAL(5,2)
+    employee_20_double_time DECIMAL(5,2),
+    FOREIGN KEY (admin_id) REFERENCES admin_users(id)
 );
