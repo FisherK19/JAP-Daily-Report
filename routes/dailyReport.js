@@ -2,13 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const path = require('path');
-const fs = require('fs');
-
-// Ensure the reports directory exists
-const reportsDir = path.join(__dirname, '../reports');
-if (!fs.existsSync(reportsDir)) {
-    fs.mkdirSync(reportsDir, { recursive: true });
-}
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
@@ -19,7 +12,7 @@ router.get('/', (req, res) => {
 router.post('/', async (req, res) => {
     try {
         console.log('Received a POST request');
-
+        
         const user = req.session.user; // Retrieve user from session
 
         if (!user) {
