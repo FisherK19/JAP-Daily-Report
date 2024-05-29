@@ -187,51 +187,51 @@ function generateExcel(reports, username, res) {
 }
 
 // Route to generate and download PDF report for a specific user
-router.get('/pdf/:username', (req, res) => {
+router.get('/pdf/:username', async (req, res) => {
     const username = req.params.username;
 
-    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
-        if (error) {
-            console.error('Error fetching reports:', error);
-            return res.status(500).send('Error fetching reports');
-        }
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
 
         if (results.length === 0) {
             return res.status(404).send('No reports found for this user');
         }
 
         generatePDF(results, username, res);
-    });
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        res.status(500).send('Error fetching reports');
+    }
 });
 
 // Route to generate and download Excel report for a specific user
-router.get('/excel/:username', (req, res) => {
+router.get('/excel/:username', async (req, res) => {
     const username = req.params.username;
 
-    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
-        if (error) {
-            console.error('Error fetching reports:', error);
-            return res.status(500).send('Error fetching reports');
-        }
+    try {
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
 
         if (results.length === 0) {
             return res.status(404).send('No reports found for this user');
         }
 
         generateExcel(results, username, res);
-    });
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        res.status(500).send('Error fetching reports');
+    }
 });
 
 // Route to fetch all users
-router.get('/users', (req, res) => {
-    pool.query('SELECT username FROM users', (error, results) => {
-        if (error) {
-            console.error('Error fetching users:', error);
-            return res.status(500).send('Error fetching users');
-        }
+router.get('/users', async (req, res) => {
+    try {
+        const [results] = await pool.query('SELECT username FROM users');
 
         res.json(results);
-    });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).send('Error fetching users');
+    }
 });
 
 module.exports = router;

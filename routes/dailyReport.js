@@ -1,25 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
-const path = require('path');
-const fs = require('fs');
-
-// Ensure the reports directory exists
-const reportsDir = path.join(__dirname, '../reports');
-if (!fs.existsSync(reportsDir)) {
-    fs.mkdirSync(reportsDir, { recursive: true });
-}
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
 
-// Route to handle daily report submission without generating PDF
+// Route to handle daily report submission
 router.post('/', async (req, res) => {
     try {
         console.log('Received a POST request');
-
+        
         const user = req.session.user; // Retrieve user from session
 
         if (!user) {
@@ -40,11 +32,18 @@ router.post('/', async (req, res) => {
 
         console.log('Form data:', req.body);
 
+        // Ensure array fields are properly formatted
+        const formattedHoursWorked = Array.isArray(hours_worked) ? hours_worked.join(', ') : hours_worked;
+        const formattedEmployee = Array.isArray(employee) ? employee.join(', ') : employee;
+        const formattedStraightTime = Array.isArray(straight_time) ? straight_time.join(', ') : straight_time;
+        const formattedDoubleTime = Array.isArray(double_time) ? double_time.join(', ') : double_time;
+        const formattedTimeAndAHalf = Array.isArray(time_and_a_half) ? time_and_a_half.join(', ') : time_and_a_half;
+
         // Define a field-value mapping
         const fieldValueMapping = {
             date, job_number, t_and_m: t_and_m ? 1 : 0, contract: contract ? 1 : 0, foreman, cell_number, customer, customer_po,
             job_site, job_description, job_completion, trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
-            material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half,
+            material_description, equipment_description, hours_worked: formattedHoursWorked, employee: formattedEmployee, straight_time: formattedStraightTime, double_time: formattedDoubleTime, time_and_a_half: formattedTimeAndAHalf,
             emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         };
