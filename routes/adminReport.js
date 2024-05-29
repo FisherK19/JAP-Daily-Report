@@ -26,75 +26,70 @@ function generatePDF(reports, username, res) {
     reports.forEach(report => {
         doc.fontSize(10);
 
-        // Table for main information
-        doc.table(
-            {
-                headers: ['Key', 'Value'],
-                rows: [
-                    ['Date', new Date(report.date).toDateString()],
-                    ['Job Number', report.job_number],
-                    ['T&M', report.t_and_m ? 'Yes' : 'No'],
-                    ['Contract', report.contract ? 'Yes' : 'No'],
-                    ['Foreman', report.foreman],
-                    ['Cell Number', report.cell_number],
-                    ['Customer', report.customer],
-                    ['Customer PO', report.customer_po],
-                    ['Job Site', report.job_site],
-                    ['Job Description', report.job_description],
-                    ['Job Completion', report.job_completion],
-                    ['Shift Start Time', report.shift_start_time],
-                    ['Temperature/Humidity', report.temperature_humidity],
-                    ['Equipment Description', report.equipment_description],
-                    ['Sheeting / Materials', report.material_description],
-                    ['Report Copy', report.report_copy]
-                ]
-            },
-            { width: 500 }
-        ).moveDown();
+        // Main information table
+        const mainInfoTable = [
+            ['Date', new Date(report.date).toDateString()],
+            ['Job Number', report.job_number],
+            ['T&M', report.t_and_m ? 'Yes' : 'No'],
+            ['Contract', report.contract ? 'Yes' : 'No'],
+            ['Foreman', report.foreman],
+            ['Cell Number', report.cell_number],
+            ['Customer', report.customer],
+            ['Customer PO', report.customer_po],
+            ['Job Site', report.job_site],
+            ['Job Description', report.job_description],
+            ['Job Completion', report.job_completion],
+            ['Shift Start Time', report.shift_start_time],
+            ['Temperature/Humidity', report.temperature_humidity],
+            ['Equipment Description', report.equipment_description],
+            ['Sheeting / Materials', report.material_description],
+            ['Report Copy', report.report_copy]
+        ];
+
+        doc.table({ headers: ['Key', 'Value'], rows: mainInfoTable }, { width: 500 }).moveDown();
 
         // Equipment table
+        const equipmentTable = [
+            ['Trucks', report.trucks],
+            ['Welders', report.welders],
+            ['Generators', report.generators],
+            ['Compressors', report.compressors],
+            ['Company Fuel', report.fuel],
+            ['Scaffolding', report.scaffolding],
+            ['Safety Equipment', report.safety_equipment],
+            ['Miscellaneous Equipment', report.miscellaneous_equipment]
+        ];
+
         doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-        doc.table(
-            {
-                headers: ['Equipment', 'Count'],
-                rows: [
-                    ['Trucks', report.trucks],
-                    ['Welders', report.welders],
-                    ['Generators', report.generators],
-                    ['Compressors', report.compressors],
-                    ['Company Fuel', report.fuel],
-                    ['Scaffolding', report.scaffolding],
-                    ['Safety Equipment', report.safety_equipment],
-                    ['Miscellaneous Equipment', report.miscellaneous_equipment]
-                ]
-            },
-            { width: 400 }
-        ).moveDown();
+        doc.table({ headers: ['Equipment', 'Count'], rows: equipmentTable }, { width: 400 }).moveDown();
 
         // Employees table
+        const employeesTable = [
+            [
+                report.employee,
+                report.hours_worked,
+                report.straight_time,
+                report.time_and_a_half,
+                report.double_time
+            ]
+        ];
+
         doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
         doc.table(
-            {
-                headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
-                rows: [
-                    [
-                        report.employee,
-                        report.hours_worked,
-                        report.straight_time,
-                        report.time_and_a_half,
-                        report.double_time
-                    ]
-                ]
-            },
+            { headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'], rows: employeesTable },
             { width: 500 }
         ).moveDown(2);
 
         // Other details
-        doc.text(`Sub-Contract: ${report.sub_contract}`).moveDown(0.5);
-        doc.text(`Emergency Purchases: ${report.emergency_purchases}`).moveDown(0.5);
-        doc.text(`Delay / Lost Time: ${report.delay_lost_time}`).moveDown(0.5);
-        doc.text(`Employees Off: ${report.employees_off}`).moveDown(0.5);
-        doc.text(`Approved By: ${report.approved_by}`).moveDown(2);
+        const otherDetailsTable = [
+            ['Sub-Contract', report.sub_contract],
+            ['Emergency Purchases', report.emergency_purchases],
+            ['Delay / Lost Time', report.delay_lost_time],
+            ['Employees Off', report.employees_off],
+            ['Approved By', report.approved_by]
+        ];
+
+        doc.table({ headers: ['Key', 'Value'], rows: otherDetailsTable }, { width: 500 }).moveDown(2);
     });
 
     doc.end();
