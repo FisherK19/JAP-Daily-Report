@@ -2,17 +2,24 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure the reports directory exists
+const reportsDir = path.join(__dirname, '../reports');
+if (!fs.existsSync(reportsDir)) {
+    fs.mkdirSync(reportsDir, { recursive: true });
+}
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'daily-report.html'));
 });
 
-// Route to handle daily report submission
+// Route to handle daily report submission without generating PDF
 router.post('/', async (req, res) => {
     try {
         console.log('Received a POST request');
-        
+
         const user = req.session.user; // Retrieve user from session
 
         if (!user) {
@@ -62,3 +69,4 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
+
