@@ -66,20 +66,31 @@ function generatePDF(reports, username, res) {
 
         // Employees table
         const employeesTable = [
-            [
-                report.employee,
-                report.hours_worked,
-                report.straight_time,
-                report.time_and_a_half,
-                report.double_time
-            ]
+            ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'],
+            [report.employee, report.hours_worked, report.straight_time, report.time_and_a_half, report.double_time],
+            [report.employee_2_name, report.employee_2_hours_worked, report.employee_2_straight_time, report.employee_2_time_and_a_half, report.employee_2_double_time],
+            [report.employee_3_name, report.employee_3_hours_worked, report.employee_3_straight_time, report.employee_3_time_and_a_half, report.employee_3_double_time],
+            [report.employee_4_name, report.employee_4_hours_worked, report.employee_4_straight_time, report.employee_4_time_and_a_half, report.employee_4_double_time],
+            [report.employee_5_name, report.employee_5_hours_worked, report.employee_5_straight_time, report.employee_5_time_and_a_half, report.employee_5_double_time],
+            [report.employee_6_name, report.employee_6_hours_worked, report.employee_6_straight_time, report.employee_6_time_and_a_half, report.employee_6_double_time],
+            [report.employee_7_name, report.employee_7_hours_worked, report.employee_7_straight_time, report.employee_7_time_and_a_half, report.employee_7_double_time],
+            [report.employee_8_name, report.employee_8_hours_worked, report.employee_8_straight_time, report.employee_8_time_and_a_half, report.employee_8_double_time],
+            [report.employee_9_name, report.employee_9_hours_worked, report.employee_9_straight_time, report.employee_9_time_and_a_half, report.employee_9_double_time],
+            [report.employee_10_name, report.employee_10_hours_worked, report.employee_10_straight_time, report.employee_10_time_and_a_half, report.employee_10_double_time],
+            [report.employee_11_name, report.employee_11_hours_worked, report.employee_11_straight_time, report.employee_11_time_and_a_half, report.employee_11_double_time],
+            [report.employee_12_name, report.employee_12_hours_worked, report.employee_12_straight_time, report.employee_12_time_and_a_half, report.employee_12_double_time],
+            [report.employee_13_name, report.employee_13_hours_worked, report.employee_13_straight_time, report.employee_13_time_and_a_half, report.employee_13_double_time],
+            [report.employee_14_name, report.employee_14_hours_worked, report.employee_14_straight_time, report.employee_14_time_and_a_half, report.employee_14_double_time],
+            [report.employee_15_name, report.employee_15_hours_worked, report.employee_15_straight_time, report.employee_15_time_and_a_half, report.employee_15_double_time],
+            [report.employee_16_name, report.employee_16_hours_worked, report.employee_16_straight_time, report.employee_16_time_and_a_half, report.employee_16_double_time],
+            [report.employee_17_name, report.employee_17_hours_worked, report.employee_17_straight_time, report.employee_17_time_and_a_half, report.employee_17_double_time],
+            [report.employee_18_name, report.employee_18_hours_worked, report.employee_18_straight_time, report.employee_18_time_and_a_half, report.employee_18_double_time],
+            [report.employee_19_name, report.employee_19_hours_worked, report.employee_19_straight_time, report.employee_19_time_and_a_half, report.employee_19_double_time],
+            [report.employee_20_name, report.employee_20_hours_worked, report.employee_20_straight_time, report.employee_20_time_and_a_half, report.employee_20_double_time]
         ];
 
         doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
-        doc.table(
-            { headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'], rows: employeesTable },
-            { width: 500 }
-        ).moveDown(2);
+        doc.table({ headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'], rows: employeesTable }, { width: 500 }).moveDown(2);
 
         // Other details
         const otherDetailsTable = [
@@ -95,6 +106,24 @@ function generatePDF(reports, username, res) {
 
     doc.end();
 }
+
+// Route to generate and download PDF report for a specific user
+router.get('/pdf/:username', (req, res) => {
+    const username = req.params.username;
+
+    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
+        if (error) {
+            console.error('Error fetching reports:', error);
+            return res.status(500).send('Error fetching reports');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('No reports found for this user');
+        }
+
+        generatePDF(results, username, res);
+    });
+});
 
 // Function to generate Excel report
 function generateExcel(reports, username, res) {
@@ -185,24 +214,6 @@ function generateExcel(reports, username, res) {
         res.end();
     });
 }
-
-// Route to generate and download PDF report for a specific user
-router.get('/pdf/:username', (req, res) => {
-    const username = req.params.username;
-
-    pool.query('SELECT * FROM daily_reports WHERE username = ?', [username], (error, results) => {
-        if (error) {
-            console.error('Error fetching reports:', error);
-            return res.status(500).send('Error fetching reports');
-        }
-
-        if (results.length === 0) {
-            return res.status(404).send('No reports found for this user');
-        }
-
-        generatePDF(results, username, res);
-    });
-});
 
 // Route to generate and download Excel report for a specific user
 router.get('/excel/:username', (req, res) => {
