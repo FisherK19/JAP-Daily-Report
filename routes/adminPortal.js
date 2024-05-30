@@ -11,9 +11,10 @@ router.get('/', (req, res) => {
 });
 
 // Route to fetch users for a specific date
-router.get('/users', async (req, res) => {
+router.get('/users/:date', async (req, res) => {
+    const { date } = req.params;
     try {
-        const [results] = await pool.query('SELECT DISTINCT username FROM users WHERE username IS NOT NULL AND username != ""');
+        const [results] = await pool.query('SELECT DISTINCT username FROM daily_reports WHERE date = ?', [date]);
         res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -34,17 +35,17 @@ function addHeader(doc) {
 }
 
 // Route for generating user-specific PDF report
-router.get('/report/pdf/:date/:employee', async (req, res) => {
-    const { date, employee } = req.params;
+router.get('/report/pdf/:date/:username', async (req, res) => {
+    const { date, username } = req.params;
     try {
-        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee]);
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND username = ?', [date, username]);
         if (results.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
 
         const doc = new PDFDocument({ margin: 50 });
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename=${username}_report_${date}.pdf`);
         doc.pipe(res);
 
         addHeader(doc);
@@ -138,10 +139,10 @@ router.get('/report/pdf/:date/:employee', async (req, res) => {
 });
 
 // Route for generating user-specific Excel report
-router.get('/report/excel/:date/:employee', async (req, res) => {
-    const { date, employee } = req.params;
+router.get('/report/excel/:date/:username', async (req, res) => {
+    const { date, username } = req.params;
     try {
-        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee]);
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND username = ?', [date, username]);
         if (results.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
@@ -192,7 +193,7 @@ router.get('/report/excel/:date/:employee', async (req, res) => {
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.xlsx`);
+        res.setHeader('Content-Disposition', `attachment; filename=${username}_report_${date}.xlsx`);
 
         await workbook.xlsx.write(res);
         res.end();
@@ -352,7 +353,6 @@ router.get('/report/all/excel/:date', async (req, res) => {
 });
 
 module.exports = router;
-
 
 
 

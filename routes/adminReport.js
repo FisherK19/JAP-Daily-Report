@@ -3,7 +3,6 @@ const router = express.Router();
 const { pool } = require('../config/connection');
 const PDFDocument = require('pdfkit');
 const path = require('path');
-require('pdfkit-table');
 
 router.get('/pdf', async (req, res) => {
     try {
@@ -101,4 +100,3 @@ router.get('/pdf', async (req, res) => {
 });
 
 module.exports = router;
-
