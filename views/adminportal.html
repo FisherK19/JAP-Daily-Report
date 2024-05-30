@@ -9,26 +9,26 @@
 </head>
 <body>
     <h1>Admin Portal</h1>
-    <img src="/assets/images/company-logo.png" alt="Company Logo" style="width: 150px; height: auto;">
-    <form id="generate-pdf-form">
-        <label for="report-date">Select Date:</label>
-        <input type="text" id="report-date" name="report_date" required>
+    <img src="/assets/images/company-logo.png" alt="Company Logo" style="width: 150px;">
+
+    <form id="pdfForm">
+        <label for="date">Select Date:</label>
+        <input type="text" id="date" name="date" placeholder="Select Date" required>
         <button type="submit">Generate PDF</button>
     </form>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
     <script>
-        flatpickr("#report-date", {
-            dateFormat: "Y-m-d"
-        });
+        document.addEventListener('DOMContentLoaded', function () {
+            flatpickr("#date", {
+                dateFormat: "Y-m-d"
+            });
 
-        document.getElementById('generate-pdf-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const reportDate = document.getElementById('report-date').value;
-            if (reportDate) {
-                window.location.href = `/admin/portal/report/pdf?date=${reportDate}`;
-            } else {
-                alert('Please enter a date');
-            }
+            document.getElementById('pdfForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const date = document.getElementById('date').value;
+                window.location.href = `/admin/portal/report/pdf?date=${date}`;
+            });
         });
     </script>
 </body>
