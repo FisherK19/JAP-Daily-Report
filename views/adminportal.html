@@ -5,27 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal</title>
     <link rel="stylesheet" href="/assets/adminportal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css">
 </head>
 <body>
     <h1>Admin Portal</h1>
+    <img src="/assets/images/company-logo.png" alt="Company Logo" style="width: 150px; height: auto;">
     <form id="generate-pdf-form">
         <label for="username">Enter Username:</label>
-        <input type="text" id="username" name="username">
+        <input type="text" id="username" name="username" required>
+        <label for="report-date">Select Date:</label>
+        <input type="text" id="report-date" name="report_date" required>
         <button type="submit">Generate PDF</button>
     </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
     <script>
+        flatpickr("#report-date", {
+            dateFormat: "Y-m-d"
+        });
+
         document.getElementById('generate-pdf-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
-            if (username) {
-                window.location.href = `/admin/portal/report/pdf/${username}`;
+            const reportDate = document.getElementById('report-date').value;
+            if (username && reportDate) {
+                window.location.href = `/admin/portal/report/pdf/${username}?date=${reportDate}`;
             } else {
-                alert('Please enter a username');
+                alert('Please enter both username and date');
             }
         });
     </script>
 </body>
 </html>
-
 
 

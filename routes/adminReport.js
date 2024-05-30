@@ -14,18 +14,35 @@ router.get('/portal', (req, res) => {
 router.get('/portal/report/pdf/:username', async (req, res) => {
     try {
         const username = req.params.username;
+        const date = req.query.date;
 
-        // Retrieve the daily report data for the user from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ?', [username]);
+        // Validate date
+        if (!date) {
+            return res.status(400).json({ message: 'Date is required' });
+        }
+
+        // Retrieve the daily report data for the user on the specified date from the database
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ? AND date = ?', [username, date]);
 
         if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the specified user' });
+            return res.status(404).json({ message: 'No reports found for the specified user on the specified date' });
         }
 
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
-        const pdfPath = `user_${username}_reports.pdf`;
+        const pdfPath = `user_${username}_reports_${date}.pdf`;
         res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
         doc.pipe(res);
+
+        // Add company logo
+        const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
+        doc.image(logoPath, {
+            fit: [150, 150],
+            align: 'center'
+        });
+
+        doc.fontSize(18).text('JOHN A. PAPALAS & COMPANY', { align: 'center' });
+        doc.fontSize(12).text('Tel - 313-388-3000    Fax - 313-388-9864', { align: 'center' });
+        doc.moveDown();
 
         // Add report data to PDF
         reports.forEach(report => {
