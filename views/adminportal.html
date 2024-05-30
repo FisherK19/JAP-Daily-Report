@@ -11,11 +11,17 @@
     <h1>Admin Portal</h1>
     <img src="/assets/images/company-logo.png" alt="Company Logo" style="width: 150px;">
 
-    <form id="pdfForm">
+    <form id="dateForm">
         <label for="date">Select Date:</label>
         <input type="text" id="date" name="date" placeholder="Select Date" required>
-        <button type="submit">Generate PDF</button>
+        <button type="submit">Fetch Reports</button>
     </form>
+
+    <div id="reportsList" style="display: none;">
+        <h2>Reports for <span id="selectedDate"></span></h2>
+        <ul id="reports"></ul>
+        <button id="generatePDF" style="display: none;">Generate PDF</button>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
     <script>
@@ -24,10 +30,42 @@
                 dateFormat: "Y-m-d"
             });
 
-            document.getElementById('pdfForm').addEventListener('submit', function (e) {
+            document.getElementById('dateForm').addEventListener('submit', function (e) {
                 e.preventDefault();
                 const date = document.getElementById('date').value;
-                window.location.href = `/admin/portal/report/pdf?date=${date}`;
+                fetch(`/admin/portal/reports?date=${date}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const reportsList = document.getElementById('reportsList');
+                        const reportsUl = document.getElementById('reports');
+                        const selectedDate = document.getElementById('selectedDate');
+                        const generatePDFButton = document.getElementById('generatePDF');
+
+                        selectedDate.textContent = date;
+                        reportsUl.innerHTML = '';
+
+                        if (data.length === 0) {
+                            reportsList.style.display = 'none';
+                            generatePDFButton.style.display = 'none';
+                            alert('No reports found for the specified date.');
+                        } else {
+                            data.forEach(report => {
+                                const li = document.createElement('li');
+                                li.textContent = `User: ${report.username}, Job Number: ${report.job_number}`;
+                                reportsUl.appendChild(li);
+                            });
+                            reportsList.style.display = 'block';
+                            generatePDFButton.style.display = 'block';
+
+                            generatePDFButton.onclick = function() {
+                                window.location.href = `/admin/portal/report/pdf?date=${date}`;
+                            };
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching reports:', error);
+                        alert('An error occurred while fetching reports.');
+                    });
             });
         });
     </script>

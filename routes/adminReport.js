@@ -10,6 +10,28 @@ router.get('/portal', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'admin-portal.html'));
 });
 
+// Route to fetch reports for a specific date
+router.get('/portal/reports', async (req, res) => {
+    try {
+        const date = req.query.date;
+
+        if (!date) {
+            return res.status(400).json({ message: 'Date is required' });
+        }
+
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
+
+        if (reports.length === 0) {
+            return res.status(404).json({ message: 'No reports found for the specified date' });
+        }
+
+        res.json(reports);
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
 // Route to generate and download the PDF report for all users on a specific date
 router.get('/portal/report/pdf', async (req, res) => {
     try {
