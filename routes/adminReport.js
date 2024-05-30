@@ -5,52 +5,23 @@ const PDFDocument = require('pdfkit');
 const path = require('path');
 require('pdfkit-table');
 
-// Route to serve the admin portal HTML
-router.get('/portal', (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', 'admin-portal.html'));
-});
-
-// Route to fetch reports for a specific date
-router.get('/portal/reports', async (req, res) => {
+router.get('/pdf', async (req, res) => {
     try {
-        const date = req.query.date;
+        const { date, user } = req.query;
 
-        if (!date) {
-            return res.status(400).json({ message: 'Date is required' });
+        if (!date || !user) {
+            return res.status(400).json({ message: 'Date and user are required' });
         }
 
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND username = ?', [date, user]);
 
         if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the specified date' });
+            return res.status(404).json({ message: 'No report found for the specified date and user' });
         }
 
-        res.json(reports);
-    } catch (error) {
-        console.error('Error fetching reports:', error);
-        res.status(500).json({ message: 'Internal server error', error: error.message });
-    }
-});
-
-// Route to generate and download the PDF report for all users on a specific date
-router.get('/portal/report/pdf', async (req, res) => {
-    try {
-        const date = req.query.date;
-
-        // Validate date
-        if (!date) {
-            return res.status(400).json({ message: 'Date is required' });
-        }
-
-        // Retrieve the daily report data for all users on the specified date from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
-
-        if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the specified date' });
-        }
-
+        const report = reports[0];
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
-        const pdfPath = `daily_reports_${date}.pdf`;
+        const pdfPath = `daily_report_${date}_${user}.pdf`;
         res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
         doc.pipe(res);
 
@@ -66,63 +37,61 @@ router.get('/portal/report/pdf', async (req, res) => {
         doc.moveDown();
 
         // Add report data to PDF
-        reports.forEach(report => {
-            doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
+        doc.fontSize(16).text('Daily Report', { align: 'center' }).moveDown();
 
-            // Main information table
-            const mainInfoTable = [
-                ['Date', new Date(report.date).toDateString()],
-                ['Job Number', report.job_number],
-                ['T&M', report.t_and_m ? 'Yes' : 'No'],
-                ['Contract', report.contract ? 'Yes' : 'No'],
-                ['Foreman', report.foreman],
-                ['Cell Number', report.cell_number],
-                ['Customer', report.customer],
-                ['Customer PO', report.customer_po],
-                ['Job Site', report.job_site],
-                ['Job Description', report.job_description],
-                ['Job Completion', report.job_completion],
-                ['Shift Start Time', report.shift_start_time],
-                ['Temperature/Humidity', report.temperature_humidity],
-                ['Equipment Description', report.equipment_description],
-                ['Sheeting / Materials', report.material_description],
-                ['Report Copy', report.report_copy]
-            ];
+        // Main information table
+        const mainInfoTable = [
+            ['Date', new Date(report.date).toDateString()],
+            ['Job Number', report.job_number],
+            ['T&M', report.t_and_m ? 'Yes' : 'No'],
+            ['Contract', report.contract ? 'Yes' : 'No'],
+            ['Foreman', report.foreman],
+            ['Cell Number', report.cell_number],
+            ['Customer', report.customer],
+            ['Customer PO', report.customer_po],
+            ['Job Site', report.job_site],
+            ['Job Description', report.job_description],
+            ['Job Completion', report.job_completion],
+            ['Shift Start Time', report.shift_start_time],
+            ['Temperature/Humidity', report.temperature_humidity],
+            ['Equipment Description', report.equipment_description],
+            ['Sheeting / Materials', report.material_description],
+            ['Report Copy', report.report_copy]
+        ];
 
-            doc.table({ headers: ['Key', 'Value'], rows: mainInfoTable }, { width: 500 }).moveDown();
+        doc.table({ headers: ['Key', 'Value'], rows: mainInfoTable }, { width: 500 }).moveDown();
 
-            // Equipment table
-            const equipmentTable = [
-                ['Trucks', report.trucks],
-                ['Welders', report.welders],
-                ['Generators', report.generators],
-                ['Compressors', report.compressors],
-                ['Company Fuel', report.fuel],
-                ['Scaffolding', report.scaffolding],
-                ['Safety Equipment', report.safety_equipment],
-                ['Miscellaneous Equipment', report.miscellaneous_equipment]
-            ];
+        // Equipment table
+        const equipmentTable = [
+            ['Trucks', report.trucks],
+            ['Welders', report.welders],
+            ['Generators', report.generators],
+            ['Compressors', report.compressors],
+            ['Company Fuel', report.fuel],
+            ['Scaffolding', report.scaffolding],
+            ['Safety Equipment', report.safety_equipment],
+            ['Miscellaneous Equipment', report.miscellaneous_equipment]
+        ];
 
-            doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
-            doc.table({ headers: ['Equipment', 'Count'], rows: equipmentTable }, { width: 400 }).moveDown();
+        doc.fontSize(12).text('Equipment:', { underline: true }).moveDown(0.5);
+        doc.table({ headers: ['Equipment', 'Count'], rows: equipmentTable }, { width: 400 }).moveDown();
 
-            // Employees table
-            const employeesTable = [
-                [
-                    report.employee,
-                    report.hours_worked,
-                    report.straight_time,
-                    report.time_and_a_half,
-                    report.double_time
-                ]
-            ];
+        // Employees table
+        const employeesTable = [
+            [
+                report.employee,
+                report.hours_worked,
+                report.straight_time,
+                report.time_and_a_half,
+                report.double_time
+            ]
+        ];
 
-            doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
-            doc.table(
-                { headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'], rows: employeesTable },
-                { width: 400 }
-            ).moveDown();
-        });
+        doc.fontSize(12).text('Employees:', { underline: true }).moveDown(0.5);
+        doc.table(
+            { headers: ['Employee', 'Hours Worked', 'Straight Time', 'Time and a Half', 'Double Time'], rows: employeesTable },
+            { width: 400 }
+        ).moveDown();
 
         doc.end();
     } catch (error) {
@@ -132,3 +101,4 @@ router.get('/portal/report/pdf', async (req, res) => {
 });
 
 module.exports = router;
+
