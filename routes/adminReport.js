@@ -10,10 +10,9 @@ router.get('/portal', (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'admin-portal.html'));
 });
 
-// Route to generate and download the PDF report
-router.get('/portal/report/pdf/:username', async (req, res) => {
+// Route to generate and download the PDF report for all users on a specific date
+router.get('/portal/report/pdf', async (req, res) => {
     try {
-        const username = req.params.username;
         const date = req.query.date;
 
         // Validate date
@@ -21,15 +20,15 @@ router.get('/portal/report/pdf/:username', async (req, res) => {
             return res.status(400).json({ message: 'Date is required' });
         }
 
-        // Retrieve the daily report data for the user on the specified date from the database
-        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE username = ? AND date = ?', [username, date]);
+        // Retrieve the daily report data for all users on the specified date from the database
+        const [reports] = await pool.query('SELECT * FROM daily_reports WHERE date = ?', [date]);
 
         if (reports.length === 0) {
-            return res.status(404).json({ message: 'No reports found for the specified user on the specified date' });
+            return res.status(404).json({ message: 'No reports found for the specified date' });
         }
 
         const doc = new PDFDocument({ margin: 30, size: 'A4' });
-        const pdfPath = `user_${username}_reports_${date}.pdf`;
+        const pdfPath = `daily_reports_${date}.pdf`;
         res.setHeader('Content-Disposition', `attachment; filename="${pdfPath}"`);
         doc.pipe(res);
 

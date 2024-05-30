@@ -11,8 +11,6 @@
     <h1>Admin Portal</h1>
     <img src="/assets/images/company-logo.png" alt="Company Logo" style="width: 150px; height: auto;">
     <form id="generate-pdf-form">
-        <label for="username">Enter Username:</label>
-        <input type="text" id="username" name="username" required>
         <label for="report-date">Select Date:</label>
         <input type="text" id="report-date" name="report_date" required>
         <button type="submit">Generate PDF</button>
@@ -25,16 +23,16 @@
 
         document.getElementById('generate-pdf-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            const username = document.getElementById('username').value;
             const reportDate = document.getElementById('report-date').value;
-            if (username && reportDate) {
-                window.location.href = `/admin/portal/report/pdf/${username}?date=${reportDate}`;
+            if (reportDate) {
+                window.location.href = `/admin/portal/report/pdf?date=${reportDate}`;
             } else {
-                alert('Please enter both username and date');
+                alert('Please enter a date');
             }
         });
     </script>
 </body>
 </html>
+
 
 
