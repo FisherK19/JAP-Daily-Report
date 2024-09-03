@@ -1,65 +1,123 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { User } = require('../models'); 
-
+const { pool } = require('../config/connection');
+const { body, validationResult } = require('express-validator');
 const router = express.Router();
 
-// Route for user registration
-router.post('/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
-
-        // Check if the user already exists
-        const existingUser = await User.findByEmail(email);
-        if (existingUser) {
-            return res.status(400).json({ message: 'Email already exists' });
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create the user in the database
-        const newUser = await User.create(username, email, hashedPassword);
-
-        res.status(201).json({ message: 'User created successfully', user: newUser });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+// Registration route with input validation
+router.post(
+  '/register',
+  [
+    body('email').isEmail().withMessage('Enter a valid email address'),
+    body('username').not().isEmpty().withMessage('Username is required'),
+    body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-});
 
-// Route for user login
-router.post('/login', async (req, res) => {
+    const { username, email, password } = req.body;
+
     try {
-        const { email, password } = req.body;
+      // Check if the email is already registered
+      const [existingUser] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (existingUser.length > 0) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
 
-        // Find the user by email
-        const user = await User.findByEmail(email);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Check if the password is correct
-        const passwordMatch = await bcrypt.compare(password, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ message: 'Incorrect password' });
-        }
+      // Insert new user into the database
+      const [result] = await pool.query(
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
+        [username, email, hashedPassword]
+      );
 
-        // Set user session or generate JWT token for authentication
-
-        res.status(200).json({ message: 'Login successful' });
+      // Redirect to the login page after successful registration
+      res.redirect('/login');
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+      console.error('Database error:', error);
+      res.status(500).json({ message: 'Internal server error' });
     }
-});
+  }
+);
 
+// Login route
+router.post(
+  '/login',
+  [
+    body('email').isEmail().withMessage('Enter a valid email address'),
+    body('password').not().isEmpty().withMessage('Password is required'),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-// Authentication middleware to protect routes
+    const { email, password } = req.body;
+
+    try {
+      // Find the user by email
+      const [users] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+      if (users.length === 0) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+
+      const user = users[0];
+
+      // Check if the password matches
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ message: 'Invalid credentials' });
+      }
+
+      // Set up session
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      };
+
+      // Redirect to the appropriate page based on user role
+      if (user.role === 'admin') {
+        res.redirect('/admin/portal');
+      } else {
+        res.redirect('/daily-report');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+);
+
+// Middleware to ensure the user is authenticated
 function authenticateUser(req, res, next) {
-    // Check if user is authenticated (e.g., check session or verify JWT token)
-    // If authenticated, call next()
-    // If not authenticated, return res.status(401).json({ message: 'Unauthorized' });
+  if (req.session && req.session.user) {
+    next();
+  } else {
+    res.status(401).json({ message: 'Unauthorized: No user logged in' });
+  }
 }
+
+// Route to get the current logged-in user's information
+router.get('/current-user', authenticateUser, (req, res) => {
+  res.json(req.session.user);
+});
+
+// Logout route
+router.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ message: 'Could not log out. Please try again.' });
+    }
+    res.redirect('/login');
+  });
+});
 
 module.exports = router;

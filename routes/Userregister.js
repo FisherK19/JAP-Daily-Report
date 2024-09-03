@@ -19,13 +19,22 @@ router.post(
     }
 
     const { username, email, password } = req.body;
+
+    // Log the registration data
+    console.log('Registration Data:', { username, email, password });
+
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
+      console.log('Hashed Password:', hashedPassword);
+
       const [result] = await pool.query(
         'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
         [username, email, hashedPassword]
       );
-      // Redirect to the login page after successful registration
+
+      // Log the insert result
+      console.log('Insert Result:', result);
+
       res.redirect('/login');
     } catch (error) {
       console.error('Database error:', error);

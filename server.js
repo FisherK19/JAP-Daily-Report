@@ -105,12 +105,12 @@ app.get('/current-user', (req, res) => {
   }
 });
 
-// Import routers
+// Import and use route handlers
 const UserRegisterRoutes = require('./routes/Userregister');
 const UserloginRoutes = require('./routes/Userlogin');
 const dailyReportRoutes = require('./routes/dailyReport');
 const adminPortalRoutes = require('./routes/adminPortal');
-const adminReportRoutes = require('./routes/adminReport'); 
+const adminReportRoutes = require('./routes/adminReport');
 const adminRegisterRoutes = require('./routes/adminRegister');
 const adminLoginRoutes = require('./routes/adminLogin');
 const userRoutes = require('./routes/userRoutes');
@@ -122,16 +122,13 @@ app.use('/register', UserRegisterRoutes);
 app.use('/login', UserloginRoutes);
 app.use('/daily-report', dailyReportRoutes);
 app.use('/admin/portal', adminPortalRoutes);
-app.use('/admin/portal/report', adminReportRoutes); 
+app.use('/admin/portal/report', adminReportRoutes);
 app.use('/users', userRoutes);
 app.use('/forgot-password', forgotPasswordRoutes);
 
-// Logout route
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
-    if (err) {
-      return res.status(500).json({ message: 'Could not log out. Please try again.' });
-    }
+    if (err) return res.status(500).json({ message: 'Could not log out. Please try again.' });
     res.redirect('/login');
   });
 });
@@ -140,5 +137,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-

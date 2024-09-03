@@ -23,7 +23,6 @@ const formatArrayField = (field) => Array.isArray(field) ? field.join(', ') : fi
 router.post('/', submitLimiter, async (req, res) => {
     try {
         const user = req.session.user; // Retrieve user from session
-
         if (!user) {
             return res.status(401).json({ message: 'Unauthorized: No user logged in' });
         }
@@ -39,33 +38,31 @@ router.post('/', submitLimiter, async (req, res) => {
         } = req.body;
 
         // Ensure all mandatory fields are present
-        if (!date || !job_number || !foreman || !job_site) {
+        if (!date || !job_number || !foreman || !job_site || !approved_by) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        // Format array fields
+        // Handle optional fields and prepare the insert query
         const formattedFields = {
-            hours_worked: formatArrayField(hours_worked),
-            employee: formatArrayField(employee),
-            straight_time: formatArrayField(straight_time),
-            double_time: formatArrayField(double_time),
-            time_and_a_half: formatArrayField(time_and_a_half)
+            hours_worked: Array.isArray(hours_worked) ? hours_worked.join(', ') : hours_worked,
+            employee: Array.isArray(employee) ? employee.join(', ') : employee,
+            straight_time: Array.isArray(straight_time) ? straight_time.join(', ') : straight_time,
+            double_time: Array.isArray(double_time) ? double_time.join(', ') : double_time,
+            time_and_a_half: Array.isArray(time_and_a_half) ? time_and_a_half.join(', ') : time_and_a_half
         };
 
-        const fieldValueMapping = {
-            date, job_number, t_and_m: t_and_m ? 1 : 0, contract: contract ? 1 : 0, foreman, cell_number, customer, customer_po,
-            job_site, job_description, job_completion, trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
-            material_description, equipment_description, ...formattedFields,
-            emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
-            manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
-        };
+        const sql = `INSERT INTO daily_reports (date, job_number, t_and_m, contract, foreman, cell_number, customer, customer_po, job_site, job_description, job_completion, trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment, material_description, equipment_description, hours_worked, employee, straight_time, double_time, time_and_a_half, emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy, manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-        // Dynamically build the SQL query and values array
-        const fields = Object.keys(fieldValueMapping).join(', ');
-        const placeholders = Object.keys(fieldValueMapping).map(() => '?').join(', ');
-        const values = Object.values(fieldValueMapping);
-
-        const sql = `INSERT INTO daily_reports (${fields}) VALUES (${placeholders})`;
+        const values = [
+            date, job_number, t_and_m || false, contract || false, foreman, cell_number, customer, customer_po,
+            job_site, job_description, job_completion, trucks, welders, generators, compressors, fuel,
+            scaffolding, safety_equipment, miscellaneous_equipment, material_description, equipment_description,
+            formattedFields.hours_worked, formattedFields.employee, formattedFields.straight_time,
+            formattedFields.double_time, formattedFields.time_and_a_half, emergency_purchases, approved_by,
+            shift_start_time, temperature_humidity, report_copy, manlifts_equipment, manlifts_fuel,
+            delay_lost_time, employees_off, sub_contract, username
+        ];
 
         const [results] = await pool.query(sql, values);
         res.status(201).json({ message: 'Daily report submitted successfully', reportId: results.insertId });
@@ -75,6 +72,8 @@ router.post('/', submitLimiter, async (req, res) => {
     }
 });
 
+
 module.exports = router;
+
 
 
