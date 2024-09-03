@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { User } = require('../models'); // Assuming you have a User model defined
+const { User } = require('../models'); 
 
 const router = express.Router();
 
@@ -54,7 +54,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Route for user logout (if using session-based authentication)
 
 // Authentication middleware to protect routes
 function authenticateUser(req, res, next) {

@@ -22,7 +22,6 @@ const DailyReport = {
             return callback(null, results);
         });
     }
-    // Add more functions as needed for CRUD operations
 };
 
 module.exports = DailyReport;

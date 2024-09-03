@@ -11,10 +11,9 @@ router.get('/', (req, res) => {
 });
 
 // Route to fetch users for a specific date
-router.get('/users/:date', async (req, res) => {
-    const { date } = req.params;
+router.get('/users', async (req, res) => {
     try {
-        const [results] = await pool.query('SELECT DISTINCT username FROM daily_reports WHERE date = ?', [date]);
+        const [results] = await pool.query('SELECT DISTINCT username FROM users WHERE username IS NOT NULL AND username != ""');
         res.status(200).json(results);
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -22,7 +21,8 @@ router.get('/users/:date', async (req, res) => {
     }
 });
 
-// Function to add the header on each page
+
+// Helper function to add the header on each PDF page
 function addHeader(doc) {
     const logoPath = path.join(__dirname, '../assets/images/company-logo.png');
     doc.image(logoPath, {
@@ -35,17 +35,26 @@ function addHeader(doc) {
 }
 
 // Route for generating user-specific PDF report
-router.get('/report/pdf/:date/:username', async (req, res) => {
-    const { date, username } = req.params;
+router.get('/report/pdf/:date/:employee', async (req, res) => {
+    const { date, employee } = req.params;
+
+    // Simple validation for URL parameters
+    if (!date || !employee) {
+        return res.status(400).json({ message: 'Date and employee parameters are required.' });
+    }
+
     try {
-        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND username = ?', [date, username]);
+        const query = 'SELECT * FROM daily_reports WHERE date = ? AND employee = ?';
+        const [results] = await pool.query(query, [date, employee]);
+
         if (results.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
 
         const doc = new PDFDocument({ margin: 50 });
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=${username}_report_${date}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.pdf`);
+
         doc.pipe(res);
 
         addHeader(doc);
@@ -126,23 +135,25 @@ router.get('/report/pdf/:date/:username', async (req, res) => {
             doc.moveDown(2);
         });
 
+        // Add footer
         const pageHeight = doc.page.height;
         const footerY = pageHeight - 50;
         doc.y = footerY;
         doc.fontSize(10).text('© 2024 John A. Pappalas Daily Report App. All rights reserved.', { align: 'center' });
 
+        addContent(doc, results);
         doc.end();
     } catch (error) {
         console.error('Error generating PDF:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
 
 // Route for generating user-specific Excel report
-router.get('/report/excel/:date/:username', async (req, res) => {
-    const { date, username } = req.params;
+router.get('/report/excel/:date/:employee', async (req, res) => {
+    const { date, employee } = req.params;
     try {
-        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND username = ?', [date, username]);
+        const [results] = await pool.query('SELECT * FROM daily_reports WHERE date = ? AND employee = ?', [date, employee]);
         if (results.length === 0) {
             return res.status(404).json({ message: 'No reports found for the user on the given date.' });
         }
@@ -193,7 +204,7 @@ router.get('/report/excel/:date/:username', async (req, res) => {
         });
 
         res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        res.setHeader('Content-Disposition', `attachment; filename=${username}_report_${date}.xlsx`);
+        res.setHeader('Content-Disposition', `attachment; filename=${employee}_report_${date}.xlsx`);
 
         await workbook.xlsx.write(res);
         res.end();
@@ -353,6 +364,7 @@ router.get('/report/all/excel/:date', async (req, res) => {
 });
 
 module.exports = router;
+
 
 
 
