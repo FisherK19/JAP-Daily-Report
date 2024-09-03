@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { pool } = require('../config/connection');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
+
+// Rate limiter to prevent abuse
+const submitLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+    message: 'Too many submissions from this IP, please try again later.'
+});
 
 // Serve the daily report HTML
 router.get('/', (req, res) => {
@@ -12,7 +20,7 @@ router.get('/', (req, res) => {
 const formatArrayField = (field) => Array.isArray(field) ? field.join(', ') : field;
 
 // Route to handle daily report submission
-router.post('/', async (req, res) => {
+router.post('/', submitLimiter, async (req, res) => {
     try {
         const user = req.session.user; // Retrieve user from session
 
@@ -30,11 +38,24 @@ router.post('/', async (req, res) => {
             delay_lost_time, employees_off, sub_contract
         } = req.body;
 
-        // Ensure array fields are properly formatted for SQL insertion
+        // Ensure all mandatory fields are present
+        if (!date || !job_number || !foreman || !job_site) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        // Format array fields
+        const formattedFields = {
+            hours_worked: formatArrayField(hours_worked),
+            employee: formatArrayField(employee),
+            straight_time: formatArrayField(straight_time),
+            double_time: formatArrayField(double_time),
+            time_and_a_half: formatArrayField(time_and_a_half)
+        };
+
         const fieldValueMapping = {
             date, job_number, t_and_m: t_and_m ? 1 : 0, contract: contract ? 1 : 0, foreman, cell_number, customer, customer_po,
             job_site, job_description, job_completion, trucks, welders, generators, compressors, fuel, scaffolding, safety_equipment, miscellaneous_equipment,
-            material_description, equipment_description, hours_worked: formatArrayField(hours_worked), employee: formatArrayField(employee), straight_time: formatArrayField(straight_time), double_time: formatArrayField(double_time), time_and_a_half: formatArrayField(time_and_a_half),
+            material_description, equipment_description, ...formattedFields,
             emergency_purchases, approved_by, shift_start_time, temperature_humidity, report_copy,
             manlifts_equipment, manlifts_fuel, delay_lost_time, employees_off, sub_contract, username
         };
@@ -47,7 +68,7 @@ router.post('/', async (req, res) => {
         const sql = `INSERT INTO daily_reports (${fields}) VALUES (${placeholders})`;
 
         const [results] = await pool.query(sql, values);
-        res.status(201).json({ message: 'Daily report submitted successfully' });
+        res.status(201).json({ message: 'Daily report submitted successfully', reportId: results.insertId });
     } catch (error) {
         console.error('Error inserting data:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });

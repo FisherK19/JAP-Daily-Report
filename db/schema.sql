@@ -1,7 +1,7 @@
 -- Drop tables if they exist
-DROP TABLE IF EXISTS admin_users;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS daily_reports;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS admin_users;
 
 -- Create a table for storing admin user data
 CREATE TABLE admin_users (
@@ -59,11 +59,12 @@ CREATE TABLE daily_reports (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     shift_start_time VARCHAR(20),
     temperature_humidity TEXT,
-    report_copy ENUM('white','yellow','pink'),
+    report_copy ENUM('white', 'yellow', 'pink'),
     manlifts_equipment VARCHAR(255),
     manlifts_fuel VARCHAR(255),
     delay_lost_time TEXT,
     employees_off TEXT,
     sub_contract TEXT,
-    username VARCHAR(255)
+    username VARCHAR(255),
+    FOREIGN KEY (username) REFERENCES users(username)
 );

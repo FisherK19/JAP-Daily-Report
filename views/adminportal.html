@@ -37,8 +37,8 @@
                     <option value="">Select User</option>
                 </select>
             </div>
-            <button onclick="downloadUserReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
-            <button onclick="downloadUserReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
+            <button onclick="downloadReport('pdf')" class="btn btn-secondary">Download PDF for Selected User</button>
+            <button onclick="downloadReport('excel')" class="btn btn-secondary">Download Excel for Selected User</button>
         </div>
     </main>
 
@@ -57,37 +57,26 @@
                 const userSelect = document.getElementById('user-select');
                 userSelect.innerHTML = '<option value="">Select User</option>';
                 users.forEach(user => {
-                    if (user.username && user.username.trim() !== '') {
-                        const option = document.createElement('option');
-                        option.value = user.username;
-                        option.textContent = user.username;
-                        userSelect.appendChild(option);
-                    }
+                    const option = document.createElement('option');
+                    option.value = user.username;
+                    option.textContent = user.username;
+                    userSelect.appendChild(option);
                 });
             } catch (error) {
                 console.error('Error fetching users:', error);
+                alert('Failed to fetch users. Please refresh the page.');
             }
-        }
-
-        function downloadUserReport(format) {
-            const user = document.getElementById('user-select').value;
-            if (!user) {
-                alert('Please select a user.');
-                return;
-            }
-
-            const url = `/admin/portal/report/${format}/${user}`;
-            window.location.href = url;
         }
 
         function downloadReport(format) {
             const date = document.getElementById('report-date').value;
-            if (!date) {
-                alert('Please select a date.');
+            const user = document.getElementById('user-select').value;
+            if (!date || !user) {
+                alert('Please select both a date and a user.');
                 return;
             }
 
-            const url = `/admin/portal/report/all/${format}/${date}`;
+            const url = `/admin/portal/report/${format}/${date}/${user}`;
             window.location.href = url;
         }
 
