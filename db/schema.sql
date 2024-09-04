@@ -1,7 +1,7 @@
 -- Drop tables if they exist
-DROP TABLE IF EXISTS daily_reports;
-DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS admin_users;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS daily_reports;
 
 -- Create a table for storing admin user data
 CREATE TABLE admin_users (
