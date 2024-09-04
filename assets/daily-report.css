@@ -27,7 +27,7 @@ body {
 }
 
 .header-section img {
-    max-width: 300px;  /* Increase this value to make the logo larger */
+    max-width: 300px;  
     margin-bottom: 10px;
 }
 
@@ -151,7 +151,7 @@ footer {
 }
 
 .employee-entry > div {
-    flex: 1 1 calc(16% - 10px); /* Adjusted to fit more evenly */
+    flex: 1 1 calc(16% - 10px); 
     margin: 5px;
 }
 

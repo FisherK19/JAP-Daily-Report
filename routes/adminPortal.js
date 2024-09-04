@@ -46,14 +46,12 @@ router.get('/report/pdf/:date/:employee', async (req, res) => {
         // Custom function to add header content
         addHeader(doc);
 
-        // Add report content
         results.forEach(report => {
-            // Example: Add report details
             doc.fontSize(14).text('Daily Report', { align: 'center' });
             doc.moveDown();
         });
 
-        doc.end(); // Finalize the document and send the response
+        doc.end(); 
     } catch (error) {
         console.error('Error generating PDF:', error);
         res.status(500).json({ message: 'Internal server error', error: error.message });
@@ -73,7 +71,6 @@ function addHeader(doc) {
 
 // Similar routes for Excel report generation
 router.get('/report/excel/:date/:employee', async (req, res) => {
-    // Implementation of Excel report generation
 });
 
 module.exports = router;

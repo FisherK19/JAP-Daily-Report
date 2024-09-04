@@ -49,7 +49,6 @@ const userController = {
             if (results.affectedRows === 0) {
                 return res.status(404).json({ message: 'No user with that ID' });
             }
-            // Optionally, you can delete associated thoughts here
             res.json({ message: 'User deleted successfully' });
         });
     },

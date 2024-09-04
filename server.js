@@ -48,7 +48,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('Database connection failed:', err);
-    process.exit(1); // Exit the process with an error code
+    process.exit(1); 
   });
 
 const app = express();

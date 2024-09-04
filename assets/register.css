@@ -9,11 +9,11 @@ body {
     font-family: 'Arial', sans-serif;
 }
 #company-logo {
-    display: block; /* Centers the image in the div if it has a specified width */
-    margin: 0 auto; /* Adds automatic margins on both sides to help center the image */
-    max-width: 100%; /* Makes sure the image is not larger than its container */
-    height: auto; /* Keeps the image's aspect ratio */
-    padding-bottom: 20px; /* Adds some space between the image and the first input field */
+    display: block;
+    margin: 0 auto; 
+    max-width: 100%; 
+    height: auto; 
+    padding-bottom: 20px; 
   }
   /* General styles for the form */
   #login-form, #registration-form {
@@ -22,7 +22,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
-    margin-top: 20px; /* You might want to adjust vertical positioning */
+    margin-top: 20px; 
   }
   
   #login-form div, #registration-form div {
@@ -36,7 +36,7 @@ body {
   }
   
   input[type="text"],
-  input[type="email"], /* Added input type for email */
+  input[type="email"], 
   input[type="password"] {
     width: 100%;
     padding: 8px;
@@ -44,8 +44,8 @@ body {
     border-radius: 4px;
   }
   
-  .btn, /* Assuming you have a btn class on your button */
-  button[type="submit"] { /* If not, this will target your submit buttons */
+  .btn, 
+  button[type="submit"] { 
     width: 100%;
     padding: 10px 15px;
     border: none;

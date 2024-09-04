@@ -1,5 +1,4 @@
 // admin-report.js
-
 const pool = require('../config/connection');
 
 const AdminReport = {

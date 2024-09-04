@@ -30,9 +30,9 @@ router.post('/', async (req, res) => {
         }
 
         // Authentication successful
-        req.session.user = results[0];  // Store user info in session
+        req.session.user = results[0];  
         console.log('Redirecting to /admin/portal');
-        res.redirect('/admin/portal');  // Redirect to the admin portal
+        res.redirect('/admin/portal');  
     } catch (error) {
         console.error('Error during admin login:', error);
         res.status(500).json({ message: 'Internal server error' });

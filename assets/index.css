@@ -1,22 +1,22 @@
 /* Overall body and background styling */
 body {
-  font-family: Arial, sans-serif; /* Sets a clean, readable font */
-  background-color: #f4f4f4; /* Light grey background */
-  color: #333; /* Dark grey text */
-  line-height: 1.6; /* More readable line spacing */
-  padding: 20px; /* Adds space around the content */
+  font-family: Arial, sans-serif; 
+  background-color: #f4f4f4; 
+  color: #333; 
+  line-height: 1.6;
+  padding: 20px; 
   margin: 0;
 }
 
 /* Centers the form on the page */
 .container {
-  width: 90%; /* Control the width of the container */
-  max-width: 600px; /* Maximum width */
-  margin: 20px auto; /* Center aligning */
-  background: #fff; /* White background for the form area */
+  width: 90%; 
+  max-width: 600px; 
+  margin: 20px auto; 
+  background: #fff; 
   padding: 20px;
-  border-radius: 8px; /* Rounded corners for a softer look */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around the form */
+  border-radius: 8px; 
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
 /* Styles for all form elements */
@@ -27,7 +27,7 @@ form {
 /* Styles for labels */
 label {
   margin: 10px 0 5px;
-  display: block; /* Ensures the label is on a new line */
+  display: block; 
   font-weight: bold;
 }
 
@@ -37,18 +37,18 @@ input[type="password"],
 input[type="date"],
 input[type="time"],
 textarea {
-  width: 100%; /* Full width */
-  padding: 12px; /* Increases padding for better touch interaction */
-  margin-bottom: 20px; /* Adds space below each input */
-  border: 1px solid #ccc; /* Light gray border */
-  border-radius: 4px; /* Rounded corners */
-  box-sizing: border-box; /* Ensures padding and border are included in width */
+  width: 100%; 
+  padding: 12px; 
+  margin-bottom: 20px; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+  box-sizing: border-box; 
 }
 
 
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .container {
-    width: 95%; /* Takes up almost the full screen on small devices */
+    width: 95%; 
   }
 }
