@@ -14,10 +14,11 @@ The Daily Report App is a web application designed to manage and generate daily 
 ![Main Page](assets/images/main-page.png)
 
 ### Admin Portal
-![Admin Portal](assets/images/admin-portal.png)
+![Admin Portal](assets/images/admin%20portal.png)
 
 ### Daily Reports
-![Daily Reports](assets/images/daily-reports.png)
+![Daily Reports](assets/images/daily%20report.png)
+![Daily Reports](assets/images/daily%20report%202.png)
 ## Requirements
 - Node.js
 - MySQL database
