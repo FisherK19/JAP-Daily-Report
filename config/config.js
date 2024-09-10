@@ -12,7 +12,6 @@ if (process.env.JAWSDB_URL) {
         database: dbUrl.pathname.substr(1),
     };
 } else {
-    // Fallback to using environment variables for local development or other environments
     dbConfig = {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,

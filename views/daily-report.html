@@ -176,8 +176,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Function to add a new employee entry
-            function addEmployeeEntry() {
+            // Add Employee Button functionality
+            document.getElementById('add-employee-btn').addEventListener('click', function() {
                 const employeesSection = document.querySelector('.employees-section');
                 const newEmployeeEntry = document.createElement('div');
                 newEmployeeEntry.classList.add('employee-entry');
@@ -190,68 +190,72 @@
                     <button type="button" class="delete-employee-btn"><i class="fas fa-trash-alt"></i></button>
                 `;
                 employeesSection.appendChild(newEmployeeEntry);
-                newEmployeeEntry.querySelector('.delete-employee-btn').addEventListener('click', function() {
-                    newEmployeeEntry.remove();
-                });
-            }
-    
-            // Initialize event listeners
-            document.getElementById('add-employee-btn').addEventListener('click', addEmployeeEntry);
-    
-            // Event delegation to handle removing employee entries
+            });
+
+            // Remove Employee Entry
             document.addEventListener('click', function(event) {
-                if (event.target.classList.contains('delete-employee-btn')) {
+                if (event.target.closest('.delete-employee-btn')) {
                     event.target.closest('.employee-entry').remove();
                 }
             });
-    
-            // Handle form submission
+
+            // Handle Form Submission
             document.getElementById('daily-report-form').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const formData = new FormData(this);
-                const data = {};
-    
-                formData.forEach((value, key) => {
-                    if (!data.hasOwnProperty(key)) {
-                        data[key] = value;
-                        return;
-                    }
-                    if (!Array.isArray(data[key])) {
-                        data[key] = [data[key]];
-                    }
-                    data[key].push(value);
-                });
-    
-                console.log('Form data:', data);
-                fetch('/daily-report', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while submitting the report. Please try again.');
-                });
-            });
-    
-            // Logout function
+    event.preventDefault();
+    const formData = new FormData(this);
+    const data = {};
+
+    formData.forEach((value, key) => {
+        if (!data[key]) {
+            data[key] = value;
+        } else {
+            if (!Array.isArray(data[key])) {
+                data[key] = [data[key]];
+            }
+            data[key].push(value);
+        }
+    });
+
+    // Fallback values for important fields
+    if (!data.hours_worked) data.hours_worked = '0';
+    if (!data.employee) data.employee = 'Unknown';
+    if (!data.straight_time) data.straight_time = '0';
+    if (!data.double_time) data.double_time = '0';
+    if (!data.time_and_a_half) data.time_and_a_half = '0';
+
+    // Format the date for submission
+    const formattedDate = new Date(data.date).toISOString().split('T')[0];
+    data.date = formattedDate;
+
+    fetch('/daily-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the report. Please try again.');
+    });
+});
+
+
+            // Handle Logout
             document.getElementById('logout-link').addEventListener('click', function(event) {
                 event.preventDefault();
-                fetch('/logout', {
-                    method: 'POST',
-                    credentials: 'same-origin'
-                }).then(response => {
-                    if (response.ok) {
-                        window.location.href = '/login';
-                    } else {
-                        alert('Logout failed');
-                    }
-                });
+                fetch('/logout', { method: 'POST', credentials: 'same-origin' })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.href = '/login';
+                        } else {
+                            alert('Logout failed');
+                        }
+                    });
             });
         });
     </script>
-    
+</body>
+</html>
