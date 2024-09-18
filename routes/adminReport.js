@@ -23,7 +23,7 @@ router.get('/pdf/:date/:user', async (req, res) => {
         const report = reports[0];
 
         // Launch Puppeteer and generate the PDF
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true, protocolTimeout: 500000 });
         const page = await browser.newPage();
 
         // Generate HTML content for the report

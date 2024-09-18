@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Report</title>
+    ​<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script> src="html2pdf.js"</script>
     <link rel="stylesheet" href="/assets/daily-report.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div id="dailyReport" class="container">
         <div class="header-section">
             <img src="/assets/images/company-logo.png" alt="Company Logo">
             <h1>Daily Report</h1>
@@ -168,8 +171,10 @@
                 </tr>
             </table>
             <button type="submit">Submit Daily Report</button>
+
         </form>
     </div>
+    <button id="html2PDF">Test</button>
     <footer>
         <p>&copy; 2024 John A. Papalas Daily Report App. All rights reserved.</p>
     </footer>
@@ -255,7 +260,45 @@
                         }
                     });
             });
+
+//             document.body.addEventListener("click", function(e) {
+//     console.log(e.target); // Check what element you're clicking
+//     if (e.target && e.target.id === "html2PDF") {
+//         e.preventDefault();
+//         console.log("clicked");
+//     }
+// });
+$(document.body).on("click", "#html2PDF", function(e) {
+    e.preventDefault();
+  console.log("clicked");
+   let element = document.getElementById('dailyReport');
+  
+    let opt = {
+      margin:10,
+      filename: 'dailyReport.pdf',
+      html2canvas: {
+        scale: 1,
+        scrollX: true,
+        scrollY: true,
+        useCORS: true
+      },
+      jsPDF: {unit:'mm',format:'A3', orientation:'p'}
+    };
+  
+  
+    html2pdf().set(opt).from(element).save();
+  });
         });
+
+        
+// document.body.addEventListener("click", function(e) {
+//     console.log(e.target); // Check what element you're clicking
+//     if (e.target && e.target.id === "html2PDF") {
+//         e.preventDefault();
+//         console.log("clicked");
+//     }
+// });
     </script>
 </body>
+
 </html>
